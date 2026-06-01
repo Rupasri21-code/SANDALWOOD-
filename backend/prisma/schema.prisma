@@ -1,0 +1,234 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  role         String        @default("CUSTOMER") // ADMIN or CUSTOMER
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  profile      CustomerProfile?
+  activityLogs ActivityLog[]
+}
+
+model CustomerProfile {
+  id           String         @id @default(uuid())
+  user_id      String?        @unique
+  user         User?          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  full_name    String
+  email        String         @unique
+  phone        String
+  address      String
+  city         String
+  state        String
+  country      String
+  id_type      String
+  id_number    String
+  status       String         @default("PENDING") // ACTIVE, INACTIVE, PENDING
+  notes        String?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  landPlots    LandPlot[]
+  investments  Investment[]
+  payments     Payment[]
+  documents    Document[]
+  media        Media[]
+  notifications Notification[]
+}
+
+model LandPlot {
+  id                String             @id @default(uuid())
+  customer_id       String?
+  customer          CustomerProfile?   @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+  title             String
+  description       String
+  location          String
+  district          String
+  state             String
+  survey_number     String
+  total_area        Float
+  unit              String             @default("Acres")
+  latitude          Float?
+  longitude         Float?
+  purchase_date     DateTime?
+  purchase_price    Float
+  current_value     Float
+  status            String             @default("AVAILABLE") // AVAILABLE, RESERVED, SOLD, MAINTENANCE
+  images            String             @default("") // Comma-separated image URLs
+  documents         String             @default("") // Comma-separated document filenames
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  crops             Crop[]
+  plantationUpdates PlantationUpdate[]
+  investments       Investment[]
+  documentRecords   Document[]
+  mediaRecords      Media[]
+}
+
+model Crop {
+  id                    String             @id @default(uuid())
+  land_id               String
+  land                  LandPlot           @relation(fields: [land_id], references: [id], onDelete: Cascade)
+  name                  String             @default("Sandalwood")
+  variety               String
+  planted_date          DateTime?
+  total_plants          Int
+  surviving_plants      Int
+  growth_stage          String             @default("SEEDLING") // SEEDLING, SAPLING, JUVENILE, MATURE, HARVEST_READY
+  expected_harvest_date DateTime?
+  height_avg            Float              @default(0.0)
+  health_status         String             @default("GOOD") // EXCELLENT, GOOD, FAIR, POOR
+  notes                 String?
+  created_at            DateTime           @default(now())
+  updated_at            DateTime           @updatedAt
+  plantationUpdates     PlantationUpdate[]
+}
+
+model PlantationUpdate {
+  id           String    @id @default(uuid())
+  crop_id      String?
+  crop         Crop?     @relation(fields: [crop_id], references: [id], onDelete: SetNull)
+  land_id      String?
+  land         LandPlot? @relation(fields: [land_id], references: [id], onDelete: SetNull)
+  update_type  String
+  title        String
+  description  String
+  images       String    @default("") // Comma-separated update image URLs
+  recorded_by  String?
+  update_date  DateTime  @default(now())
+  created_at   DateTime  @default(now())
+}
+
+model Investment {
+  id                String           @id @default(uuid())
+  customer_id       String
+  customer          CustomerProfile  @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  land_id           String?
+  land              LandPlot?        @relation(fields: [land_id], references: [id], onDelete: SetNull)
+  investment_type   String
+  amount            Float
+  currency          String           @default("INR")
+  investment_date   DateTime         @default(now())
+  maturity_date     DateTime?
+  expected_returns  Float
+  roi_percentage    Float
+  status            String           @default("PENDING") // ACTIVE, MATURED, WITHDRAWN, PENDING
+  contract_number   String
+  notes             String?
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  payments          Payment[]
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  investment_id   String?
+  investment      Investment?   @relation(fields: [investment_id], references: [id], onDelete: SetNull)
+  customer_id     String
+  customer        CustomerProfile @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  amount          Float
+  currency        String        @default("INR")
+  payment_type    String
+  payment_method  String
+  transaction_id  String
+  payment_date    DateTime      @default(now())
+  status          String        @default("PENDING") // COMPLETED, PENDING, FAILED, REFUNDED
+  receipt_url     String?
+  notes           String?
+  created_at      DateTime      @default(now())
+}
+
+model Document {
+  id          String           @id @default(uuid())
+  customer_id String
+  customer    CustomerProfile  @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  land_id     String?
+  land        LandPlot?        @relation(fields: [land_id], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  file_url    String
+  file_type   String
+  file_size   Int
+  category    String
+  is_public   Boolean          @default(false)
+  created_at  DateTime         @default(now())
+}
+
+model Media {
+  id          String           @id @default(uuid())
+  customer_id String
+  customer    CustomerProfile  @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  land_id     String?
+  land        LandPlot?        @relation(fields: [land_id], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  file_url    String
+  file_type   String
+  category    String
+  created_at  DateTime         @default(now())
+}
+
+model Inquiry {
+  id                  String        @id @default(uuid())
+  full_name           String
+  email               String
+  phone               String
+  investment_interest String
+  budget_range        String
+  plot_size           String
+  message             String
+  status              String        @default("NEW") // NEW, CONTACTED, INTERESTED, CONVERTED, CLOSED
+  admin_notes         String?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  recipient_id String
+  customer_id String?
+  customer    CustomerProfile? @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  title       String
+  message     String
+  type        String           @default("INFO") // INFO, SUCCESS, WARNING, ALERT, UPDATE
+  is_read     Boolean          @default(false)
+  link        String?
+  created_at  DateTime         @default(now())
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  name        String
+  location    String
+  text        String
+  rating      Int      @default(5)
+  image_url   String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+}
+
+model GalleryItem {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  image_url   String
+  description String?
+  created_at  DateTime @default(now())
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  user_id    String?
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  action     String
+  details    String?
+  ip_address String?
+  created_at DateTime @default(now())
+}

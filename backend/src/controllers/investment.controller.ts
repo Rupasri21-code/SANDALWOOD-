@@ -1,0 +1,150 @@
+import { Request, Response, NextFunction } from 'express';
+import { db } from '../config/database';
+import { ApiError } from '../utils/ApiError';
+import { ApiResponse } from '../utils/ApiResponse';
+import { z } from 'zod';
+
+const createInvestmentSchema = z.object({
+  customerId: z.string().min(1, 'Customer is required'),
+  landId: z.string().optional(),
+  investmentType: z.string().min(1, 'Investment type is required'),
+  amount: z.number().min(0),
+  currency: z.string().default('INR'),
+  investmentDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
+  maturityDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
+  expectedReturns: z.number().min(0),
+  roiPercentage: z.number().min(0),
+  status: z.enum(['ACTIVE', 'MATURED', 'WITHDRAWN', 'PENDING']).default('PENDING'),
+  contractNumber: z.string().min(1, 'Contract number is required'),
+  notes: z.string().optional(),
+});
+
+export const listInvestments = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const investments = await db.investment.findMany({
+      orderBy: { investment_date: 'desc' },
+      include: {
+        customer: true,
+        land: true,
+      },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, investments, 'Investments retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getInvestment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const investment = await db.investment.findUnique({
+      where: { id },
+      include: {
+        customer: true,
+        land: true,
+        payments: true,
+      },
+    });
+
+    if (!investment) {
+      throw new ApiError(404, 'Investment not found');
+    }
+
+    res.status(200).json(
+      new ApiResponse(200, investment, 'Investment retrieved')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createInvestment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validated = createInvestmentSchema.parse(req.body);
+
+    const customer = await db.customerProfile.findUnique({ where: { id: validated.customerId } });
+    if (!customer) {
+      throw new ApiError(404, 'Customer profile not found');
+    }
+
+    const investment = await db.investment.create({
+      data: {
+        customer_id: validated.customerId,
+        land_id: validated.landId || null,
+        investment_type: validated.investmentType,
+        amount: validated.amount,
+        currency: validated.currency,
+        investment_date: validated.investmentDate,
+        maturity_date: validated.maturityDate,
+        expected_returns: validated.expectedReturns,
+        roi_percentage: validated.roiPercentage,
+        status: validated.status,
+        contract_number: validated.contractNumber,
+        notes: validated.notes,
+      },
+    });
+
+    res.status(201).json(
+      new ApiResponse(201, investment, 'Investment record created successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateInvestment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const validated = createInvestmentSchema.partial().parse(req.body);
+
+    const existing = await db.investment.findUnique({ where: { id } });
+    if (!existing) {
+      throw new ApiError(404, 'Investment not found');
+    }
+
+    const updated = await db.investment.update({
+      where: { id },
+      data: {
+        land_id: validated.landId !== undefined ? (validated.landId || null) : existing.land_id,
+        investment_type: validated.investmentType,
+        amount: validated.amount,
+        currency: validated.currency,
+        investment_date: validated.investmentDate,
+        maturity_date: validated.maturityDate,
+        expected_returns: validated.expectedReturns,
+        roi_percentage: validated.roiPercentage,
+        status: validated.status,
+        contract_number: validated.contractNumber,
+        notes: validated.notes,
+      },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, updated, 'Investment updated successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteInvestment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const existing = await db.investment.findUnique({ where: { id } });
+    if (!existing) {
+      throw new ApiError(404, 'Investment not found');
+    }
+
+    await db.investment.delete({ where: { id } });
+
+    res.status(200).json(
+      new ApiResponse(200, null, 'Investment deleted successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
