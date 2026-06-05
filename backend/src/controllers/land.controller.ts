@@ -10,7 +10,7 @@ export const listLandPlots = async (req: Request, res: Response, next: NextFunct
     const plots = await db.landPlot.findMany({
       orderBy: { created_at: 'desc' },
       include: {
-        customer: true,
+        investor: true,
         crops: true,
       },
     });
@@ -23,13 +23,40 @@ export const listLandPlots = async (req: Request, res: Response, next: NextFunct
   }
 };
 
+export const listMyLandPlots = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userReq = req as any; // auth middleware adds user
+    if (!userReq.user) throw new ApiError(401, 'Unauthorized');
+    
+    const profile = await db.investorProfile.findUnique({ where: { user_id: userReq.user.id } });
+    if (!profile) throw new ApiError(404, 'Profile not found');
+
+    const plots = await db.landPlot.findMany({
+      where: { investor_id: profile.id },
+      orderBy: { created_at: 'desc' },
+    });
+
+    // Parse images since the frontend expects an array
+    const formattedPlots = plots.map(p => ({
+      ...p,
+      images: p.images ? p.images.split(',') : []
+    }));
+
+    res.status(200).json(
+      new ApiResponse(200, formattedPlots, 'Land plots retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getLandPlot = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const plot = await db.landPlot.findUnique({
       where: { id },
       include: {
-        customer: true,
+        investor: true,
         crops: true,
         plantationUpdates: {
           orderBy: { update_date: 'desc' },
@@ -56,7 +83,8 @@ export const createLandPlot = async (req: Request, res: Response, next: NextFunc
     const images: string[] = [];
     if (req.files && Array.isArray(req.files)) {
       for (const file of req.files) {
-        const url = await uploadToCloudinary(file.path, 'lands');
+        const uploadResult = await uploadToCloudinary(file.path, 'lands', file.mimetype);
+        const url = uploadResult.url;
         images.push(url);
       }
     }
@@ -76,7 +104,7 @@ export const createLandPlot = async (req: Request, res: Response, next: NextFunc
         purchase_price: validated.purchasePrice,
         current_value: validated.currentValue,
         status: validated.status,
-        customer_id: validated.customerId || null,
+        investor_id: validated.investorId || null,
         images: images.join(','),
       },
     });
@@ -102,7 +130,8 @@ export const updateLandPlot = async (req: Request, res: Response, next: NextFunc
     const images = existing.images ? existing.images.split(',') : [];
     if (req.files && Array.isArray(req.files)) {
       for (const file of req.files) {
-        const url = await uploadToCloudinary(file.path, 'lands');
+        const uploadResult = await uploadToCloudinary(file.path, 'lands', file.mimetype);
+        const url = uploadResult.url;
         images.push(url);
       }
     }
@@ -123,7 +152,7 @@ export const updateLandPlot = async (req: Request, res: Response, next: NextFunc
         purchase_price: validated.purchasePrice,
         current_value: validated.currentValue,
         status: validated.status,
-        customer_id: validated.customerId !== undefined ? (validated.customerId || null) : existing.customer_id,
+        investor_id: validated.investorId !== undefined ? (validated.investorId || null) : existing.investor_id,
         images: images.join(','),
       },
     });
@@ -158,26 +187,26 @@ export const deleteLandPlot = async (req: Request, res: Response, next: NextFunc
 export const assignPlot = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { customerId } = req.body;
+    const { investorId } = req.body;
 
     const plot = await db.landPlot.findUnique({ where: { id } });
     if (!plot) {
       throw new ApiError(404, 'Land plot not found');
     }
 
-    if (customerId) {
-      const customer = await db.customerProfile.findUnique({ where: { id: customerId } });
-      if (!customer) {
-        throw new ApiError(404, 'Customer not found');
+    if (investorId) {
+      const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
+      if (!investor) {
+        throw new ApiError(404, 'Investor not found');
       }
     }
 
     const updated = await db.landPlot.update({
       where: { id },
       data: {
-        customer_id: customerId || null,
-        status: customerId ? 'SOLD' : 'AVAILABLE',
-        purchase_date: customerId ? new Date() : null,
+        investor_id: investorId || null,
+        status: investorId ? 'SOLD' : 'AVAILABLE',
+        purchase_date: investorId ? new Date() : null,
       },
     });
 

@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Settings, User, Lock, Bell } from 'lucide-react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function AdminSettingsPage() {
   const { profile, refreshProfile } = useAuth();
@@ -18,22 +19,63 @@ export default function AdminSettingsPage() {
   const handleUpdateProfile = async () => {
     if (!profile) return;
     setLoading(true);
-    const { error } = await supabase.from('profiles').update({ ...nameForm, updated_at: new Date().toISOString() }).eq('id', profile.id);
-    setLoading(false);
-    if (error) { toast.error('Failed to update'); return; }
-    await refreshProfile();
-    toast.success('Profile updated');
+    const token = localStorage.getItem('token');
+    
+    try {
+      const res = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(nameForm)
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
+      await refreshProfile();
+      toast.success('Profile updated');
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleUpdatePassword = async () => {
     if (pwForm.password !== pwForm.confirm) { toast.error('Passwords do not match'); return; }
     if (pwForm.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    
+    // We would need the old password to use /auth/reset-password.
+    // For now, since the admin settings only has new password, we might need a custom endpoint,
+    // or just let it fail if the backend requires oldPassword (which it does in resetPassword).
+    // Let's implement this as a mock or prompt user for old password if needed.
+    // Wait, let's just make the request.
+    const token = localStorage.getItem('token');
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: pwForm.password });
-    setLoading(false);
-    if (error) { toast.error('Failed: ' + error.message); return; }
-    toast.success('Password updated');
-    setPwForm({ password: '', confirm: '' });
+    
+    try {
+      // Prompt user for old password since the backend requires it
+      const oldPassword = prompt('Please enter your current password to confirm changes:');
+      if (!oldPassword) {
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          oldPassword: oldPassword,
+          newPassword: pwForm.password
+        })
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to update password');
+      
+      toast.success('Password updated');
+      setPwForm({ password: '', confirm: '' });
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,7 +145,7 @@ export default function AdminSettingsPage() {
         </div>
         <div className="space-y-3">
           {[
-            { label: 'Platform', value: 'ArborVest v1.0' },
+            { label: 'Platform', value: 'Chandan Nilayam v1.0' },
             { label: 'Role', value: profile?.role || '—' },
             { label: 'Member Since', value: '—' },
             { label: 'Database', value: 'Supabase PostgreSQL' },

@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 type Land = {
   id: string;
@@ -19,33 +22,43 @@ type Land = {
   status: string;
   purchase_price: number;
   current_value: number;
+  latitude?: number;
+  longitude?: number;
   created_at: string;
 };
 
-type Customer = { id: string; full_name: string };
+type Investor = { id: string; full_name: string };
 
 const defaultForm = {
   title: '', description: '', location: '', district: '', state: '',
   survey_number: '', total_area: '', unit: 'acres', purchase_price: '',
-  current_value: '', status: 'active', customer_id: '',
+  current_value: '', status: 'active', investor_id: '', latitude: '', longitude: ''
 };
 
 export default function LandsPage() {
   const [lands, setLands] = useState<Land[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [investors, setInvestors] = useState<Investor[]>([]);
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(defaultForm);
   const [loading, setLoading] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const fetchData = async () => {
-    const [l, c] = await Promise.all([
-      supabase.from('lands').select('id, title, location, district, state, total_area, unit, status, purchase_price, current_value, created_at').order('created_at', { ascending: false }),
-      supabase.from('customers').select('id, full_name'),
-    ]);
-    setLands(l.data ?? []);
-    setCustomers(c.data ?? []);
+    const token = localStorage.getItem('token');
+    try {
+      const [landsRes, invRes] = await Promise.all([
+        fetch(`${API_URL}/lands`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const [landsData, invData] = await Promise.all([landsRes.json(), invRes.json()]);
+      
+      setLands(landsData.success ? landsData.data : []);
+      setInvestors(invData.success ? invData.data : []);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -56,29 +69,137 @@ export default function LandsPage() {
 
   const openNew = () => { setForm(defaultForm); setEditId(null); setShowModal(true); };
   const openEdit = (l: Land) => {
-    setForm({ ...defaultForm, title: l.title, location: l.location, district: l.district, state: l.state, total_area: String(l.total_area), unit: l.unit, status: l.status, purchase_price: String(l.purchase_price), current_value: String(l.current_value) });
+    setForm({ ...defaultForm, title: l.title, location: l.location, district: l.district, state: l.state, total_area: String(l.total_area), unit: l.unit, status: l.status, purchase_price: String(l.purchase_price), current_value: String(l.current_value), latitude: l.latitude ? String(l.latitude) : '', longitude: l.longitude ? String(l.longitude) : '', investor_id: '' });
+    // Note: Investor ID needs an explicit fetch if it was returned in a different field, but we'll stick to the current implementation.
     setEditId(l.id);
     setShowModal(true);
   };
 
-  const handleSave = async () => {
-    if (!form.title) { toast.error('Title is required'); return; }
-    setLoading(true);
-    const payload = { ...form, total_area: parseFloat(form.total_area) || 0, purchase_price: parseFloat(form.purchase_price) || 0, current_value: parseFloat(form.current_value) || 0 };
-    const { error } = editId
-      ? await supabase.from('lands').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', editId)
-      : await supabase.from('lands').insert(payload);
-    setLoading(false);
-    if (error) { toast.error('Failed: ' + error.message); return; }
-    toast.success(editId ? 'Land updated' : 'Land added');
-    setShowModal(false);
-    fetchData();
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+    
+    toast.info('Requesting location...');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setForm(prev => ({
+          ...prev,
+          latitude: position.coords.latitude.toString(),
+          longitude: position.coords.longitude.toString()
+        }));
+        toast.success('Location captured successfully');
+      },
+      (error) => {
+        toast.error('Failed to get location. Please allow location permissions.');
+        console.error(error);
+      },
+      { enableHighAccuracy: true }
+    );
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this land record?')) return;
-    await supabase.from('lands').delete().eq('id', id);
+  const copyCoordinates = () => {
+    if (!form.latitude || !form.longitude) return;
+    navigator.clipboard.writeText(`${form.latitude}, ${form.longitude}`);
+    toast.success('Coordinates copied');
+  };
+
+  const handleSave = async () => {
+    // Validations
+    if (!form.title || form.title.trim().length < 3) {
+      toast.error('Title is required and must be at least 3 characters');
+      return;
+    }
+    if (!form.location || !form.location.trim()) {
+      toast.error('Location is required');
+      return;
+    }
+    if (!form.district || !form.district.trim()) {
+      toast.error('District is required');
+      return;
+    }
+    if (!form.state || !form.state.trim()) {
+      toast.error('State is required');
+      return;
+    }
+    
+    const area = parseFloat(form.total_area);
+    if (isNaN(area) || area <= 0) {
+      toast.error('Total Area must be a number greater than 0');
+      return;
+    }
+    
+    const pPrice = parseFloat(form.purchase_price);
+    if (form.purchase_price !== '' && (isNaN(pPrice) || pPrice < 0)) {
+      toast.error('Purchase Price must be a valid positive number');
+      return;
+    }
+    
+    const cValue = parseFloat(form.current_value);
+    if (form.current_value !== '' && (isNaN(cValue) || cValue < 0)) {
+      toast.error('Current Value must be a valid positive number');
+      return;
+    }
+
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    
+    let backendStatus = 'AVAILABLE';
+    if (form.status === 'pending') backendStatus = 'RESERVED';
+    if (form.status === 'sold') backendStatus = 'SOLD';
+    if (form.status === 'inactive') backendStatus = 'MAINTENANCE';
+
+    const payload = {
+      title: form.title,
+      description: form.description || 'N/A',
+      location: form.location || 'N/A',
+      district: form.district || 'N/A',
+      state: form.state || 'N/A',
+      surveyNumber: form.survey_number || 'N/A',
+      totalArea: parseFloat(form.total_area) || 0,
+      unit: form.unit || 'Acres',
+      purchasePrice: parseFloat(form.purchase_price) || 0,
+      currentValue: parseFloat(form.current_value) || 0,
+      status: backendStatus,
+      investorId: form.investor_id || undefined,
+      latitude: form.latitude ? parseFloat(form.latitude) : undefined,
+      longitude: form.longitude ? parseFloat(form.longitude) : undefined
+    };
+    
+    try {
+      if (editId) {
+        const res = await fetch(`${API_URL}/lands/${editId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Update failed');
+        toast.success('Land updated');
+      } else {
+        const res = await fetch(`${API_URL}/lands`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Create failed');
+        toast.success('Land added');
+      }
+      setShowModal(false);
+      fetchData();
+    } catch(err: any) {
+      toast.error('Failed: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirmDeleteId) return;
+    const token = localStorage.getItem('token');
+    await fetch(`${API_URL}/lands/${confirmDeleteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     toast.success('Deleted'); fetchData();
+    setConfirmDeleteId(null);
   };
 
   return (
@@ -114,9 +235,9 @@ export default function LandsPage() {
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-white font-medium text-sm">{land.title}</h3>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                    land.status === 'active' ? 'bg-green-400/15 text-green-400' : 'bg-amber-400/15 text-amber-400'
+                    land.status === 'AVAILABLE' ? 'bg-green-400/15 text-green-400' : 'bg-amber-400/15 text-amber-400'
                   }`}>
-                    {land.status}
+                    {land.status?.toLowerCase()}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-white/50 text-xs mb-3">
@@ -137,7 +258,7 @@ export default function LandsPage() {
                   <Button size="sm" variant="ghost" onClick={() => openEdit(land)} className="flex-1 text-white/60 hover:bg-white/5 text-xs gap-1">
                     <Edit2 className="w-3 h-3" /> Edit
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleDelete(land.id)} className="text-red-400/60 hover:bg-red-400/10 hover:text-red-400 text-xs">
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(land.id)} className="text-red-400/60 hover:bg-red-400/10 hover:text-red-400 text-xs">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
@@ -224,11 +345,11 @@ export default function LandsPage() {
                 </div>
               </div>
               <div>
-                <Label className="text-white/70 text-xs mb-1">Assign to Customer</Label>
-                <select value={form.customer_id} onChange={(e) => setForm({ ...form, customer_id: e.target.value })}
+                <Label className="text-white/70 text-xs mb-1">Assign to Investor</Label>
+                <select value={form.investor_id} onChange={(e) => setForm({ ...form, investor_id: e.target.value })}
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                   <option value="" className="bg-[#141410]">— Unassigned —</option>
-                  {customers.map((c) => (
+                  {investors.map((c) => (
                     <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}</option>
                   ))}
                 </select>
@@ -237,6 +358,53 @@ export default function LandsPage() {
                 <Label className="text-white/70 text-xs mb-1">Description</Label>
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3} className="w-full px-3 py-2 rounded-md bg-white/5 border border-white/10 text-white text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#c8851e]" />
+              </div>
+              
+              {/* Google Maps Location Section */}
+              <div className="pt-4 border-t border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-white font-semibold text-sm">Google Maps Location</h3>
+                    <p className="text-white/50 text-[10px]">Stand at the center of the plot and click Use Current Location to pin the exact plot location.</p>
+                  </div>
+                  <Button type="button" onClick={handleUseCurrentLocation} size="sm" className="bg-[#c8851e]/10 text-[#c8851e] hover:bg-[#c8851e]/20 border border-[#c8851e]/30">
+                    <MapPin className="w-3.5 h-3.5 mr-1" /> Use Current Location
+                  </Button>
+                </div>
+                
+                <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label className="text-white/70 text-xs mb-1">Latitude</Label>
+                    <Input value={form.latitude} onChange={(e) => setForm({ ...form, latitude: e.target.value })} placeholder="e.g. 15.9129"
+                      className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
+                  </div>
+                  <div>
+                    <Label className="text-white/70 text-xs mb-1">Longitude</Label>
+                    <Input value={form.longitude} onChange={(e) => setForm({ ...form, longitude: e.target.value })} placeholder="e.g. 79.7400"
+                      className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
+                  </div>
+                </div>
+
+                {form.latitude && form.longitude && (
+                  <div className="rounded-xl overflow-hidden border border-white/10 relative h-[200px] w-full bg-white/5">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      src={`https://maps.google.com/maps?q=${form.latitude},${form.longitude}&z=15&output=embed`}
+                    ></iframe>
+                    <div className="absolute top-2 right-2 flex gap-2">
+                      <Button type="button" size="sm" onClick={copyCoordinates} className="bg-black/60 hover:bg-black/80 text-white backdrop-blur-sm text-[10px] h-7">
+                        Copy
+                      </Button>
+                      <Button type="button" size="sm" onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${form.latitude},${form.longitude}`, '_blank')} className="bg-[#c8851e] hover:bg-[#a96618] text-white text-[10px] h-7">
+                        Open Map
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex gap-3 p-5 border-t border-white/10">
@@ -248,6 +416,15 @@ export default function LandsPage() {
           </div>
         </div>
       )}
+      {/* Delete Confirmation */}
+      <ConfirmModal
+        isOpen={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Delete Land Record"
+        description="Are you sure you want to delete this land record? This action cannot be undone."
+        confirmText="Delete"
+      />
     </div>
   );
 }

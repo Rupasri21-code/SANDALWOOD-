@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import {
-  listCustomers,
-  getCustomer,
-  createCustomer,
-  updateCustomer,
-  deleteCustomer,
+  listInvestors,
+  getInvestor,
+  createInvestor,
+  updateInvestor,
+  deleteInvestor,
   generatePortalCredentials,
-} from '../controllers/customer.controller';
+} from '../controllers/investor.controller';
 import { protect } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/role.middleware';
 
@@ -17,13 +17,13 @@ router.use(protect);
 router.use(authorize('ADMIN'));
 
 router.route('/')
-  .get(listCustomers)
-  .post(createCustomer);
+  .get(listInvestors)
+  .post(createInvestor);
 
 router.route('/:id')
-  .get(getCustomer)
-  .put(updateCustomer)
-  .delete(deleteCustomer);
+  .get(getInvestor)
+  .put(updateInvestor)
+  .delete(deleteInvestor);
 
 router.post('/:id/credentials', generatePortalCredentials);
 

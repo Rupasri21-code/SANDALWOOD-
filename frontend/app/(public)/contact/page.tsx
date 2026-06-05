@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { api } from '@/lib/api';
 
 const contactDetails = [
   { icon: Phone, label: 'Phone', value: '+91 98765 43210', sub: 'Mon–Sat, 9am–6pm IST' },
-  { icon: Mail, label: 'Email', value: 'invest@arborvest.in', sub: 'Reply within 24 hours' },
+  { icon: Mail, label: 'Email', value: 'invest@chandannilayam.com', sub: 'Reply within 24 hours' },
   { icon: MapPin, label: 'Address', value: '42, Green Valley Estate, Mysore Road', sub: 'Bangalore – 560 026, Karnataka' },
   { icon: Clock, label: 'Office Hours', value: 'Monday – Saturday', sub: '9:00 AM – 6:00 PM IST' },
 ];
@@ -27,10 +28,24 @@ export default function ContactPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSubmitted(true);
-    toast.success('Inquiry submitted! Our team will contact you within 24 hours.');
+    try {
+      await api.post('/inquiries', {
+        fullName: form.name,
+        email: form.email,
+        phone: form.phone,
+        investmentInterest: 'General Inquiry',
+        budgetRange: form.investmentBudget || 'N/A',
+        plotSize: 'N/A',
+        message: form.message || '',
+      });
+      setSubmitted(true);
+      toast.success('Inquiry submitted! Our team will contact you within 24 hours.');
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to submit inquiry. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -147,7 +147,7 @@ export default function InvestmentPage() {
               </thead>
               <tbody>
                 {[
-                  { asset: 'Sandalwood (ArborVest)', return: '12–18%', correlation: 'None', tangible: true, esg: true, highlight: true },
+                  { asset: 'Sandalwood (Chandan Nilayam)', return: '12–18%', correlation: 'None', tangible: true, esg: true, highlight: true },
                   { asset: 'Equity Mutual Funds', return: '10–14%', correlation: 'High', tangible: false, esg: false, highlight: false },
                   { asset: 'Real Estate', return: '6–10%', correlation: 'Low', tangible: true, esg: false, highlight: false },
                   { asset: 'Gold', return: '7–9%', correlation: 'Low', tangible: true, esg: false, highlight: false },

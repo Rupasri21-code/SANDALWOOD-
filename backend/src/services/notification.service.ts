@@ -3,7 +3,7 @@ import { sendEmail, sendUpdateNotification, sendDocumentAlert } from './email.se
 
 export const createNotification = async (params: {
   recipientId: string;
-  customerId?: string;
+  investorId?: string;
   title: string;
   message: string;
   type?: 'INFO' | 'SUCCESS' | 'WARNING' | 'ALERT' | 'UPDATE';
@@ -11,13 +11,13 @@ export const createNotification = async (params: {
   sendEmailAlert?: boolean;
 }) => {
   try {
-    const { recipientId, customerId, title, message, type = 'INFO', link, sendEmailAlert = false } = params;
+    const { recipientId, investorId, title, message, type = 'INFO', link, sendEmailAlert = false } = params;
 
     // Create DB notification
     const notification = await db.notification.create({
       data: {
         recipient_id: recipientId,
-        customer_id: customerId,
+        investor_id: investorId,
         title,
         message,
         type,

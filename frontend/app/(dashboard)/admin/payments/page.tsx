@@ -8,9 +8,11 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+
 type Payment = {
   id: string;
-  customer_id: string;
+  investor_id: string;
   amount: number;
   payment_type: string;
   payment_method: string;
@@ -19,32 +21,39 @@ type Payment = {
   status: string;
 };
 
-type Customer = { id: string; full_name: string };
-type Investment = { id: string; contract_number: string; customer_id: string };
+type Investor = { id: string; full_name: string };
+type Investment = { id: string; contract_number: string; investor_id: string };
 
 const defaultForm = {
-  customer_id: '', investment_id: '', amount: '', payment_type: 'installment',
+  investor_id: '', investment_id: '', amount: '', payment_type: 'installment',
   payment_method: 'bank_transfer', transaction_id: '', payment_date: new Date().toISOString().split('T')[0],
   status: 'completed', notes: '',
 };
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [investors, setInvestors] = useState<Investor[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(defaultForm);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
-    const [p, c, inv] = await Promise.all([
-      supabase.from('payments').select('*').order('created_at', { ascending: false }),
-      supabase.from('customers').select('id, full_name'),
-      supabase.from('investments').select('id, contract_number, customer_id'),
-    ]);
-    setPayments(p.data ?? []);
-    setCustomers(c.data ?? []);
-    setInvestments(inv.data ?? []);
+    const token = localStorage.getItem('token');
+    try {
+      const [pRes, cRes, invRes] = await Promise.all([
+        fetch(`${API_URL}/payments`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_URL}/investments`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const [pData, cData, invData] = await Promise.all([pRes.json(), cRes.json(), invRes.json()]);
+      
+      setPayments(pData.success ? pData.data : []);
+      setInvestors(cData.success ? cData.data : []);
+      setInvestments(invData.success ? invData.data : []);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -53,21 +62,76 @@ export default function PaymentsPage() {
   const pending = payments.filter((p) => p.status === 'pending').length;
 
   const handleSave = async () => {
-    if (!form.customer_id || !form.amount) { toast.error('Customer and amount required'); return; }
+    // Validations
+    if (!form.investor_id) {
+      toast.error('Please select an investor');
+      return;
+    }
+
+    const amount = parseFloat(form.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Amount must be a number greater than 0');
+      return;
+    }
+
+    if (!form.payment_date) {
+      toast.error('Payment date is required');
+      return;
+    }
+
+    const pDate = new Date(form.payment_date);
+    if (pDate > new Date()) {
+      toast.error('Payment date cannot be in the future');
+      return;
+    }
+
+    const txId = form.transaction_id?.trim() || '';
+    if (!txId) {
+      toast.error('Transaction ID is required');
+      return;
+    }
+    
+    if (txId.length < 8) {
+      toast.error('Transaction ID must be at least 8 characters long');
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9-_]+$/.test(txId)) {
+      toast.error('Transaction ID can only contain letters, numbers, hyphens, and underscores');
+      return;
+    }
+
     setLoading(true);
-    const { error } = await supabase.from('payments').insert({
-      ...form,
-      amount: parseFloat(form.amount),
-      investment_id: form.investment_id || null,
-    });
-    setLoading(false);
-    if (error) { toast.error('Failed: ' + error.message); return; }
-    toast.success('Payment recorded');
-    setShowModal(false);
-    fetchData();
+    const token = localStorage.getItem('token');
+    
+    try {
+      const res = await fetch(`${API_URL}/payments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          investorId: form.investor_id,
+          investmentId: form.investment_id || undefined,
+          amount: parseFloat(form.amount),
+          paymentType: form.payment_type,
+          paymentMethod: form.payment_method,
+          transactionId: form.transaction_id || `TRX-${Date.now()}`,
+          paymentDate: form.payment_date || undefined,
+          status: form.status.toUpperCase(),
+          notes: form.notes
+        })
+      });
+      if (!res.ok) throw new Error('Create failed');
+      toast.success('Payment recorded');
+      setShowModal(false);
+      fetchData();
+    } catch (err: any) {
+      toast.error('Failed: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const customerName = (id: string) => customers.find((c) => c.id === id)?.full_name || '—';
+  const investorName = (id: string) => investors.find((c) => c.id === id)?.full_name || '—';
 
   return (
     <div className="space-y-6">
@@ -101,7 +165,7 @@ export default function PaymentsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/8 bg-white/2">
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Customer</th>
+                <th className="text-left px-5 py-3 text-white/50 font-medium">Investor</th>
                 <th className="text-left px-5 py-3 text-white/50 font-medium">Amount</th>
                 <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Type</th>
                 <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Method</th>
@@ -115,18 +179,18 @@ export default function PaymentsPage() {
               ) : (
                 payments.map((p) => (
                   <tr key={p.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3 text-white font-medium">{customerName(p.customer_id)}</td>
+                    <td className="px-5 py-3 text-white font-medium">{investorName(p.investor_id)}</td>
                     <td className="px-5 py-3 text-[#e9be55] font-semibold">₹{p.amount.toLocaleString('en-IN')}</td>
                     <td className="px-5 py-3 text-white/60 hidden md:table-cell capitalize">{p.payment_type.replace('_', ' ')}</td>
                     <td className="px-5 py-3 text-white/60 hidden md:table-cell capitalize">{p.payment_method.replace('_', ' ')}</td>
                     <td className="px-5 py-3 text-white/60">{p.payment_date}</td>
                     <td className="px-5 py-3">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        p.status === 'completed' ? 'bg-green-400/15 text-green-400' :
-                        p.status === 'pending' ? 'bg-amber-400/15 text-amber-400' :
+                        p.status === 'COMPLETED' ? 'bg-green-400/15 text-green-400' :
+                        p.status === 'PENDING' ? 'bg-amber-400/15 text-amber-400' :
                         'bg-red-400/15 text-red-400'
                       }`}>
-                        {p.status}
+                        {p.status?.toLowerCase()}
                       </span>
                     </td>
                   </tr>
@@ -146,11 +210,11 @@ export default function PaymentsPage() {
             </div>
             <div className="p-5 space-y-4">
               <div>
-                <Label className="text-white/70 text-xs mb-1">Customer *</Label>
-                <select value={form.customer_id} onChange={(e) => setForm({ ...form, customer_id: e.target.value })}
+                <Label className="text-white/70 text-xs mb-1">Investor *</Label>
+                <select value={form.investor_id} onChange={(e) => setForm({ ...form, investor_id: e.target.value })}
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
-                  <option value="" className="bg-[#141410]">Select customer</option>
-                  {customers.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}</option>)}
+                  <option value="" className="bg-[#141410]">Select investor</option>
+                  {investors.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}</option>)}
                 </select>
               </div>
               <div>
@@ -158,7 +222,7 @@ export default function PaymentsPage() {
                 <select value={form.investment_id} onChange={(e) => setForm({ ...form, investment_id: e.target.value })}
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                   <option value="" className="bg-[#141410]">— None —</option>
-                  {investments.filter((i) => !form.customer_id || i.customer_id === form.customer_id).map((i) => (
+                  {investments.filter((i) => !form.investor_id || i.investor_id === form.investor_id).map((i) => (
                     <option key={i.id} value={i.id} className="bg-[#141410]">{i.contract_number || i.id.slice(0,8)}</option>
                   ))}
                 </select>

@@ -12,7 +12,7 @@ const images = [
   { src: 'https://images.pexels.com/photos/10971334/pexels-photo-10971334.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Plantation', title: 'Morning Mist Over Plantation', location: 'Coorg, Karnataka' },
   { src: 'https://images.pexels.com/photos/1563604/pexels-photo-1563604.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Plantation', title: '10-Year Sandalwood Stand', location: 'Chittoor, Andhra Pradesh' },
   { src: 'https://images.pexels.com/photos/10316168/pexels-photo-10316168.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Land', title: 'River-Adjacent Farmland', location: 'Bellary, Karnataka' },
-  { src: 'https://images.pexels.com/photos/11669262/pexels-photo-11669262.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Nursery', title: 'Certified Sapling Nursery', location: 'ArborVest Farm, Bangalore' },
+  { src: 'https://images.pexels.com/photos/11669262/pexels-photo-11669262.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Nursery', title: 'Certified Sapling Nursery', location: 'Chandan Nilayam Farm, Bangalore' },
   { src: 'https://images.pexels.com/photos/34042459/pexels-photo-34042459.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Infrastructure', title: 'Drip Irrigation Network', location: 'Tumkur, Karnataka' },
   { src: 'https://images.pexels.com/photos/6784121/pexels-photo-6784121.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Harvest', title: 'Sandalwood Log – Grade A', location: 'Hassan, Karnataka' },
   { src: 'https://images.pexels.com/photos/35804970/pexels-photo-35804970.jpeg?auto=compress&cs=tinysrgb&w=800', category: 'Plantation', title: 'Young Saplings — Year 2', location: 'Mandya, Karnataka' },

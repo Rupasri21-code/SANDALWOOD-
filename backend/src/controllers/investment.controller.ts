@@ -5,7 +5,7 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { z } from 'zod';
 
 const createInvestmentSchema = z.object({
-  customerId: z.string().min(1, 'Customer is required'),
+  investorId: z.string().min(1, 'Investor is required'),
   landId: z.string().optional(),
   investmentType: z.string().min(1, 'Investment type is required'),
   amount: z.number().min(0),
@@ -24,9 +24,33 @@ export const listInvestments = async (req: Request, res: Response, next: NextFun
     const investments = await db.investment.findMany({
       orderBy: { investment_date: 'desc' },
       include: {
-        customer: true,
+        investor: true,
         land: true,
       },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, investments, 'Investments retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listMyInvestments = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userReq = req as any; // auth middleware adds user
+    if (!userReq.user) throw new ApiError(401, 'Unauthorized');
+    
+    const profile = await db.investorProfile.findUnique({ where: { user_id: userReq.user.id } });
+    if (!profile) throw new ApiError(404, 'Profile not found');
+
+    const investments = await db.investment.findMany({
+      where: { investor_id: profile.id },
+      orderBy: { investment_date: 'desc' },
+      include: {
+        land: { select: { title: true } }
+      }
     });
 
     res.status(200).json(
@@ -43,7 +67,7 @@ export const getInvestment = async (req: Request, res: Response, next: NextFunct
     const investment = await db.investment.findUnique({
       where: { id },
       include: {
-        customer: true,
+        investor: true,
         land: true,
         payments: true,
       },
@@ -65,14 +89,14 @@ export const createInvestment = async (req: Request, res: Response, next: NextFu
   try {
     const validated = createInvestmentSchema.parse(req.body);
 
-    const customer = await db.customerProfile.findUnique({ where: { id: validated.customerId } });
-    if (!customer) {
-      throw new ApiError(404, 'Customer profile not found');
+    const investor = await db.investorProfile.findUnique({ where: { id: validated.investorId } });
+    if (!investor) {
+      throw new ApiError(404, 'Investor profile not found');
     }
 
     const investment = await db.investment.create({
       data: {
-        customer_id: validated.customerId,
+        investor_id: validated.investorId,
         land_id: validated.landId || null,
         investment_type: validated.investmentType,
         amount: validated.amount,

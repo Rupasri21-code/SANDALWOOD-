@@ -33,7 +33,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { api } from '@/lib/api';
+import SiteVisitSection from '@/components/public/site-visit-section';
 
 // Form validation schema
 const inquirySchema = z.object({
@@ -165,7 +166,7 @@ const progressionImages = [
 
 const testimonials = [
   {
-    text: "Investing in Dornala Sandalwood was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
+    text: "Investing in Chandan Nilayam was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
     name: "Ramesh B.",
     location: "Hyderabad",
     stars: 5,
@@ -232,7 +233,7 @@ export default function HomePage() {
   const onSubmit = async (data: InquiryFormValues) => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/v1/inquiries', {
+      await api.post('/inquiries', {
         fullName: data.fullName,
         email: data.email,
         phone: data.phone,
@@ -246,8 +247,7 @@ export default function HomePage() {
       reset();
     } catch (error: any) {
       console.error(error);
-      toast.success('Your enquiry has been submitted successfully. Our team will contact you within 24 hours.');
-      reset();
+      toast.error(error.response?.data?.message || 'Failed to submit inquiry. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -317,11 +317,11 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="font-serif text-5xl md:text-6xl lg:text-[75px] font-bold tracking-tight text-[#FFFFFF] leading-[1.1] mb-8 font-display"
+            className="font-serif text-5xl md:text-6xl lg:text-[75px] font-bold tracking-tight text-[#0B2F24] leading-[1.1] mb-8 font-display"
             style={{ 
               fontFamily: "'Cormorant Garamond', 'Playfair Display', serif", 
               fontWeight: 700, 
-              textShadow: '0 4px 18px rgba(0, 0, 0, 0.45)' 
+              textShadow: '0 2px 10px rgba(255, 255, 255, 0.5)' 
             }}
           >
             ROOTED IN NATURE.<br />
@@ -330,11 +330,10 @@ export default function HomePage() {
 
           {/* Subheading */}
           <p 
-            className="text-lg md:text-[25px] font-medium max-w-3xl leading-relaxed mb-12" 
+            className="text-lg md:text-[25px] font-medium max-w-3xl leading-relaxed mb-12 text-[#0B2F24]" 
             style={{ 
-              color: '#F3E8D2',
               fontFamily: "'Lora', 'Manrope', serif", 
-              textShadow: '0 3px 12px rgba(0, 0, 0, 0.35)' 
+              textShadow: '0 2px 8px rgba(255, 255, 255, 0.6)' 
             }}
           >
             Premium Sandalwood Plots Near Dornala.<br />
@@ -666,7 +665,7 @@ export default function HomePage() {
                     <div className="w-1.5 h-1.5 rounded-full bg-red-400/80" />
                     <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/80" />
                     <div className="w-1.5 h-1.5 rounded-full bg-green-400/80" />
-                    <span className="text-[7px] text-white/30 ml-2 font-mono tracking-wider">dornalasandalwood.com/portal</span>
+                    <span className="text-[7px] text-white/30 ml-2 font-mono tracking-wider">chandannilayam.com/portal</span>
                   </div>
 
                   {/* Dashboard Screen */}
@@ -675,7 +674,7 @@ export default function HomePage() {
                     <div className="bg-[#0B2F24] py-2 px-4 flex items-center gap-2 border-b border-white/5">
                       <TreePine className="w-4 h-4 text-[#C49A5A]" />
                       <div className="flex flex-col text-left">
-                        <span className="text-[8px] font-black tracking-[0.18em] text-[#C49A5A] uppercase font-serif">Dornala Sandalwood</span>
+                        <span className="text-[8px] font-black tracking-[0.18em] text-[#C49A5A] uppercase font-serif">Chandan Nilayam</span>
                         <span className="text-[5.5px] font-bold text-white/50 tracking-[0.2em] uppercase font-sans">Investor Portal</span>
                       </div>
                     </div>
@@ -758,9 +757,9 @@ export default function HomePage() {
                             </div>
                           </div>
 
-                          <button className="self-center bg-transparent border border-[#12372A]/30 hover:border-[#12372A] text-[#12372A] text-[6.5px] font-bold uppercase tracking-widest py-1 px-4 rounded mt-2 font-sans transition-colors">
+                          <Link href="/portal/plantation" className="text-center self-center bg-transparent border border-[#12372A]/30 hover:border-[#12372A] text-[#12372A] text-[6.5px] font-bold uppercase tracking-widest py-1 px-4 rounded mt-2 font-sans transition-colors">
                             VIEW ALL UPDATES
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -780,7 +779,7 @@ export default function HomePage() {
                       {/* Phone Brand Header */}
                       <div className="flex items-center gap-1.5 border-b border-black/5 pb-1.5 mb-2 text-left">
                         <TreePine className="w-3 h-3 text-[#C49A5A]" />
-                        <span className="text-[6px] font-black uppercase tracking-wider font-serif text-[#12372A]">Dornala Sandalwood</span>
+                        <span className="text-[6px] font-black uppercase tracking-wider font-serif text-[#12372A]">Chandan Nilayam</span>
                       </div>
 
                       {/* My Investment Header */}
@@ -813,9 +812,9 @@ export default function HomePage() {
                     </div>
 
                     {/* Action Button */}
-                    <button className="w-full py-1.5 bg-[#0B2F24] hover:bg-[#12372A] text-white text-[6px] font-bold uppercase tracking-wider rounded-md font-sans border border-white/5 shadow transition-colors">
+                    <Link href="/portal/documents" className="block text-center w-full py-1.5 bg-[#0B2F24] hover:bg-[#12372A] text-white text-[6px] font-bold uppercase tracking-wider rounded-md font-sans border border-white/5 shadow transition-colors">
                       VIEW DOCUMENTS
-                    </button>
+                    </Link>
                   </div>
                 </div>
 
@@ -907,12 +906,14 @@ export default function HomePage() {
 
             {/* Right side visual */}
             <div className="lg:col-span-4 flex justify-center">
-              <div className="w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90">
+              <div className="group relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 hover:shadow-[0_0_30px_rgba(196,154,90,0.35)] transition-shadow duration-300">
                 <img 
-                  src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=600" 
-                  alt="Dornala Sandalwood Plantation Growth" 
-                  className="w-full h-full object-cover" 
+                  src="/investment-growth.jpg" 
+                  alt="Investment Growth and Wealth Creation" 
+                  className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300 ease-in-out" 
                 />
+                {/* Subtle dark overlay to blend naturally */}
+                <div className="absolute inset-0 bg-[#12372A]/10 pointer-events-none transition-opacity duration-300 group-hover:opacity-0" />
               </div>
             </div>
           </div>
@@ -964,11 +965,11 @@ export default function HomePage() {
                   { label: 'Transparent\nProcess', icon: Sprout },
                   { label: 'Long-Term\nWealth', icon: Leaf }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex flex-col items-center text-center group">
-                    <div className="w-10 h-10 rounded-full bg-[#12372A]/5 flex items-center justify-center mb-2.5 text-[#C49A5A]">
-                      <item.icon className="w-5.5 h-5.5 stroke-[1.25] text-[#C49A5A]" />
+                  <div key={idx} className="flex flex-col items-center text-center group p-2 rounded-xl bg-[rgba(255,248,235,0.88)] backdrop-blur-sm border border-[#C49A5A]/30 shadow-sm relative z-20 hover:shadow-md transition-shadow">
+                    <div className="w-8 h-8 rounded-full bg-[#12372A]/5 flex items-center justify-center mb-2 text-[#C49A5A]">
+                      <item.icon className="w-4 h-4 stroke-[1.5] text-[#C49A5A]" />
                     </div>
-                    <span className="text-[9px] font-bold text-[#12372A] leading-tight whitespace-pre-line font-sans">
+                    <span className="text-[8.5px] sm:text-[9px] font-bold text-[#12372A] leading-tight whitespace-pre-line font-sans">
                       {item.label}
                     </span>
                   </div>
@@ -1094,6 +1095,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 10. Visit Our Investment Site */}
+      <SiteVisitSection />
     </div>
   );
 }

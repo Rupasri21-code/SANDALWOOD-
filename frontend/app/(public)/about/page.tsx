@@ -52,12 +52,12 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f0a]/60 to-[#0a1f0a]" />
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-4">About ArborVest</p>
+          <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-4">About Chandan Nilayam</p>
           <h1 className="font-display text-5xl md:text-6xl font-semibold text-white mb-6">
             Two Decades of Growing <span className="text-gradient-gold">Nature's Wealth</span>
           </h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl mx-auto">
-            Founded in 2004, ArborVest pioneered institutionalized sandalwood investment in India,
+            Founded in 2004, Chandan Nilayam pioneered institutionalized sandalwood investment in India,
             combining rigorous agronomy with transparent investor relationships.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function AboutPage() {
             <p className="text-[#6b6b6b] text-base leading-relaxed mb-4">
               In 2004, founder Vijay Kumar recognized that the world's most valuable wood — Indian
               sandalwood — was being underutilized as an investment vehicle. With 50 acres of land
-              in Hassan district and a team of three, he planted ArborVest's first sandalwood grove.
+              in Hassan district and a team of three, he planted Chandan Nilayam's first sandalwood grove.
             </p>
             <p className="text-[#6b6b6b] text-base leading-relaxed mb-4">
               Over two decades, we have expanded to 2,400+ acres across Karnataka, Tamil Nadu, and
@@ -143,7 +143,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-3">Leadership</p>
-            <h2 className="font-display text-4xl font-semibold text-[#1a1a1a]">The Minds Behind ArborVest</h2>
+            <h2 className="font-display text-4xl font-semibold text-[#1a1a1a]">The Minds Behind Chandan Nilayam</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((member, i) => (

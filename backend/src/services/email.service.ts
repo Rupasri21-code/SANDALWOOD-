@@ -79,13 +79,13 @@ export const sendCredentials = async (email: string, fullName: string, passwordP
 };
 
 export const sendInquiryConfirmation = async (email: string, fullName: string) => {
-  const subject = 'Thank you for your interest in Dornala Sandalwood Investments';
+  const subject = 'Thank you for your interest in Chandan Nilayam Investments';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <p>Dear ${fullName},</p>
-      <p>Thank you for showing interest in Dornala Sandalwood Investments.</p>
+      <p>Thank you for showing interest in Chandan Nilayam Investments.</p>
       <p>Our investment advisor will contact you within 24 hours to guide you through our sandalwood plots, investment process, documentation, and long-term growth opportunities.</p>
-      <p>Regards,<br/>Dornala Sandalwood Investments Team</p>
+      <p>Regards,<br/>Chandan Nilayam Investments Team</p>
     </div>
   `;
   return sendEmail(email, subject, html);

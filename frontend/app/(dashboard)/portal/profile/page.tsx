@@ -2,153 +2,130 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { User, Lock, MapPin } from 'lucide-react';
+import { User, MapPin, Briefcase, Phone, Mail, FileText, CheckCircle } from 'lucide-react';
 
-type CustomerDetails = {
-  id: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function PortalProfilePage() {
   const { profile, refreshProfile } = useAuth();
-  const [customer, setCustomer] = useState<CustomerDetails | null>(null);
-  const [nameForm, setNameForm] = useState({ full_name: '', phone: '' });
-  const [pwForm, setPwForm] = useState({ password: '', confirm: '' });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [investorData, setInvestorData] = useState<any>(null);
 
   useEffect(() => {
     const load = async () => {
-      if (!profile) return;
-      const { data } = await supabase.from('customers').select('*').eq('user_id', profile.id).maybeSingle();
-      setCustomer(data);
-      setNameForm({ full_name: profile.full_name || '', phone: profile.phone || '' });
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.data.profile) {
+          setInvestorData(data.data.profile);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
-  }, [profile]);
+    const interval = setInterval(load, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleUpdateProfile = async () => {
-    if (!profile) return;
-    setLoading(true);
-    const { error } = await supabase.from('profiles').update({ ...nameForm, updated_at: new Date().toISOString() }).eq('id', profile.id);
-    setLoading(false);
-    if (error) { toast.error('Failed'); return; }
-    await refreshProfile();
-    toast.success('Profile updated');
-  };
-
-  const handleUpdatePassword = async () => {
-    if (pwForm.password !== pwForm.confirm) { toast.error('Passwords do not match'); return; }
-    if (pwForm.password.length < 6) { toast.error('At least 6 characters required'); return; }
-    setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: pwForm.password });
-    setLoading(false);
-    if (error) { toast.error('Failed'); return; }
-    toast.success('Password updated');
-    setPwForm({ password: '', confirm: '' });
-  };
+  if (loading) {
+    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" /></div>;
+  }
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-8 max-w-5xl mx-auto">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-[#1a1a1a]">My Profile</h1>
-        <p className="text-[#6b6b6b] text-sm mt-1">Manage your account details</p>
+        <h1 className="font-display text-3xl font-semibold text-[#F7F0E4]">Profile</h1>
+        <p className="text-[#B8B8A8] text-sm mt-1">Manage your account information and preferences.</p>
       </div>
 
-      {/* Profile header */}
-      <div className="bg-gradient-to-r from-[#0a1f0a] to-[#1a4a1a] rounded-2xl p-6 text-white flex items-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-[#c8851e]/30 border-2 border-[#c8851e] flex items-center justify-center">
-          <span className="font-display text-2xl font-semibold text-white">{profile?.full_name?.[0] || 'U'}</span>
-        </div>
-        <div>
-          <div className="font-display text-xl font-semibold">{profile?.full_name || 'Investor'}</div>
-          <div className="text-white/60 text-sm">{profile?.email}</div>
-          <div className="text-[#e9be55] text-xs mt-1 capitalize">{profile?.role}</div>
-        </div>
-      </div>
-
-      {/* Account Info */}
-      <div className="bg-white border border-[#e8e0d8] rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-5">
-          <User className="w-5 h-5 text-[#c8851e]" />
-          <h2 className="text-[#1a1a1a] font-semibold">Account Information</h2>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <Label className="text-[#4a4a4a] text-xs mb-1">Email Address</Label>
-            <Input value={profile?.email || ''} disabled className="bg-[#faf6f2] border-[#e8e0d8] text-[#6b6b6b] cursor-not-allowed" />
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <Label className="text-[#4a4a4a] text-xs mb-1">Full Name</Label>
-              <Input value={nameForm.full_name} onChange={(e) => setNameForm({ ...nameForm, full_name: e.target.value })}
-                className="border-[#e8e0d8] focus-visible:ring-[#c8851e]" />
-            </div>
-            <div>
-              <Label className="text-[#4a4a4a] text-xs mb-1">Phone</Label>
-              <Input value={nameForm.phone} onChange={(e) => setNameForm({ ...nameForm, phone: e.target.value })}
-                className="border-[#e8e0d8] focus-visible:ring-[#c8851e]" />
-            </div>
-          </div>
-          <Button onClick={handleUpdateProfile} disabled={loading} className="bg-[#c8851e] hover:bg-[#a96618] text-white">
-            {loading ? 'Saving...' : 'Save Changes'}
-          </Button>
-        </div>
-      </div>
-
-      {/* Customer Details */}
-      {customer && (
-        <div className="bg-white border border-[#e8e0d8] rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-5">
-            <MapPin className="w-5 h-5 text-[#c8851e]" />
-            <h2 className="text-[#1a1a1a] font-semibold">Contact Details</h2>
-          </div>
-          <div className="space-y-3">
-            {[
-              { label: 'Address', value: customer.address },
-              { label: 'City', value: customer.city },
-              { label: 'State', value: customer.state },
-              { label: 'Country', value: customer.country },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-[#e8e0d8] last:border-0">
-                <span className="text-[#6b6b6b] text-sm">{item.label}</span>
-                <span className="text-[#1a1a1a] text-sm font-medium">{item.value || '—'}</span>
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Left Column: Profile Summary & Actions */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Profile Summary Card */}
+          <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-8 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-[#C49A5A]/20 to-transparent"></div>
+            
+            <div className="relative w-24 h-24 mx-auto rounded-full bg-black/40 border-2 border-[#C49A5A] flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(196,154,90,0.15)]">
+              <span className="font-display text-4xl font-bold text-[#C49A5A]">{profile?.full_name?.[0] || 'U'}</span>
+              <div className="absolute -bottom-1 -right-1 bg-[#12372A] border border-[#22C55E] rounded-full p-1 shadow-md">
+                <CheckCircle className="w-3.5 h-3.5 text-[#22C55E]" />
               </div>
-            ))}
+            </div>
+            
+            <h2 className="text-[#F7F0E4] font-display text-xl font-bold">{profile?.full_name || 'Investor'}</h2>
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <span className="text-[10px] px-2.5 py-1 rounded-sm bg-[#C49A5A]/10 text-[#C49A5A] border border-[#C49A5A]/20 font-bold uppercase tracking-widest">
+                Investor ID: {investorData?.id?.substring(0,8).toUpperCase() || 'INV-PENDING'}
+              </span>
+            </div>
+            <p className="text-[#B8B8A8] text-xs mt-4">Verified Member</p>
           </div>
         </div>
-      )}
 
-      {/* Password */}
-      <div className="bg-white border border-[#e8e0d8] rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-5">
-          <Lock className="w-5 h-5 text-[#c8851e]" />
-          <h2 className="text-[#1a1a1a] font-semibold">Change Password</h2>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <Label className="text-[#4a4a4a] text-xs mb-1">New Password</Label>
-            <Input type="password" value={pwForm.password} onChange={(e) => setPwForm({ ...pwForm, password: e.target.value })}
-              className="border-[#e8e0d8] focus-visible:ring-[#c8851e]" />
+        {/* Right Column: Information Sections */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Personal Information */}
+          <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
+              <User className="w-5 h-5 text-[#C49A5A]" />
+              <h2 className="text-[#F7F0E4] font-semibold text-base">Personal Information</h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-y-6 gap-x-8">
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">Full Name</label>
+                <div className="text-[#F7F0E4] font-medium text-sm">{profile?.full_name || '—'}</div>
+              </div>
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">Date of Birth</label>
+                <div className="text-[#F7F0E4] font-medium text-sm">{investorData?.dob ? new Date(investorData.dob).toLocaleDateString() : 'Not provided'}</div>
+              </div>
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">PAN Number</label>
+                <div className="text-[#F7F0E4] font-medium text-sm font-mono tracking-wider">{investorData?.pan_number || 'Not provided'}</div>
+              </div>
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">{investorData?.id_type || 'Aadhaar'} Number</label>
+                <div className="text-[#F7F0E4] font-medium text-sm font-mono tracking-wider">{investorData?.id_number || 'Not provided'}</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <Label className="text-[#4a4a4a] text-xs mb-1">Confirm Password</Label>
-            <Input type="password" value={pwForm.confirm} onChange={(e) => setPwForm({ ...pwForm, confirm: e.target.value })}
-              className="border-[#e8e0d8] focus-visible:ring-[#c8851e]" />
+
+          {/* Contact Information */}
+          <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
+              <Phone className="w-5 h-5 text-[#C49A5A]" />
+              <h2 className="text-[#F7F0E4] font-semibold text-base">Contact Information</h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-y-6 gap-x-8">
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">Email Address</label>
+                <div className="text-[#F7F0E4] font-medium text-sm flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-[#B8B8A8]" /> {profile?.email || '—'}
+                </div>
+              </div>
+              <div>
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">Phone Number</label>
+                <div className="text-[#F7F0E4] font-medium text-sm flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-[#B8B8A8]" /> {investorData?.phone || 'Not provided'}
+                </div>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-[#B8B8A8] text-[10px] uppercase tracking-widest mb-1 block">Residential Address</label>
+                <div className="text-[#F7F0E4] font-medium text-sm flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-[#B8B8A8] shrink-0 mt-0.5" /> 
+                  {[investorData?.address_line1, investorData?.village, investorData?.district, investorData?.state, investorData?.country].filter(Boolean).join(', ') || 'Address not updated'}
+                </div>
+              </div>
+            </div>
           </div>
-          <Button onClick={handleUpdatePassword} disabled={loading} className="bg-[#c8851e] hover:bg-[#a96618] text-white">
-            {loading ? 'Updating...' : 'Update Password'}
-          </Button>
         </div>
       </div>
     </div>

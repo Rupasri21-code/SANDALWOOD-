@@ -23,9 +23,37 @@ export const listCrops = async (req: Request, res: Response, next: NextFunction)
       orderBy: { created_at: 'desc' },
       include: {
         land: {
-          include: { customer: true },
+          include: { investor: true },
         },
       },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, crops, 'Crops retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listMyCrops = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userReq = req as any;
+    if (!userReq.user) throw new ApiError(401, 'Unauthorized');
+    
+    const profile = await db.investorProfile.findUnique({ where: { user_id: userReq.user.id } });
+    if (!profile) throw new ApiError(404, 'Profile not found');
+
+    const crops = await db.crop.findMany({
+      where: {
+        land: {
+          investor_id: profile.id
+        }
+      },
+      orderBy: { created_at: 'desc' },
+      include: {
+        land: { select: { title: true } }
+      }
     });
 
     res.status(200).json(
@@ -43,7 +71,7 @@ export const getCrop = async (req: Request, res: Response, next: NextFunction) =
       where: { id },
       include: {
         land: {
-          include: { customer: true },
+          include: { investor: true },
         },
         plantationUpdates: {
           orderBy: { update_date: 'desc' },

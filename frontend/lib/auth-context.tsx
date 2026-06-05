@@ -1,29 +1,33 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from './supabase';
 
 type Profile = {
   id: string;
   email: string;
   full_name: string;
-  role: 'admin' | 'customer';
-  phone: string;
-  avatar_url: string;
+  role: 'admin' | 'investor';
+  phone?: string;
+  avatar_url?: string;
 };
+
+// Mocking Supabase User/Session types to prevent breaking frontend components
+type User = { id: string; email: string };
+type Session = { access_token: string; user: User };
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null, role?: string }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -31,52 +35,86 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-    setProfile(data as Profile | null);
+  const fetchProfile = async (token: string) => {
+    try {
+      const res = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        const userData = data.data;
+        const fakeUser = { id: userData.id, email: userData.email };
+        setUser(fakeUser);
+        setSession({ access_token: token, user: fakeUser });
+        setProfile({
+          id: userData.id,
+          email: userData.email,
+          full_name: userData.profile?.full_name || 'Admin',
+          role: userData.role.toLowerCase() as 'admin' | 'investor',
+          phone: userData.profile?.phone,
+        });
+      } else {
+        throw new Error('Invalid token');
+      }
+    } catch (err) {
+      console.error('Failed to fetch profile', err);
+      signOut();
+    }
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    const token = localStorage.getItem('token');
+    if (token) await fetchProfile(token);
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        (async () => {
-          await fetchProfile(session.user.id);
-        })();
-      } else {
-        setProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchProfile(token).finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error as Error | null };
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: email, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      const token = data.data.token;
+      localStorage.setItem('token', token);
+      
+      const fakeUser = { id: data.data.user.id, email: data.data.user.email };
+      setUser(fakeUser);
+      setSession({ access_token: token, user: fakeUser });
+      setProfile({
+        id: data.data.user.id,
+        email: data.data.user.email,
+        full_name: data.data.user.fullName,
+        role: data.data.user.role.toLowerCase() as 'admin' | 'investor',
+      });
+      
+      return { error: null, role: data.data.user.role.toLowerCase() };
+    } catch (err: any) {
+      return { error: err };
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('token');
+    setUser(null);
+    setSession(null);
+    setProfile(null);
   };
 
   return (

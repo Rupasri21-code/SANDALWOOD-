@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listUpdates,
+  listMyUpdates,
   getUpdate,
   createUpdate,
   deleteUpdate,
@@ -13,8 +14,10 @@ const router = Router();
 
 router.use(protect);
 
+router.get('/me', listMyUpdates);
+
 router.route('/')
-  .get(listUpdates)
+  .get(authorize('ADMIN'), listUpdates)
   .post(authorize('ADMIN'), upload.array('images', 3), createUpdate);
 
 router.route('/:id')

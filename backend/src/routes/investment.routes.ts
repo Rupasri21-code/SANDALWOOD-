@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listInvestments,
+  listMyInvestments,
   getInvestment,
   createInvestment,
   updateInvestment,
@@ -13,8 +14,10 @@ const router = Router();
 
 router.use(protect);
 
+router.get('/me', listMyInvestments);
+
 router.route('/')
-  .get(listInvestments)
+  .get(authorize('ADMIN'), listInvestments)
   .post(authorize('ADMIN'), createInvestment);
 
 router.route('/:id')

@@ -16,7 +16,7 @@ async function main() {
   await prisma.plantationUpdate.deleteMany({});
   await prisma.crop.deleteMany({});
   await prisma.landPlot.deleteMany({});
-  await prisma.customerProfile.deleteMany({});
+  await prisma.investorProfile.deleteMany({});
   await prisma.testimonial.deleteMany({});
   await prisma.galleryItem.deleteMany({});
   await prisma.inquiry.deleteMany({});
@@ -29,7 +29,8 @@ async function main() {
   // 3. Create Users
   const adminUser = await prisma.user.create({
     data: {
-      email: 'admin@arborvest.in',
+      email: 'admin@sandalwood.com',
+      username: 'admin',
       password: adminPasswordHash,
       role: 'ADMIN',
     },
@@ -38,6 +39,7 @@ async function main() {
   const customerUser = await prisma.user.create({
     data: {
       email: 'investor@gmail.com',
+      username: 'investor',
       password: customerPasswordHash,
       role: 'CUSTOMER',
     },
@@ -46,14 +48,16 @@ async function main() {
   console.log('✅ Users created.');
 
   // 4. Create Admin and Customer Profiles
-  const adminProfile = await prisma.customerProfile.create({
+  const adminProfile = await prisma.investorProfile.create({
     data: {
       user_id: adminUser.id,
-      full_name: 'ArborVest Administrator',
-      email: 'admin@arborvest.in',
+      first_name: 'Chandan',
+      last_name: 'Nilayam',
+      full_name: 'Chandan Nilayam Administrator',
+      email: 'admin@sandalwood.com',
       phone: '+91 98765 43210',
-      address: '42, Green Valley Estate, Mysore Road',
-      city: 'Bangalore',
+      address_line1: '42, Green Valley Estate, Mysore Road',
+      district: 'Bangalore',
       state: 'Karnataka',
       country: 'India',
       id_type: 'PAN',
@@ -63,14 +67,16 @@ async function main() {
     },
   });
 
-  const customerProfile = await prisma.customerProfile.create({
+  const investorProfile = await prisma.investorProfile.create({
     data: {
       user_id: customerUser.id,
+      first_name: 'Rajesh',
+      last_name: 'Patel',
       full_name: 'Rajesh Patel',
       email: 'investor@gmail.com',
       phone: '+91 98989 89898',
-      address: '702, Highrise Apartments, SG Road',
-      city: 'Ahmedabad',
+      address_line1: '702, Highrise Apartments, SG Road',
+      district: 'Ahmedabad',
       state: 'Gujarat',
       country: 'India',
       id_type: 'AADHAAR',
@@ -85,7 +91,7 @@ async function main() {
   // 5. Create Premium Land Plots (Dornala area)
   const plot1 = await prisma.landPlot.create({
     data: {
-      customer_id: customerProfile.id,
+      investor_id: investorProfile.id,
       title: 'Dornala Valley Phase 1 - Plot 405',
       description: 'Premium red-soil plot high in organic matter, ideal for Santalum album development. Features drip irrigation and security access.',
       location: 'Dornala, Near Srisailam Highway',
@@ -146,7 +152,7 @@ async function main() {
   // 7. Create Investment Contract
   const investment = await prisma.investment.create({
     data: {
-      customer_id: customerProfile.id,
+      investor_id: investorProfile.id,
       land_id: plot1.id,
       investment_type: 'Sandalwood Managed Plot',
       amount: 1200000,
@@ -167,7 +173,7 @@ async function main() {
   await prisma.payment.create({
     data: {
       investment_id: investment.id,
-      customer_id: customerProfile.id,
+      investor_id: investorProfile.id,
       amount: 1200000,
       currency: 'INR',
       payment_type: 'Down Payment',
@@ -201,7 +207,7 @@ async function main() {
   await prisma.notification.create({
     data: {
       recipient_id: customerUser.id,
-      customer_id: customerProfile.id,
+      investor_id: investorProfile.id,
       title: 'New Plantation Growth Update',
       message: 'Chief Agronomist has posted the quarterly growth report for Plot 405. Average height is now 1.8m!',
       type: 'UPDATE',

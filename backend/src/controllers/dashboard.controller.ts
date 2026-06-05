@@ -7,17 +7,17 @@ import { ApiError } from '../utils/ApiError';
 export const getAdminStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const [
-      customersCount,
+      investorsCount,
       plotsCount,
       cropsCount,
       inquiriesCount,
       investments,
       recentPayments,
-      recentCustomers,
+      recentInvestors,
       inquiryDistribution,
       monthlyInvestments,
     ] = await Promise.all([
-      db.customerProfile.count({ where: { status: 'ACTIVE' } }),
+      db.investorProfile.count({ where: { status: 'ACTIVE' } }),
       db.landPlot.count(),
       db.crop.count(),
       db.inquiry.count({ where: { status: 'NEW' } }),
@@ -25,9 +25,9 @@ export const getAdminStats = async (req: AuthRequest, res: Response, next: NextF
       db.payment.findMany({
         orderBy: { payment_date: 'desc' },
         take: 5,
-        include: { customer: { select: { full_name: true } } },
+        include: { investor: { select: { full_name: true } } },
       }),
-      db.customerProfile.findMany({
+      db.investorProfile.findMany({
         orderBy: { created_at: 'desc' },
         take: 5,
       }),
@@ -60,14 +60,14 @@ export const getAdminStats = async (req: AuthRequest, res: Response, next: NextF
     res.status(200).json(
       new ApiResponse(200, {
         summary: {
-          totalCustomers: customersCount,
+          totalInvestors: investorsCount,
           totalPlots: plotsCount,
           totalCrops: cropsCount,
           pendingInquiries: inquiriesCount,
           totalAum,
           activeInvestments: activeInvestmentsCount,
         },
-        recentCustomers,
+        recentInvestors,
         recentPayments,
         charts: {
           paymentsOverTime: chartPayments,
@@ -80,18 +80,18 @@ export const getAdminStats = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
-export const getCustomerStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const getInvestorStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
       throw new ApiError(401, 'Unauthorized');
     }
 
-    const customer = await db.customerProfile.findUnique({
-      where: { email: req.user.email },
+    const investor = await db.investorProfile.findUnique({
+      where: { user_id: req.user.id },
     });
 
-    if (!customer) {
-      throw new ApiError(404, 'Customer profile associated with this account not found');
+    if (!investor) {
+      throw new ApiError(404, 'Investor profile associated with this account not found');
     }
 
     const [
@@ -103,23 +103,23 @@ export const getCustomerStats = async (req: AuthRequest, res: Response, next: Ne
       recentNotifications,
     ] = await Promise.all([
       db.landPlot.findMany({
-        where: { customer_id: customer.id },
+        where: { investor_id: investor.id },
         include: { crops: true },
       }),
       db.investment.findMany({
-        where: { customer_id: customer.id },
+        where: { investor_id: investor.id },
         orderBy: { investment_date: 'desc' },
       }),
       db.payment.findMany({
-        where: { customer_id: customer.id },
+        where: { investor_id: investor.id },
         orderBy: { payment_date: 'desc' },
         take: 5,
       }),
       db.document.count({
-        where: { customer_id: customer.id },
+        where: { investor_id: investor.id },
       }),
       db.plantationUpdate.findMany({
-        where: { land: { customer_id: customer.id } },
+        where: { land: { investor_id: investor.id } },
         orderBy: { update_date: 'desc' },
         take: 4,
       }),
@@ -138,7 +138,7 @@ export const getCustomerStats = async (req: AuthRequest, res: Response, next: Ne
 
     res.status(200).json(
       new ApiResponse(200, {
-        customer,
+        investor,
         summary: {
           totalPlots: plots.length,
           totalTrees,
@@ -150,7 +150,7 @@ export const getCustomerStats = async (req: AuthRequest, res: Response, next: Ne
         recentUpdates,
         recentNotifications,
         recentPayments: payments,
-      }, 'Customer portal overview loaded')
+      }, 'Investor portal overview loaded')
     );
   } catch (error) {
     next(error);

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listPayments,
+  listMyPayments,
   getPayment,
   createPayment,
   updatePayment,
@@ -13,8 +14,10 @@ const router = Router();
 
 router.use(protect);
 
+router.get('/me', listMyPayments);
+
 router.route('/')
-  .get(listPayments)
+  .get(authorize('ADMIN'), listPayments)
   .post(authorize('ADMIN'), createPayment);
 
 router.route('/:id')

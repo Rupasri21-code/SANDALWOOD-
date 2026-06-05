@@ -17,8 +17,11 @@ const envSchema = z.object({
   SMTP_PORT: z.string().transform((val) => parseInt(val, 10)).default('587'),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
-  SMTP_FROM: z.string().default('Arbor Vest Investments <noreply@arborvest.in>'),
+  SMTP_FROM: z.string().default('Chandan Nilayam Investments <noreply@chandannilayam.com>'),
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
+  TWILIO_ACCOUNT_SID: z.string().optional(),
+  TWILIO_AUTH_TOKEN: z.string().optional(),
+  TWILIO_WHATSAPP_NUMBER: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

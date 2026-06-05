@@ -6,12 +6,12 @@ import { z } from 'zod';
 
 const createPaymentSchema = z.object({
   investmentId: z.string().optional(),
-  customerId: z.string().min(1, 'Customer is required'),
+  investorId: z.string().min(1, 'Investor is required'),
   amount: z.number().min(0),
   currency: z.string().default('INR'),
   paymentType: z.string().min(1, 'Payment type is required'),
   paymentMethod: z.string().min(1, 'Payment method is required'),
-  transactionId: z.string().min(1, 'Transaction ID is required'),
+  transactionId: z.string().min(8, 'Transaction ID must be at least 8 characters').regex(/^[a-zA-Z0-9-_]+$/, 'Transaction ID can only contain letters, numbers, hyphens, and underscores'),
   paymentDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
   status: z.enum(['COMPLETED', 'PENDING', 'FAILED', 'REFUNDED']).default('PENDING'),
   receiptUrl: z.string().optional(),
@@ -23,9 +23,30 @@ export const listPayments = async (req: Request, res: Response, next: NextFuncti
     const payments = await db.payment.findMany({
       orderBy: { payment_date: 'desc' },
       include: {
-        customer: true,
+        investor: true,
         investment: true,
       },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, payments, 'Payments retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listMyPayments = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userReq = req as any;
+    if (!userReq.user) throw new ApiError(401, 'Unauthorized');
+    
+    const profile = await db.investorProfile.findUnique({ where: { user_id: userReq.user.id } });
+    if (!profile) throw new ApiError(404, 'Profile not found');
+
+    const payments = await db.payment.findMany({
+      where: { investor_id: profile.id },
+      orderBy: { payment_date: 'desc' },
     });
 
     res.status(200).json(
@@ -42,7 +63,7 @@ export const getPayment = async (req: Request, res: Response, next: NextFunction
     const payment = await db.payment.findUnique({
       where: { id },
       include: {
-        customer: true,
+        investor: true,
         investment: true,
       },
     });
@@ -63,14 +84,14 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
   try {
     const validated = createPaymentSchema.parse(req.body);
 
-    const customer = await db.customerProfile.findUnique({ where: { id: validated.customerId } });
-    if (!customer) {
-      throw new ApiError(404, 'Customer profile not found');
+    const investor = await db.investorProfile.findUnique({ where: { id: validated.investorId } });
+    if (!investor) {
+      throw new ApiError(404, 'Investor profile not found');
     }
 
     const payment = await db.payment.create({
       data: {
-        customer_id: validated.customerId,
+        investor_id: validated.investorId,
         investment_id: validated.investmentId || null,
         amount: validated.amount,
         currency: validated.currency,

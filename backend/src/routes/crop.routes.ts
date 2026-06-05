@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listCrops,
+  listMyCrops,
   getCrop,
   createCrop,
   updateCrop,
@@ -13,8 +14,10 @@ const router = Router();
 
 router.use(protect);
 
+router.get('/me', listMyCrops);
+
 router.route('/')
-  .get(listCrops)
+  .get(authorize('ADMIN'), listCrops)
   .post(authorize('ADMIN'), createCrop);
 
 router.route('/:id')

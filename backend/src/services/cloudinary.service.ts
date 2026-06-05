@@ -2,16 +2,46 @@ import cloudinary from '../config/cloudinary';
 import fs from 'fs';
 import { env } from '../config/env';
 
-export const uploadToCloudinary = async (filePath: string, folder: string = 'arborvest'): Promise<string> => {
+export const uploadToCloudinary = async (filePath: string, folder: string = 'chandannilayam', mimetype?: string) => {
   try {
     if (env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET) {
+      let resource_type: 'image' | 'video' | 'raw' | 'auto' = 'auto';
+      
+      if (mimetype) {
+        if (mimetype.startsWith('image/')) {
+          resource_type = 'image';
+        } else if (mimetype.startsWith('video/')) {
+          resource_type = 'video';
+        } else if (mimetype === 'application/pdf' || mimetype.startsWith('application/') || mimetype.startsWith('text/')) {
+          resource_type = 'raw';
+        }
+      } else {
+        const ext = filePath.split('.').pop()?.toLowerCase() || '';
+        if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'].includes(ext)) {
+          resource_type = 'raw';
+        } else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
+          resource_type = 'video';
+        } else if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+          resource_type = 'image';
+        }
+      }
+
       const result = await cloudinary.uploader.upload(filePath, {
         folder,
-        resource_type: 'auto',
+        resource_type,
       });
       // Delete local temporary file
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      return result.secure_url;
+      return {
+        url: result.secure_url,
+        fileUrl: result.secure_url,
+        secureUrl: result.secure_url,
+        publicId: result.public_id,
+        resourceType: result.resource_type,
+        mimeType: result.format,
+        fileName: result.original_filename,
+        fileSize: result.bytes
+      };
     }
 
     // Mock fallback: Simulate an uploaded URL and return a placeholder
@@ -29,7 +59,16 @@ export const uploadToCloudinary = async (filePath: string, folder: string = 'arb
       mockUrl = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=600';
     }
     
-    return mockUrl;
+    return {
+      url: mockUrl,
+      fileUrl: mockUrl,
+      secureUrl: mockUrl,
+      publicId: 'mock_public_id',
+      resourceType: 'auto',
+      mimeType: ext || 'unknown',
+      fileName: fileName || 'mock_file',
+      fileSize: 1024
+    };
   } catch (error) {
     console.error('❌ Failed to upload to Cloudinary:', error);
     // Delete local temporary file on error

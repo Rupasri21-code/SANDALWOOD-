@@ -7,7 +7,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: string;
     email: string;
-    role: 'ADMIN' | 'CUSTOMER';
+    role: 'ADMIN' | 'INVESTOR';
   };
 }
 
@@ -35,7 +35,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
         throw new ApiError(401, 'User associated with token no longer exists');
       }
 
-      req.user = user as { id: string; email: string; role: 'ADMIN' | 'CUSTOMER' };
+      req.user = user as { id: string; email: string; role: 'ADMIN' | 'INVESTOR' };
       next();
     } catch (err) {
       throw new ApiError(401, 'Not authorized, invalid or expired token');

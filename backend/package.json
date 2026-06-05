@@ -1,7 +1,7 @@
 {
-  "name": "arborvest-backend",
+  "name": "chandannilayam-backend",
   "version": "1.0.0",
-  "description": "Backend API server for Arbor Vest Sandalwood Investments",
+  "description": "Backend API server for Chandan Nilayam Sandalwood Investments",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -24,6 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",
+    "twilio": "^6.0.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {

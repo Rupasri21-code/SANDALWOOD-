@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 type Crop = {
   id: string;
@@ -48,14 +51,22 @@ export default function CropsPage() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedCropId, setSelectedCropId] = useState<string | null>(null);
   const [updateForm, setUpdateForm] = useState({ title: '', description: '', update_type: 'general', update_date: new Date().toISOString().split('T')[0] });
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const fetchData = async () => {
-    const [c, l] = await Promise.all([
-      supabase.from('crops').select('*').order('created_at', { ascending: false }),
-      supabase.from('lands').select('id, title'),
-    ]);
-    setCrops(c.data ?? []);
-    setLands(l.data ?? []);
+    const token = localStorage.getItem('token');
+    try {
+      const [cropsRes, landsRes] = await Promise.all([
+        fetch(`${API_URL}/crops`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_URL}/lands`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const [cropsData, landsData] = await Promise.all([cropsRes.json(), landsRes.json()]);
+      
+      setCrops(cropsData.success ? cropsData.data : []);
+      setLands(landsData.success ? landsData.data : []);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -63,34 +74,119 @@ export default function CropsPage() {
   const filtered = crops.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()));
 
   const handleSave = async () => {
-    if (!form.land_id) { toast.error('Please select a land'); return; }
+    // Validations
+    if (!form.land_id) {
+      toast.error('Please select a land');
+      return;
+    }
+    if (!form.variety || !form.variety.trim()) {
+      toast.error('Variety is required');
+      return;
+    }
+    
+    if (!form.planted_date) {
+      toast.error('Planted date is required');
+      return;
+    }
+    
+    const planted = new Date(form.planted_date);
+    if (planted > new Date()) {
+      toast.error('Planted date cannot be in the future');
+      return;
+    }
+
+    const total = parseInt(form.total_plants);
+    if (isNaN(total) || total <= 0) {
+      toast.error('Total Plants must be a whole number greater than 0');
+      return;
+    }
+
+    const surviving = parseInt(form.surviving_plants);
+    if (form.surviving_plants !== '' && (isNaN(surviving) || surviving < 0)) {
+      toast.error('Surviving Plants must be a valid positive number');
+      return;
+    }
+    
+    if (surviving > total) {
+      toast.error('Surviving Plants cannot exceed Total Plants');
+      return;
+    }
+
     setLoading(true);
+    const token = localStorage.getItem('token');
+    
     const payload = {
-      ...form,
-      total_plants: parseInt(form.total_plants) || 0,
-      surviving_plants: parseInt(form.surviving_plants) || 0,
-      height_avg: parseFloat(form.height_avg) || 0,
+      landId: form.land_id,
+      name: form.name,
+      variety: form.variety,
+      plantedDate: form.planted_date ? form.planted_date : undefined,
+      totalPlants: parseInt(form.total_plants) || 0,
+      survivingPlants: parseInt(form.surviving_plants) || 0,
+      growthStage: form.growth_stage.toUpperCase(),
+      healthStatus: form.health_status.toUpperCase(),
+      heightAvg: parseFloat(form.height_avg) || 0,
+      notes: form.notes
     };
-    const { error } = editId
-      ? await supabase.from('crops').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', editId)
-      : await supabase.from('crops').insert(payload);
-    setLoading(false);
-    if (error) { toast.error('Failed: ' + error.message); return; }
-    toast.success(editId ? 'Updated' : 'Created');
-    setShowModal(false);
-    fetchData();
+    
+    try {
+      if (editId) {
+        const res = await fetch(`${API_URL}/crops/${editId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Update failed');
+        toast.success('Updated');
+      } else {
+        const res = await fetch(`${API_URL}/crops`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Create failed');
+        toast.success('Created');
+      }
+      setShowModal(false);
+      fetchData();
+    } catch(err: any) {
+      toast.error('Failed: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddUpdate = async () => {
     if (!updateForm.title || !selectedCropId) return;
-    const { error } = await supabase.from('plantation_updates').insert({
-      ...updateForm,
-      crop_id: selectedCropId,
-      land_id: crops.find((c) => c.id === selectedCropId)?.land_id,
-    });
-    if (error) { toast.error('Failed'); return; }
-    toast.success('Update added');
-    setShowUpdateModal(false);
+    const token = localStorage.getItem('token');
+    const land_id = crops.find((c) => c.id === selectedCropId)?.land_id;
+    
+    try {
+      const res = await fetch(`${API_URL}/updates`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          landId: land_id,
+          cropId: selectedCropId,
+          title: updateForm.title,
+          description: updateForm.description,
+          updateType: updateForm.update_type.toUpperCase(),
+          updateDate: updateForm.update_date
+        })
+      });
+      if (!res.ok) throw new Error('Failed');
+      toast.success('Update added');
+      setShowUpdateModal(false);
+    } catch(err) {
+      toast.error('Failed');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirmDeleteId) return;
+    const token = localStorage.getItem('token');
+    await fetch(`${API_URL}/crops/${confirmDeleteId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    toast.success('Deleted'); fetchData();
+    setConfirmDeleteId(null);
   };
 
   return (
@@ -142,8 +238,8 @@ export default function CropsPage() {
                     {lands.find((l) => l.id === crop.land_id)?.title || '—'}
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${stageColors[crop.growth_stage] || 'bg-white/10 text-white/60'}`}>
-                      {crop.growth_stage.replace('_', ' ')}
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${stageColors[crop.growth_stage?.toLowerCase()] || 'bg-white/10 text-white/60'}`}>
+                      {crop.growth_stage?.replace('_', ' ').toLowerCase()}
                     </span>
                   </td>
                   <td className="px-5 py-3 text-white/60 hidden md:table-cell">
@@ -151,12 +247,12 @@ export default function CropsPage() {
                   </td>
                   <td className="px-5 py-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      crop.health_status === 'excellent' ? 'bg-emerald-400/15 text-emerald-400' :
-                      crop.health_status === 'good' ? 'bg-green-400/15 text-green-400' :
-                      crop.health_status === 'fair' ? 'bg-amber-400/15 text-amber-400' :
+                      crop.health_status === 'EXCELLENT' ? 'bg-emerald-400/15 text-emerald-400' :
+                      crop.health_status === 'GOOD' ? 'bg-green-400/15 text-green-400' :
+                      crop.health_status === 'FAIR' ? 'bg-amber-400/15 text-amber-400' :
                       'bg-red-400/15 text-red-400'
                     }`}>
-                      {crop.health_status}
+                      {crop.health_status?.toLowerCase()}
                     </span>
                   </td>
                   <td className="px-5 py-3">
@@ -171,11 +267,7 @@ export default function CropsPage() {
                       }} className="text-white/40 hover:text-[#e9be55] p-1">
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
-                      <button onClick={async () => {
-                        if (!confirm('Delete?')) return;
-                        await supabase.from('crops').delete().eq('id', crop.id);
-                        toast.success('Deleted'); fetchData();
-                      }} className="text-white/40 hover:text-red-400 p-1">
+                      <button onClick={() => setConfirmDeleteId(crop.id)} className="text-white/40 hover:text-red-400 p-1">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -306,6 +398,16 @@ export default function CropsPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation */}
+      <ConfirmModal
+        isOpen={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Delete Crop"
+        description="Are you sure you want to delete this crop record? This action cannot be undone."
+        confirmText="Delete"
+      />
     </div>
   );
 }

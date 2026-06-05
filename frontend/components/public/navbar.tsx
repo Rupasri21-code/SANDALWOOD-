@@ -53,7 +53,7 @@ export default function Navbar() {
 
         {/* Button */}
         <div className="hidden lg:flex items-center gap-4">
-          <a href="#inquiry">
+          <a href="#investor-inquiry">
             <Button className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-6 py-2.5 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
               Investor Inquiry <Leaf className="w-3.5 h-3.5" />
             </Button>
@@ -79,7 +79,7 @@ export default function Navbar() {
           <a href="#portal" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Portal</a>
           <Link href="/login" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Login</Link>
           <a href="#gallery" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Gallery</a>
-          <a href="#inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">
+          <a href="#investor-inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">
             <Button className="w-full bg-[#C8851E] text-white py-3 rounded-xl font-bold uppercase text-xs tracking-wider">
               Investor Inquiry
             </Button>

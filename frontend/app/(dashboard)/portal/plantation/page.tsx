@@ -2,199 +2,212 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
-import { Sprout, Calendar, Activity } from 'lucide-react';
+import { Sprout, Activity, ArrowUpRight, CheckCircle, Leaf, FileText, Image as ImageIcon, Download } from 'lucide-react';
 
-type Crop = {
-  id: string;
-  name: string;
-  variety: string;
-  growth_stage: string;
-  health_status: string;
-  total_plants: number;
-  surviving_plants: number;
-  planted_date: string | null;
-  height_avg: number;
-  land_id: string;
-  landTitle?: string;
-};
-
-type Update = {
-  id: string;
-  title: string;
-  description: string;
-  update_type: string;
-  update_date: string;
-  images: string[];
-};
-
-const stageLabels: Record<string, string> = {
-  seedling: 'Seedling', sapling: 'Sapling', juvenile: 'Juvenile', mature: 'Mature', harvest_ready: 'Harvest Ready'
-};
-
-const stageProgress: Record<string, number> = {
-  seedling: 10, sapling: 30, juvenile: 55, mature: 80, harvest_ready: 100
-};
-
-const stageColors: Record<string, string> = {
-  seedling: 'bg-yellow-400', sapling: 'bg-lime-400', juvenile: 'bg-green-500', mature: 'bg-emerald-500', harvest_ready: 'bg-[#c8851e]',
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function PortalPlantationPage() {
   const { profile } = useAuth();
-  const [crops, setCrops] = useState<Crop[]>([]);
-  const [updates, setUpdates] = useState<Update[]>([]);
   const [loading, setLoading] = useState(true);
+  const [crops, setCrops] = useState<any[]>([]);
+  const [updates, setUpdates] = useState<any[]>([]);
 
   useEffect(() => {
     const load = async () => {
-      if (!profile) return;
-      const { data: cust } = await supabase.from('customers').select('id').eq('user_id', profile.id).maybeSingle();
-      if (!cust) { setLoading(false); return; }
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const res1 = await fetch(`${API_URL}/crops/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data1 = await res1.json();
+        if (data1.success) setCrops(data1.data);
+        
+        const res2 = await fetch(`${API_URL}/updates/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data2 = await res2.json();
+        if (data2.success) setUpdates(data2.data);
 
-      const { data: lands } = await supabase.from('lands').select('id, title').eq('customer_id', cust.id);
-      if (!lands?.length) { setLoading(false); return; }
-
-      const landIds = lands.map((l) => l.id);
-      const [cropData, updateData] = await Promise.all([
-        supabase.from('crops').select('*').in('land_id', landIds),
-        supabase.from('plantation_updates').select('*').in('land_id', landIds).order('update_date', { ascending: false }).limit(20),
-      ]);
-
-      const enriched = (cropData.data ?? []).map((c) => ({
-        ...c,
-        landTitle: lands.find((l) => l.id === c.land_id)?.title,
-      }));
-
-      setCrops(enriched);
-      setUpdates(updateData.data ?? []);
-      setLoading(false);
+      } catch (err) {
+        console.error('Failed to load plantation data:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
-  }, [profile]);
+    const interval = setInterval(load, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#c8851e] border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" /></div>;
   }
 
-  const typeColors: Record<string, string> = {
-    general: 'bg-blue-100 text-blue-700', maintenance: 'bg-amber-100 text-amber-700',
-    growth: 'bg-green-100 text-green-700', pest_control: 'bg-red-100 text-red-700',
-    fertilization: 'bg-lime-100 text-lime-700', irrigation: 'bg-cyan-100 text-cyan-700',
-    harvest: 'bg-[#fdf3e0] text-[#c8851e]',
+  // Aggregate stats from real data
+  const totalTrees = crops.reduce((sum, c) => sum + (c.surviving_plants || 0), 0);
+  const totalOriginal = crops.reduce((sum, c) => sum + (c.total_plants || 0), 0);
+  const survivalRate = totalOriginal > 0 ? ((totalTrees / totalOriginal) * 100).toFixed(1) + '%' : 'N/A';
+  const currentStage = crops.length > 0 ? crops[0].growth_stage : null;
+  const currentHealth = crops.length > 0 ? crops[0].health_status : 'Pending';
+  const latestUpdate = updates.length > 0 ? updates[0] : null;
+
+  const getTimelineStatus = (stageName: string) => {
+    const stages = ['Land Prep', 'Planting', 'Sapling', 'Juvenile', 'Harvest'];
+    let safeStage = 'Pending';
+    if (currentStage) {
+        if (currentStage === 'SEEDLING') safeStage = 'Planting';
+        else if (currentStage === 'SAPLING') safeStage = 'Sapling';
+        else if (currentStage === 'JUVENILE') safeStage = 'Juvenile';
+        else if (currentStage === 'MATURE' || currentStage === 'HARVEST_READY') safeStage = 'Harvest';
+    }
+    
+    const currentIdx = stages.findIndex(s => s === safeStage);
+    const thisIdx = stages.findIndex(s => s === stageName);
+    
+    if (currentIdx === -1) return 'pending';
+    if (thisIdx < currentIdx) return 'completed';
+    if (thisIdx === currentIdx) return 'active';
+    return 'pending';
   };
 
+  const images = updates.filter(u => u.media_url).slice(0, 4);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-[#1a1a1a]">Plantation Status</h1>
-        <p className="text-[#6b6b6b] text-sm mt-1">Real-time overview of your sandalwood crop</p>
+        <h1 className="font-display text-3xl font-semibold text-[#F7F0E4]">Plantation Status</h1>
+        <p className="text-[#B8B8A8] text-sm mt-1">Real-time overview of your sandalwood crop growth and health.</p>
       </div>
 
-      {/* Crop Cards */}
       {crops.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#e8e0d8]">
-          <Sprout className="w-10 h-10 text-[#c8851e]/30 mx-auto mb-3" />
-          <p className="text-[#6b6b6b] text-sm">No crop data available yet.</p>
+        <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-12 text-center">
+          <Sprout className="w-12 h-12 text-[#C49A5A]/30 mx-auto mb-4" />
+          <h3 className="text-[#F7F0E4] font-medium mb-1">No plantation records available yet.</h3>
+          <p className="text-[#B8B8A8] text-sm">Your crop data will appear here once planting begins.</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-5">
-          {crops.map((crop) => (
-            <div key={crop.id} className="bg-white rounded-2xl border border-[#e8e0d8] shadow-sm p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-[#1a1a1a]">{crop.name}</h3>
-                  <p className="text-[#6b6b6b] text-xs">{crop.landTitle} · {crop.variety || 'Standard Variety'}</p>
-                </div>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  crop.health_status === 'excellent' ? 'bg-emerald-100 text-emerald-700' :
-                  crop.health_status === 'good' ? 'bg-green-100 text-green-700' :
-                  crop.health_status === 'fair' ? 'bg-amber-100 text-amber-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
-                  {crop.health_status}
-                </span>
+        <>
+          {/* Metric Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Active Trees', value: totalTrees.toString(), icon: Sprout, change: 'Current', color: 'from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
+          { label: 'Growth Stage', value: currentStage?.replace('_', ' ') || 'Pending', icon: Activity, change: 'Latest', color: 'from-green-500/20 to-green-600/10', border: 'border-green-500/20' },
+          { label: 'Survival Rate', value: survivalRate, icon: Leaf, change: 'Current', color: 'from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
+          { label: 'Health Status', value: currentHealth, icon: FileText, change: 'Current', color: 'from-purple-500/20 to-purple-600/10', border: 'border-purple-500/20' },
+        ].map((card, i) => (
+          <div key={i} className={`bg-gradient-to-br ${card.color} border ${card.border} rounded-2xl p-5`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-white/5">
+                <card.icon className="w-4 h-4 text-white/70" />
               </div>
-
-              {/* Progress Bar */}
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs text-[#6b6b6b]">Growth Stage: <span className="font-medium text-[#1a1a1a]">{stageLabels[crop.growth_stage]}</span></span>
-                  <span className="text-xs font-semibold text-[#c8851e]">{stageProgress[crop.growth_stage]}%</span>
-                </div>
-                <div className="h-2.5 bg-[#f0e6d8] rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${stageColors[crop.growth_stage]} transition-all`}
-                    style={{ width: `${stageProgress[crop.growth_stage]}%` }}
-                  />
-                </div>
-                <div className="flex justify-between mt-1">
-                  {['Seedling', 'Sapling', 'Juvenile', 'Mature', 'Ready'].map((s, i) => (
-                    <span key={i} className="text-[9px] text-[#6b6b6b]">{s}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-[#faf6f2] rounded-xl p-3 text-center">
-                  <div className="font-bold text-[#1a1a1a] text-lg">{crop.total_plants}</div>
-                  <div className="text-[#6b6b6b] text-[10px]">Total Plants</div>
-                </div>
-                <div className="bg-[#faf6f2] rounded-xl p-3 text-center">
-                  <div className="font-bold text-green-600 text-lg">{crop.surviving_plants}</div>
-                  <div className="text-[#6b6b6b] text-[10px]">Surviving</div>
-                </div>
-                <div className="bg-[#faf6f2] rounded-xl p-3 text-center">
-                  <div className="font-bold text-[#c8851e] text-lg">{crop.height_avg > 0 ? `${crop.height_avg}cm` : '—'}</div>
-                  <div className="text-[#6b6b6b] text-[10px]">Avg Height</div>
-                </div>
-              </div>
-
-              {crop.planted_date && (
-                <div className="flex items-center gap-1.5 mt-4 text-xs text-[#6b6b6b]">
-                  <Calendar className="w-3 h-3" />
-                  Planted: {crop.planted_date}
-                </div>
-              )}
+              <span className="text-[#22C55E] text-xs font-medium flex items-center gap-0.5">
+                {card.change} <ArrowUpRight className="w-3 h-3" />
+              </span>
             </div>
-          ))}
-        </div>
-      )}
+            <div className="font-display text-2xl font-bold text-white mb-0.5 capitalize">{card.value}</div>
+            <div className="text-white/50 text-xs">{card.label}</div>
+          </div>
+        ))}
+      </div>
 
-      {/* Activity Timeline */}
-      <div className="bg-white rounded-2xl border border-[#e8e0d8] shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#e8e0d8] flex items-center gap-2">
-          <Activity className="w-4 h-4 text-[#c8851e]" />
-          <h2 className="text-[#1a1a1a] font-semibold text-sm">Plantation Activity Log</h2>
-        </div>
-        {updates.length === 0 ? (
-          <div className="p-10 text-center text-[#6b6b6b] text-sm">No activity logged yet</div>
-        ) : (
-          <div className="divide-y divide-[#e8e0d8]">
-            {updates.map((u, i) => (
-              <div key={i} className="px-5 py-4 hover:bg-[#faf6f2] transition-colors">
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#c8851e] mt-2 shrink-0" />
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-[#1a1a1a] text-sm font-medium">{u.title}</div>
-                        {u.description && <p className="text-[#6b6b6b] text-xs mt-1 leading-relaxed">{u.description}</p>}
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full capitalize ${typeColors[u.update_type] || 'bg-gray-100 text-gray-600'}`}>
-                          {u.update_type.replace('_', ' ')}
-                        </span>
-                        <span className="text-[#6b6b6b] text-xs">{u.update_date}</span>
-                      </div>
+      {/* Plantation Progress Timeline */}
+      <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6 sm:p-8">
+        <h2 className="text-[#F7F0E4] font-semibold text-lg mb-8">Plantation Progress</h2>
+        
+        <div className="relative">
+          {/* Gold Line */}
+          <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 rounded-full hidden sm:block">
+            <div className="h-full bg-[#C49A5A] rounded-full transition-all duration-1000" style={{ width: currentStage === 'HARVEST_READY' ? '100%' : currentStage === 'MATURE' ? '80%' : currentStage === 'JUVENILE' ? '60%' : currentStage === 'SAPLING' ? '40%' : currentStage === 'SEEDLING' ? '20%' : '0%' }} />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-6 sm:gap-0 relative z-10">
+            {[
+              { stage: 'Land Prep', date: 'Done' },
+              { stage: 'Planting', date: 'Done' },
+              { stage: 'Sapling', date: 'Current' },
+              { stage: 'Juvenile', date: 'Future' },
+              { stage: 'Harvest', date: 'Future' },
+            ].map((step, i) => {
+              const status = getTimelineStatus(step.stage);
+              return (
+                <div key={i} className="flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
+                    status === 'completed' ? 'bg-[#12372A] border-[#22C55E] text-[#22C55E]' :
+                    status === 'active' ? 'bg-[#C49A5A] border-[#C49A5A] text-[#10140E] shadow-[0_0_15px_rgba(196,154,90,0.5)]' :
+                    'bg-[#10140E] border-white/20 text-white/20'
+                  }`}>
+                    {status === 'completed' ? <CheckCircle className="w-4 h-4" /> : <div className="w-2 h-2 rounded-full bg-current" />}
+                  </div>
+                  <div>
+                    <div className={`text-sm font-semibold ${status === 'active' ? 'text-[#C49A5A]' : status === 'completed' ? 'text-[#F7F0E4]' : 'text-[#B8B8A8]'}`}>
+                      {step.stage}
                     </div>
+                    <div className="text-[11px] text-[#B8B8A8] mt-0.5">{step.date}</div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        )}
+        </div>
       </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Latest Inspection Report */}
+        <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-[#F7F0E4] font-semibold text-base">Latest Inspection Report</h2>
+            {latestUpdate?.media_url && latestUpdate.media_url.endsWith('.pdf') && (
+              <a href={latestUpdate.media_url} target="_blank" rel="noreferrer" className="text-[#C49A5A] text-xs hover:underline flex items-center gap-1"><Download className="w-3 h-3"/> Download PDF</a>
+            )}
+          </div>
+          {latestUpdate ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                <span className="text-[#B8B8A8] text-sm">Date</span>
+                <span className="text-[#F7F0E4] text-sm font-medium">{new Date(latestUpdate.update_date).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                <span className="text-[#B8B8A8] text-sm">Type</span>
+                <span className="text-[#F7F0E4] text-sm font-medium capitalize">{latestUpdate.update_type?.replace('_', ' ')}</span>
+              </div>
+              <div className="pt-2">
+                <span className="text-[#B8B8A8] text-xs block mb-1">Remarks</span>
+                <p className="text-[#F7F0E4] text-sm leading-relaxed">{latestUpdate.description}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-[#B8B8A8] text-sm">No inspection reports available yet.</p>
+          )}
+        </div>
+
+        {/* Recent Photos */}
+        <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-[#F7F0E4] font-semibold text-base">Recent Photos</h2>
+          </div>
+          {images.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3">
+              {images.map((img) => (
+                <div key={img.id} className="aspect-square rounded-xl bg-black/40 border border-white/5 overflow-hidden relative group cursor-pointer">
+                  <img src={img.media_url} className="w-full h-full object-cover" alt="" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-sm">
+                    <span className="text-[#F7F0E4] text-xs font-medium">{new Date(img.update_date).toLocaleDateString(undefined, { month: 'short', year: 'numeric'})}</span>
+                    <a href={img.media_url} target="_blank" rel="noreferrer" className="text-[#C49A5A] text-[10px] mt-1 border border-[#C49A5A]/30 px-2 py-0.5 rounded">View Full</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10">
+              <ImageIcon className="w-8 h-8 text-white/10 mx-auto mb-2" />
+              <p className="text-[#B8B8A8] text-sm">No recent photos available.</p>
+            </div>
+          )}
+        </div>
+      </div>
+      </>
+      )}
     </div>
   );
 }

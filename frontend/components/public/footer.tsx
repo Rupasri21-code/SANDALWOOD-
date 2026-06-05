@@ -64,14 +64,14 @@ export default function Footer() {
               </span>
               <span className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#C49A5A] shrink-0" /> 
-                <a href="mailto:invest@dornalasandalwood.com" className="hover:text-[#C49A5A] transition-colors">invest@dornalasandalwood.com</a>
+                <a href="mailto:invest@chandannilayam.com" className="hover:text-[#C49A5A] transition-colors">invest@chandannilayam.com</a>
               </span>
               <span className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#C49A5A] shrink-0 mt-0.5" /> 
-                <span className="leading-relaxed">
+                <a href="https://maps.google.com/?q=Dornala,+Andhra+Pradesh,+India" target="_blank" rel="noopener noreferrer" className="leading-relaxed hover:text-[#C49A5A] transition-colors">
                   Dornala, Guntur District,<br />
                   Andhra Pradesh, India
-                </span>
+                </a>
               </span>
             </div>
           </div>
@@ -81,16 +81,18 @@ export default function Footer() {
             <h4 className="text-xs font-black uppercase tracking-wider text-[#C49A5A] mb-6 font-sans">Follow Us</h4>
             <div className="flex gap-3 mb-8">
               {[
-                { icon: Instagram, href: '#' },
-                { icon: Facebook, href: '#' },
-                { icon: Linkedin, href: '#' },
-                { icon: Youtube, href: '#' }
+                { icon: Instagram, href: 'https://instagram.com/chandannilayam' },
+                { icon: Facebook, href: 'https://facebook.com/chandannilayam' },
+                { icon: Linkedin, href: 'https://linkedin.com/company/chandannilayam' },
+                { icon: Youtube, href: 'https://youtube.com/@chandannilayam' }
               ].map((social, i) => {
                 const Icon = social.icon;
                 return (
                   <a 
                     key={i} 
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-8 h-8 rounded-full border border-[#C49A5A]/35 flex items-center justify-center text-[#C49A5A] hover:border-[#C49A5A] hover:bg-[#C49A5A] hover:text-[#0B2F24] transition-all duration-300 shadow-sm"
                   >
                     <Icon className="w-4 h-4" />

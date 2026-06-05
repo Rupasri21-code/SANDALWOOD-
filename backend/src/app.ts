@@ -8,7 +8,7 @@ import { errorHandler } from './middleware/error.middleware';
 
 // Routes imports
 import authRoutes from './routes/auth.routes';
-import customerRoutes from './routes/customer.routes';
+import investorRoutes from './routes/investor.routes';
 import landRoutes from './routes/land.routes';
 import cropRoutes from './routes/crop.routes';
 import updateRoutes from './routes/update.routes';
@@ -19,6 +19,7 @@ import documentRoutes from './routes/document.routes';
 import inquiryRoutes from './routes/inquiry.routes';
 import notificationRoutes from './routes/notification.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import uploadRoutes from './routes/upload.routes';
 
 const app = express();
 
@@ -60,7 +61,7 @@ app.get('/', (req, res) => {
 const API_PREFIX = '/api/v1';
 
 app.use(`${API_PREFIX}/auth`, limiter, authRoutes);
-app.use(`${API_PREFIX}/customers`, customerRoutes);
+app.use(`${API_PREFIX}/investors`, investorRoutes);
 app.use(`${API_PREFIX}/lands`, landRoutes);
 app.use(`${API_PREFIX}/crops`, cropRoutes);
 app.use(`${API_PREFIX}/updates`, updateRoutes);
@@ -71,6 +72,7 @@ app.use(`${API_PREFIX}/documents`, documentRoutes);
 app.use(`${API_PREFIX}/inquiries`, inquiryRoutes);
 app.use(`${API_PREFIX}/notifications`, notificationRoutes);
 app.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
+app.use(`${API_PREFIX}/upload`, uploadRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

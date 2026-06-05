@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   listLandPlots,
+  listMyLandPlots,
   getLandPlot,
   createLandPlot,
   updateLandPlot,
@@ -15,9 +16,11 @@ const router = Router();
 
 router.use(protect);
 
+router.get('/me', listMyLandPlots);
+
 // Admin only actions
 router.route('/')
-  .get(listLandPlots)
+  .get(authorize('ADMIN'), listLandPlots)
   .post(authorize('ADMIN'), upload.array('images', 5), createLandPlot);
 
 router.route('/:id')

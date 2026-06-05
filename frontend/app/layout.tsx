@@ -4,7 +4,7 @@ import { AuthProvider } from '@/lib/auth-context';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
-  title: 'ArborVest – Sandalwood Land Investment & Plantation Management',
+  title: 'Chandan Nilayam – Sandalwood Investments',
   description:
     'Premium sandalwood land investment and plantation management platform. Grow your wealth with nature-backed assets.',
 };

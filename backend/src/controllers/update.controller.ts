@@ -12,9 +12,34 @@ export const listUpdates = async (req: Request, res: Response, next: NextFunctio
       orderBy: { update_date: 'desc' },
       include: {
         land: {
-          include: { customer: true },
+          include: { investor: true },
         },
       },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, updates, 'Plantation updates retrieved successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listMyUpdates = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userReq = req as any;
+    if (!userReq.user) throw new ApiError(401, 'Unauthorized');
+    
+    const profile = await db.investorProfile.findUnique({ where: { user_id: userReq.user.id } });
+    if (!profile) throw new ApiError(404, 'Profile not found');
+
+    const updates = await db.plantationUpdate.findMany({
+      where: {
+        land: {
+          investor_id: profile.id
+        }
+      },
+      orderBy: { update_date: 'desc' },
     });
 
     res.status(200).json(
@@ -32,7 +57,7 @@ export const getUpdate = async (req: Request, res: Response, next: NextFunction)
       where: { id },
       include: {
         land: {
-          include: { customer: true },
+          include: { investor: true },
         },
       },
     });
@@ -55,7 +80,7 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
 
     const land = await db.landPlot.findUnique({
       where: { id: validated.landId },
-      include: { customer: true },
+      include: { investor: true },
     });
 
     if (!land) {
@@ -65,7 +90,8 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
     const images: string[] = [];
     if (req.files && Array.isArray(req.files)) {
       for (const file of req.files) {
-        const url = await uploadToCloudinary(file.path, 'updates');
+        const uploadResult = await uploadToCloudinary(file.path, 'updates', file.mimetype);
+        const url = uploadResult.url;
         images.push(url);
       }
     }
@@ -81,11 +107,11 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
       },
     });
 
-    // Send Notification to assigned customer
-    if (land.customer && land.customer.user_id) {
+    // Send Notification to assigned investor
+    if (land.investor && land.investor.user_id) {
       await createNotification({
-        recipientId: land.customer.user_id,
-        customerId: land.customer.id,
+        recipientId: land.investor.user_id,
+        investorId: land.investor.id,
         title: `Plantation Update: ${validated.title}`,
         message: validated.description,
         type: 'UPDATE',

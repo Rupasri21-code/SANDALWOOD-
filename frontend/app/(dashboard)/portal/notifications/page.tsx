@@ -1,112 +1,138 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
 import { Bell, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
-type Notification = {
-  id: string;
-  title: string;
-  message: string;
-  type: string;
-  is_read: boolean;
-  created_at: string;
-  link: string;
-};
-
-const typeColors: Record<string, string> = {
-  info: 'bg-blue-100 text-blue-700 border-blue-200',
-  success: 'bg-green-100 text-green-700 border-green-200',
-  warning: 'bg-amber-100 text-amber-700 border-amber-200',
-  alert: 'bg-red-100 text-red-700 border-red-200',
-  update: 'bg-[#fdf3e0] text-[#c8851e] border-[#e9be55]/30',
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function PortalNotificationsPage() {
-  const { profile } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   const fetchNotifications = async () => {
-    if (!profile) return;
-    const { data } = await supabase.from('notifications').select('*').eq('recipient_id', profile.id).order('created_at', { ascending: false });
-    setNotifications(data ?? []);
-    setLoading(false);
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { fetchNotifications(); }, [profile]);
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const markAllRead = async () => {
-    if (!profile) return;
-    await supabase.from('notifications').update({ is_read: true }).eq('recipient_id', profile.id).eq('is_read', false);
-    toast.success('All marked as read');
-    fetchNotifications();
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await fetch(`${API_URL}/notifications/read-all`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
+      toast.success('All marked as read');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const markRead = async (id: string) => {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
-    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, is_read: true } : n));
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      await fetch(`${API_URL}/notifications/${id}/read`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  if (loading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#c8851e] border-t-transparent rounded-full animate-spin" /></div>;
-  }
-
-  const unread = notifications.filter((n) => !n.is_read).length;
+  const getTypeStyle = (type: string) => {
+    const t = type?.toLowerCase() || '';
+    if (t === 'success') return 'bg-[#22C55E]/10 border-[#22C55E]/20 text-[#22C55E]';
+    if (t === 'alert' || t === 'warning') return 'bg-amber-500/10 border-amber-500/20 text-amber-500';
+    return 'bg-[#C49A5A]/10 border-[#C49A5A]/20 text-[#C49A5A]';
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-[#1a1a1a]">Notifications</h1>
-          <p className="text-[#6b6b6b] text-sm mt-1">{unread} unread · {notifications.length} total</p>
+          <h1 className="font-display text-3xl font-semibold text-[#F7F0E4]">Notifications</h1>
+          <p className="text-[#B8B8A8] text-sm mt-1">{unreadCount} unread • {notifications.length} total messages</p>
         </div>
-        {unread > 0 && (
-          <Button onClick={markAllRead} variant="outline" size="sm" className="border-[#c8851e]/30 text-[#c8851e] hover:bg-[#fdf3e0] gap-2">
-            <Check className="w-3 h-3" /> Mark all read
+        {unreadCount > 0 && (
+          <Button onClick={markAllRead} className="bg-transparent hover:bg-[#C49A5A]/10 text-[#C49A5A] border border-[#C49A5A]/30 gap-2 h-9 rounded-xl transition-colors">
+            <Check className="w-4 h-4" /> Mark all read
           </Button>
         )}
       </div>
 
-      {notifications.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#e8e0d8]">
-          <Bell className="w-10 h-10 text-[#c8851e]/30 mx-auto mb-3" />
-          <p className="text-[#6b6b6b] text-sm">No notifications yet.</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {notifications.map((n) => (
-            <div
-              key={n.id}
-              onClick={() => !n.is_read && markRead(n.id)}
-              className={`bg-white rounded-xl border p-5 transition-all cursor-pointer hover:shadow-sm ${
-                !n.is_read ? 'border-[#c8851e]/20 shadow-sm' : 'border-[#e8e0d8]'
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`flex-shrink-0 mt-0.5 text-xs px-2 py-0.5 rounded-full font-medium border ${typeColors[n.type] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                  {n.type}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className={`font-medium text-sm ${!n.is_read ? 'text-[#1a1a1a]' : 'text-[#4a4a4a]'}`}>
-                      {n.title}
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {!n.is_read && <span className="w-2 h-2 rounded-full bg-[#c8851e]" />}
-                      <span className="text-[#6b6b6b] text-xs">{new Date(n.created_at).toLocaleDateString('en-IN')}</span>
-                    </div>
-                  </div>
-                  <p className="text-[#6b6b6b] text-sm mt-1 leading-relaxed">{n.message}</p>
-                </div>
+      <div className="space-y-3">
+        {notifications.length === 0 ? (
+          <div className="text-center py-10 bg-[rgba(18,55,42,0.35)] rounded-[20px] border border-white/5">
+            <Bell className="w-8 h-8 text-[#C49A5A]/30 mx-auto mb-2" />
+            <p className="text-[#B8B8A8] text-sm">No notifications available</p>
+          </div>
+        ) : notifications.map((n) => (
+          <div 
+            key={n.id}
+            onClick={() => !n.is_read && markRead(n.id)}
+            className={`p-5 sm:p-6 rounded-[20px] cursor-pointer transition-all flex gap-4 ${
+              !n.is_read 
+                ? 'bg-[rgba(18,55,42,0.35)] border border-[#C49A5A]/40 shadow-[0_0_15px_rgba(196,154,90,0.05)]' 
+                : 'bg-black/20 border border-[rgba(196,154,90,0.1)] opacity-70'
+            }`}
+          >
+            <div className="shrink-0 mt-1">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${getTypeStyle(n.type)}`}>
+                <Bell className="w-4 h-4" />
               </div>
             </div>
-          ))}
-        </div>
-      )}
+            
+            <div className="flex-1">
+              <div className="flex items-start justify-between gap-4 mb-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`text-[9px] px-2 py-0.5 rounded-sm font-bold uppercase tracking-widest border ${getTypeStyle(n.type)}`}>
+                    {n.type || 'General'}
+                  </span>
+                  <h3 className={`text-base font-semibold ${!n.is_read ? 'text-[#F7F0E4]' : 'text-[#B8B8A8]'}`}>{n.title}</h3>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-[#B8B8A8] text-[11px] font-medium">{new Date(n.created_at).toLocaleDateString()}</span>
+                  {!n.is_read && <span className="w-2 h-2 rounded-full bg-[#C49A5A] shadow-[0_0_8px_#C49A5A]" />}
+                </div>
+              </div>
+              <p className={`text-sm leading-relaxed mt-2 ${!n.is_read ? 'text-[#B8B8A8]' : 'text-[#B8B8A8]/60'}`}>
+                {n.message}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

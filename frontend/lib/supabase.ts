@@ -13,7 +13,7 @@ export type Database = {
           id: string;
           email: string;
           full_name: string;
-          role: 'admin' | 'customer';
+          role: 'admin' | 'investor';
           phone: string;
           avatar_url: string;
           created_at: string;
@@ -22,7 +22,7 @@ export type Database = {
         Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'created_at' | 'updated_at'>;
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
       };
-      customers: {
+      investors: {
         Row: {
           id: string;
           user_id: string | null;
@@ -40,13 +40,13 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database['public']['Tables']['customers']['Row'], 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Database['public']['Tables']['customers']['Insert']>;
+        Insert: Omit<Database['public']['Tables']['investors']['Row'], 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Database['public']['Tables']['investors']['Insert']>;
       };
       lands: {
         Row: {
           id: string;
-          customer_id: string | null;
+          investor_id: string | null;
           title: string;
           description: string;
           location: string;
@@ -108,7 +108,7 @@ export type Database = {
       investments: {
         Row: {
           id: string;
-          customer_id: string;
+          investor_id: string;
           land_id: string | null;
           investment_type: string;
           amount: number;
@@ -130,7 +130,7 @@ export type Database = {
         Row: {
           id: string;
           investment_id: string | null;
-          customer_id: string;
+          investor_id: string;
           amount: number;
           currency: string;
           payment_type: string;
@@ -149,7 +149,7 @@ export type Database = {
         Row: {
           id: string;
           recipient_id: string;
-          customer_id: string | null;
+          investor_id: string | null;
           title: string;
           message: string;
           type: 'info' | 'success' | 'warning' | 'alert' | 'update';
@@ -163,7 +163,7 @@ export type Database = {
       documents: {
         Row: {
           id: string;
-          customer_id: string;
+          investor_id: string;
           land_id: string | null;
           title: string;
           description: string;

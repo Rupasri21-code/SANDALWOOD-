@@ -10,7 +10,7 @@ export const listMedia = async (req: Request, res: Response, next: NextFunction)
     const media = await db.media.findMany({
       orderBy: { created_at: 'desc' },
       include: {
-        customer: true,
+        investor: true,
         land: true,
       },
     });
@@ -25,15 +25,17 @@ export const listMedia = async (req: Request, res: Response, next: NextFunction)
 
 export const createMedia = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { customerId, landId, title, description, category } = req.body;
+    const { investorId, landId, title, description, category } = req.body;
 
     if (!req.file) {
       throw new ApiError(400, 'Media file is required');
     }
 
-    const customer = await db.customerProfile.findUnique({ where: { id: customerId } });
-    if (!customer) {
-      throw new ApiError(404, 'Customer profile not found');
+    if (investorId !== 'ALL') {
+      const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
+      if (!investor) {
+        throw new ApiError(404, 'Investor profile not found');
+      }
     }
 
     if (landId) {
@@ -43,24 +45,48 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
       }
     }
 
-    const fileUrl = await uploadToCloudinary(req.file.path, 'media');
+    const uploadResult = await uploadToCloudinary(req.file.path, 'media', req.file.mimetype);
+    const fileUrl = uploadResult.url;
     const fileType = path.extname(req.file.originalname).substring(1).toLowerCase();
 
-    const media = await db.media.create({
-      data: {
-        customer_id: customerId,
-        land_id: landId || null,
-        title: title || req.file.originalname,
-        description,
-        file_url: fileUrl,
-        file_type: fileType,
-        category: category || 'General',
-      },
-    });
+    if (investorId === 'ALL') {
+      const allInvestors = await db.investorProfile.findMany();
+      if (allInvestors.length === 0) {
+        throw new ApiError(400, 'No investors found to assign media to');
+      }
+      
+      await db.media.createMany({
+        data: allInvestors.map(inv => ({
+          investor_id: inv.id,
+          land_id: null,
+          title: title || req.file!.originalname,
+          description,
+          file_url: fileUrl,
+          file_type: fileType,
+          category: category || 'General',
+        })),
+      });
 
-    res.status(201).json(
-      new ApiResponse(201, media, 'Media uploaded successfully')
-    );
+      res.status(201).json(
+        new ApiResponse(201, null, `Media uploaded and assigned to ${allInvestors.length} investors`)
+      );
+    } else {
+      const media = await db.media.create({
+        data: {
+          investor_id: investorId,
+          land_id: landId || null,
+          title: title || req.file!.originalname,
+          description,
+          file_url: fileUrl,
+          file_type: fileType,
+          category: category || 'General',
+        },
+      });
+
+      res.status(201).json(
+        new ApiResponse(201, media, 'Media uploaded successfully')
+      );
+    }
   } catch (error) {
     next(error);
   }

@@ -2,153 +2,149 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
-import { TrendingUp, Calendar, ArrowUpRight } from 'lucide-react';
+import { TrendingUp, CreditCard, ArrowUpRight, Activity, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
-type Investment = {
-  id: string;
-  amount: number;
-  expected_returns: number;
-  roi_percentage: number;
-  investment_date: string;
-  maturity_date: string | null;
-  status: string;
-  investment_type: string;
-  contract_number: string;
-  notes: string;
-  land_id: string | null;
-  landTitle?: string;
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export default function PortalInvestmentPage() {
-  const { profile } = useAuth();
-  const [investments, setInvestments] = useState<Investment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [investments, setInvestments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
 
   useEffect(() => {
     const load = async () => {
-      if (!profile) return;
-      const { data: cust } = await supabase.from('customers').select('id').eq('user_id', profile.id).maybeSingle();
-      if (!cust) { setLoading(false); return; }
-
-      const { data: inv } = await supabase.from('investments').select('*').eq('customer_id', cust.id).order('investment_date', { ascending: false });
-      if (!inv?.length) { setLoading(false); return; }
-
-      const landIds = inv.filter((i) => i.land_id).map((i) => i.land_id);
-      let landMap: Record<string, string> = {};
-      if (landIds.length) {
-        const { data: lands } = await supabase.from('lands').select('id, title').in('id', landIds);
-        landMap = Object.fromEntries((lands ?? []).map((l) => [l.id, l.title]));
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const res1 = await fetch(`${API_URL}/investments/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data1 = await res1.json();
+        if (data1.success) setInvestments(data1.data);
+        
+        const res2 = await fetch(`${API_URL}/payments/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data2 = await res2.json();
+        if (data2.success) setPayments(data2.data);
+      } catch (err) {
+        console.error('Failed to load investment data:', err);
+      } finally {
+        setLoading(false);
       }
-
-      setInvestments(inv.map((i) => ({ ...i, landTitle: i.land_id ? landMap[i.land_id] : undefined })));
-      setLoading(false);
     };
     load();
-  }, [profile]);
+    const interval = setInterval(load, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#c8851e] border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" /></div>;
   }
 
-  const totalInvested = investments.reduce((s, i) => s + i.amount, 0);
-  const totalExpected = investments.reduce((s, i) => s + i.expected_returns, 0);
-  const activeCount = investments.filter((i) => i.status === 'active').length;
+  const totalInvested = investments.reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0);
+  const totalPaid = payments.filter(p => p.status === 'COMPLETED').reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  const totalPending = payments.filter(p => p.status === 'PENDING').reduce((sum, p) => sum + (Number(p.amount) || 0), 0) + Math.max(0, totalInvested - totalPaid);
+  const estimatedValue = totalInvested > 0 ? totalInvested * 6 : 0; // Rough 6x ROI projection over term
+
+  const statCards = [
+    { label: 'Total Investment', value: `₹${totalInvested.toLocaleString('en-IN')}`, icon: TrendingUp, change: 'Principal', color: 'from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
+    { label: 'Paid Amount', value: `₹${totalPaid.toLocaleString('en-IN')}`, icon: CreditCard, change: totalInvested > 0 ? `${Math.round((totalPaid/totalInvested)*100)}% Paid` : '0%', color: 'from-green-500/20 to-green-600/10', border: 'border-green-500/20' },
+    { label: 'Pending Amount', value: `₹${totalPending.toLocaleString('en-IN')}`, icon: Calendar, change: 'Remaining', color: 'from-[#c8851e]/20 to-[#c8851e]/10', border: 'border-[#c8851e]/20' },
+    { label: 'Estimated Value', value: `₹${estimatedValue.toLocaleString('en-IN')}`, icon: Activity, change: '+600% ROI', color: 'from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-[#1a1a1a]">My Investment</h1>
-        <p className="text-[#6b6b6b] text-sm mt-1">Overview of your sandalwood investment portfolio</p>
+        <h1 className="font-display text-3xl font-semibold text-[#F7F0E4]">My Investment</h1>
+        <p className="text-[#B8B8A8] text-sm mt-1">Track your financial commitments and projected returns.</p>
       </div>
 
-      {/* Summary */}
-      <div className="grid sm:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-[#0a1f0a] to-[#1a4a1a] rounded-2xl p-5 text-white">
-          <div className="text-white/50 text-xs mb-1">Total Invested</div>
-          <div className="font-display text-2xl font-bold">₹{totalInvested.toLocaleString('en-IN')}</div>
-        </div>
-        <div className="bg-gradient-to-br from-[#fdf3e0] to-[#faf6f2] rounded-2xl p-5 border border-[#c8851e]/20">
-          <div className="text-[#6b6b6b] text-xs mb-1">Expected Returns</div>
-          <div className="font-display text-2xl font-bold text-[#c8851e]">
-            {totalExpected > 0 ? `₹${totalExpected.toLocaleString('en-IN')}` : '—'}
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((card, i) => (
+          <div key={i} className={`bg-gradient-to-br ${card.color} border ${card.border} rounded-2xl p-5`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="p-2 rounded-lg bg-white/5">
+                <card.icon className="w-4 h-4 text-white/70" />
+              </div>
+              <span className="text-[#22C55E] text-[11px] uppercase tracking-widest font-medium flex items-center gap-0.5">
+                {card.change}
+              </span>
+            </div>
+            <div className="font-display text-2xl font-bold text-white mb-0.5">{card.value}</div>
+            <div className="text-white/50 text-xs">{card.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Investment Growth Projection Chart */}
+        <div className="lg:col-span-2 bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-[#F7F0E4] font-semibold text-base">Investment Growth Projection</h2>
+            <span className="text-[#C49A5A] text-xs font-medium uppercase tracking-widest bg-[#C49A5A]/10 px-3 py-1 rounded-full border border-[#C49A5A]/20">Harvest Year: ~12 Yrs</span>
+          </div>
+          <div className="h-[250px] w-full bg-black/20 rounded-xl border border-white/5 flex items-end justify-between p-4 gap-2 relative">
+            <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none">
+              {[6, 4, 2, 1, 0].map((v) => (
+                <div key={v} className="w-full h-px bg-white/5 flex items-center">
+                  <span className="text-white/20 text-[9px] -translate-y-1/2 -ml-6">{v}x</span>
+                </div>
+              ))}
+            </div>
+            
+            {[
+              { year: 'Y1', height: '10%' },
+              { year: 'Y3', height: '15%' },
+              { year: 'Y6', height: '25%' },
+              { year: 'Y9', height: '40%' },
+              { year: 'Y11', height: '60%' },
+              { year: 'Y12', height: '95%' },
+            ].map((bar, i) => (
+              <div key={i} className="flex flex-col items-center w-full gap-2 z-10">
+                <div className="w-full max-w-[40px] bg-gradient-to-t from-[#12372A] to-[#C49A5A] rounded-t-sm transition-all duration-1000" style={{ height: bar.height }}></div>
+                <span className="text-[#B8B8A8] text-[10px]">{bar.year}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex gap-4 text-xs text-[#B8B8A8]">
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#12372A]"></div> Base Value</div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#C49A5A]"></div> Projected Appreciation</div>
           </div>
         </div>
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
-          <div className="text-[#6b6b6b] text-xs mb-1">Active Investments</div>
-          <div className="font-display text-2xl font-bold text-green-700">{activeCount}</div>
-        </div>
-      </div>
 
-      {/* Investment Cards */}
-      {investments.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#e8e0d8]">
-          <TrendingUp className="w-10 h-10 text-[#c8851e]/30 mx-auto mb-3" />
-          <p className="text-[#6b6b6b] text-sm">No investment records found.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {investments.map((inv) => (
-            <div key={inv.id} className="bg-white rounded-2xl border border-[#e8e0d8] shadow-sm p-6">
-              <div className="flex items-start justify-between mb-4">
+        {/* Recent Payments - Using Admin style */}
+        <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
+            <h2 className="text-[#F7F0E4] font-semibold text-sm">Recent Payments</h2>
+            <Link href="/portal/payments" className="text-[#C49A5A] text-xs hover:underline flex items-center gap-1">
+              View all <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="divide-y divide-white/5">
+            {payments.slice(0, 5).map((p, i) => (
+              <div key={i} className="px-5 py-3 flex items-center justify-between hover:bg-white/5 transition-colors">
                 <div>
-                  <div className="font-display text-xl font-semibold text-[#1a1a1a]">
-                    ₹{inv.amount.toLocaleString('en-IN')}
-                  </div>
-                  <div className="text-[#6b6b6b] text-xs mt-0.5">
-                    Contract: {inv.contract_number || 'N/A'} · {inv.investment_type.replace('_', ' ')}
-                  </div>
+                  <div className="text-white text-xs font-medium">₹{Number(p.amount).toLocaleString('en-IN')}</div>
+                  <div className="text-white/40 text-[10px]">{new Date(p.payment_date).toLocaleDateString('en-IN')}</div>
                 </div>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  inv.status === 'active' ? 'bg-green-100 text-green-700' :
-                  inv.status === 'matured' ? 'bg-[#fdf3e0] text-[#c8851e]' :
-                  'bg-gray-100 text-gray-600'
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                  p.status === 'COMPLETED' ? 'bg-green-400/15 text-[#22C55E]' :
+                  p.status === 'PENDING' ? 'bg-amber-400/15 text-amber-400' : 'bg-red-400/15 text-red-400'
                 }`}>
-                  {inv.status}
+                  {p.status}
                 </span>
               </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                <div className="bg-[#faf6f2] rounded-xl p-3">
-                  <div className="text-[#6b6b6b] text-[10px] mb-0.5">Land</div>
-                  <div className="text-[#1a1a1a] text-xs font-medium">{inv.landTitle || '—'}</div>
-                </div>
-                <div className="bg-[#faf6f2] rounded-xl p-3">
-                  <div className="text-[#6b6b6b] text-[10px] mb-0.5">ROI %</div>
-                  <div className="flex items-center gap-1 text-green-600 text-sm font-semibold">
-                    <ArrowUpRight className="w-3 h-3" />{inv.roi_percentage}%
-                  </div>
-                </div>
-                <div className="bg-[#faf6f2] rounded-xl p-3">
-                  <div className="text-[#6b6b6b] text-[10px] mb-0.5">Investment Date</div>
-                  <div className="text-[#1a1a1a] text-xs font-medium">{inv.investment_date}</div>
-                </div>
-                <div className="bg-[#faf6f2] rounded-xl p-3">
-                  <div className="text-[#6b6b6b] text-[10px] mb-0.5">Maturity Date</div>
-                  <div className="text-[#1a1a1a] text-xs font-medium">{inv.maturity_date || '—'}</div>
-                </div>
-              </div>
-
-              {inv.expected_returns > 0 && (
-                <div className="bg-gradient-to-r from-[#fdf3e0] to-[#faf6f2] rounded-xl p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-[#6b6b6b] text-xs">Expected Returns at Maturity</div>
-                      <div className="font-semibold text-[#c8851e] text-lg">₹{inv.expected_returns.toLocaleString('en-IN')}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-[#6b6b6b] text-xs">Profit</div>
-                      <div className="text-green-600 font-semibold">
-                        +₹{(inv.expected_returns - inv.amount).toLocaleString('en-IN')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+            ))}
+            {payments.length === 0 && (
+               <div className="p-6 text-center text-white/30 text-xs">No payments found</div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

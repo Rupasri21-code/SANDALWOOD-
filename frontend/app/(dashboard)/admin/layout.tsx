@@ -11,10 +11,11 @@ import {
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { href: '/admin/customers', label: 'Customers', icon: Users },
+  { href: '/admin/investors', label: 'Investors', icon: Users },
   { href: '/admin/lands', label: 'Land Management', icon: Map },
   { href: '/admin/crops', label: 'Crop & Plantation', icon: Sprout },
   { href: '/admin/investments', label: 'Investments', icon: TrendingUp },
@@ -29,6 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showSignoutConfirm, setShowSignoutConfirm] = useState(false);
 
   useEffect(() => {
     if (!loading && (!profile || profile.role !== 'admin')) {
@@ -80,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <TreePine className="w-4 h-4 text-white" />
             </div>
             <div>
-              <span className="font-display text-base font-semibold text-white">ArborVest</span>
+              <span className="font-display text-base font-semibold text-white">Chandan Nilayam</span>
               <span className="block text-[9px] text-[#c8851e] tracking-widest uppercase -mt-0.5">Admin Portal</span>
             </div>
           </div>
@@ -123,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
           <Button
-            onClick={handleSignOut}
+            onClick={() => setShowSignoutConfirm(true)}
             variant="ghost"
             size="sm"
             className="w-full text-white/50 hover:text-red-400 hover:bg-red-400/10 gap-2 justify-start"
@@ -160,6 +162,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {children}
         </main>
       </div>
+
+      <ConfirmModal
+        isOpen={showSignoutConfirm}
+        onClose={() => setShowSignoutConfirm(false)}
+        onConfirm={handleSignOut}
+        title="Sign Out"
+        description="Are you sure you want to sign out?"
+        confirmText="Sign Out"
+      />
     </div>
   );
 }
