@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Bell, X, Send } from 'lucide-react';
+import { Plus, Bell, X, Send, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 type Notification = {
   id: string;
@@ -41,17 +41,39 @@ export default function NotificationsPage() {
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('No authentication token found in localStorage');
+      return;
+    }
+
     try {
-      const [nRes, cRes] = await Promise.all([
-        fetch(`${API_URL}/notifications/admin/all`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      const [nData, cData] = await Promise.all([nRes.json(), cRes.json()]);
-      
-      setNotifications(nData.success ? nData.data : []);
-      setInvestors(cData.success ? cData.data : []);
-    } catch (e) {
-      console.error(e);
+      const res = await fetch(`${API_URL}/notifications/admin/all`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(data.data);
+      } else {
+        console.error('Failed to fetch notifications:', data.message);
+        toast.error('Failed to fetch notifications: ' + data.message);
+        setNotifications([]);
+      }
+    } catch (e: any) {
+      console.error('Error fetching notifications:', e);
+      toast.error('Error fetching notifications: ' + e.message);
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        setInvestors(data.data);
+      } else {
+        console.error('Failed to fetch investors:', data.message);
+        toast.error('Failed to fetch investors: ' + data.message);
+        setInvestors([]);
+      }
+    } catch (e: any) {
+      console.error('Error fetching investors:', e);
+      toast.error('Error fetching investors: ' + e.message);
     }
   };
 
@@ -109,44 +131,70 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8"
+    >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-white">Notifications</h1>
-          <p className="text-white/50 text-sm mt-1">Send alerts and updates to investors</p>
+          <h1 className="font-display text-[2rem] font-bold text-[#F8F5EE] tracking-tight">Notifications</h1>
+          <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">Send alerts and updates to investors</p>
         </div>
-        <Button onClick={() => { setForm({ recipient_id: '', investor_id: '', title: '', message: '', type: 'info', link: '' }); setSendToAll(false); setShowModal(true); }} className="bg-[#c8851e] hover:bg-[#a96618] text-white gap-2">
-          <Plus className="w-4 h-4" /> Send Notification
-        </Button>
+        <button 
+          onClick={() => { setForm({ recipient_id: '', investor_id: '', title: '', message: '', type: 'info', link: '' }); setSendToAll(false); setShowModal(true); }} 
+          whileHover={{ y: -3 }}
+          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] transition-all duration-300"
+          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
+        >
+          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+            <Plus className="w-4 h-4 text-white" strokeWidth={3} />
+          </div>
+          Send Notification
+        </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {notifications.length === 0 ? (
-          <div className="text-center py-12 text-white/30 bg-white/3 border border-white/8 rounded-2xl">
+          <div className="text-center py-16 text-[#A8B5AA] font-medium text-base rounded-[24px] border border-[#C49A5A]/30" style={{ background: 'linear-gradient(145deg, rgba(18,31,23,.95), rgba(10,15,12,.98))' }}>
             No notifications sent yet
           </div>
         ) : (
           notifications.map((n) => (
-            <div key={n.id} className="flex items-start gap-4 p-4 bg-white/3 border border-white/8 rounded-xl hover:border-[#c8851e]/20 transition-all">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${typeColors[n.type?.toLowerCase()] || 'bg-white/10 text-white'}`}>
-                <Bell className="w-4 h-4" />
+            <div key={n.id} className="flex items-center gap-6 p-6 rounded-[20px] border border-[#C49A5A]/30 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_30px_rgba(196,154,90,0.15)] relative overflow-hidden hover:scale-[1.01] hover:-translate-y-[2px] transition-all duration-300"
+              style={{ background: 'linear-gradient(145deg, rgba(18,31,23,.95), rgba(10,15,12,.98))', height: '100px' }}
+            >
+              <div className="w-[50px] h-[50px] rounded-full bg-[#3B82F6]/10 flex items-center justify-center shrink-0 border border-[#3B82F6]/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                <Bell className="w-6 h-6 text-[#3B82F6]" />
               </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-white font-medium text-sm">{n.title}</div>
-                    <div className="text-white/50 text-xs mt-0.5 leading-relaxed">{n.message}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${typeColors[n.type?.toLowerCase()] || 'bg-white/10 text-white/60'}`}>
-                      {n.type?.toLowerCase()}
-                    </span>
-                    {n.is_read && <span className="text-[10px] text-white/30">Read</span>}
+              <div className="flex-1 min-w-0">
+                <div className="text-[#F8F5EE] font-bold text-[16px] truncate mb-1">{n.title}</div>
+                <div className="text-[#A8B5AA] text-[13px] truncate">{n.message}</div>
+              </div>
+              <div className="flex flex-col items-end shrink-0 gap-2">
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-[10px] uppercase tracking-wider ${
+                    n.type?.toLowerCase() === 'success' ? 'bg-[#22C55E]/12 text-[#22C55E]' :
+                    n.type?.toLowerCase() === 'warning' ? 'bg-[#EAB308]/12 text-[#EAB308]' :
+                    n.type?.toLowerCase() === 'alert' ? 'bg-[#EF4444]/12 text-[#EF4444]' :
+                    'bg-[#3B82F6]/12 text-[#3B82F6]'
+                  }`}>
+                    {n.type?.toLowerCase()}
+                  </span>
+                  <div className="text-[#A8B5AA] text-[12px] font-medium border-l border-[#C49A5A]/20 pl-3">
+                    {new Date(n.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </div>
                 </div>
-              </div>
-              <div className="text-white/30 text-xs shrink-0">
-                {new Date(n.created_at).toLocaleDateString('en-IN')}
+                <div className="flex items-center gap-1">
+                  {!n.is_read ? (
+                    <div className="flex items-center gap-1.5 text-[#C49A5A] text-[11px] font-bold uppercase tracking-wider">
+                      <div className="w-2 h-2 rounded-full bg-[#C49A5A] animate-pulse shadow-[0_0_8px_#C49A5A]" />
+                      Unread
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-[#22C55E] text-[11px] font-bold uppercase tracking-wider">
+                      <Check className="w-3 h-3" />
+                      Read
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))

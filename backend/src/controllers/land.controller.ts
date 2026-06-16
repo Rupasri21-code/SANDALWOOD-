@@ -4,6 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { createLandPlotSchema, updateLandPlotSchema } from '../validators/land.validator';
 import { uploadToCloudinary } from '../services/cloudinary.service';
+import { sendWhatsAppPlotAssigned, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 
 export const listLandPlots = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -109,6 +110,25 @@ export const createLandPlot = async (req: Request, res: Response, next: NextFunc
       },
     });
 
+    if (plot.investor_id) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: plot.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPlotAssigned(
+              waPhone,
+              plot.title || `Plot ${plot.passbook_number || ''}`,
+              `${plot.location}, ${plot.district}`,
+              `${plot.total_area} ${plot.unit || 'Acres'}`
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp plot assigned notification:', waErr.message || waErr);
+      }
+    }
+
     res.status(201).json(
       new ApiResponse(201, plot, 'Land plot created successfully')
     );
@@ -156,6 +176,25 @@ export const updateLandPlot = async (req: Request, res: Response, next: NextFunc
         images: images.join(','),
       },
     });
+
+    if (updated.investor_id && updated.investor_id !== existing.investor_id) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: updated.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPlotAssigned(
+              waPhone,
+              updated.title || `Plot ${updated.passbook_number || ''}`,
+              `${updated.location}, ${updated.district}`,
+              `${updated.total_area} ${updated.unit || 'Acres'}`
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp plot assigned notification:', waErr.message || waErr);
+      }
+    }
 
     res.status(200).json(
       new ApiResponse(200, updated, 'Land plot updated successfully')
@@ -209,6 +248,25 @@ export const assignPlot = async (req: Request, res: Response, next: NextFunction
         purchase_date: investorId ? new Date() : null,
       },
     });
+
+    if (investorId) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPlotAssigned(
+              waPhone,
+              updated.title || `Plot ${updated.passbook_number || ''}`,
+              `${updated.location}, ${updated.district}`,
+              `${updated.total_area} ${updated.unit || 'Acres'}`
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp plot assigned notification:', waErr.message || waErr);
+      }
+    }
 
     res.status(200).json(
       new ApiResponse(200, updated, 'Plot assigned successfully')

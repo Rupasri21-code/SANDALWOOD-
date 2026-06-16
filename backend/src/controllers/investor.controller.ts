@@ -4,7 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { createInvestorSchema, updateInvestorSchema } from '../validators/investor.validator';
 import { sendCredentials } from '../services/email.service';
-import { sendWhatsAppCredentials } from '../services/whatsapp.service';
+import { sendWhatsAppCredentials, sendWhatsAppAccountCreated, sendWhatsAppKYCStatusUpdate } from '../services/whatsapp.service';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -227,6 +227,19 @@ export const updateInvestor = async (req: Request, res: Response, next: NextFunc
       data: mapToPrisma(validated),
     });
 
+    if (
+      updated.passbook_verification_status &&
+      existing.passbook_verification_status !== updated.passbook_verification_status
+    ) {
+      try {
+        if (updated.phone) {
+          await sendWhatsAppKYCStatusUpdate(updated.phone, updated.passbook_verification_status);
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp KYC status update notification:', waErr.message || waErr);
+      }
+    }
+
     res.status(200).json(
       new ApiResponse(200, updated, 'Investor updated successfully')
     );
@@ -296,8 +309,12 @@ export const generatePortalCredentials = async (req: Request, res: Response, nex
     await sendCredentials(investor.email, investor.full_name, tempPassword);
     
     // Send credentials via WhatsApp
-    if (investor.phone) {
-      await sendWhatsAppCredentials(investor.phone, investor.full_name, investor.email, tempPassword);
+    try {
+      if (investor.phone) {
+        await sendWhatsAppAccountCreated(investor.phone, investor.email, tempPassword);
+      }
+    } catch (waErr: any) {
+      console.error('⚠️ Failed to send WhatsApp account created notification:', waErr.message || waErr);
     }
 
     res.status(200).json(

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { Plus, Search, Edit2, Trash2, Sprout, X } from 'lucide-react';
+
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 type Crop = {
   id: string;
@@ -190,93 +192,134 @@ export default function CropsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8"
+    >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-white">Crop & Plantation</h1>
-          <p className="text-white/50 text-sm mt-1">{crops.length} crop records</p>
+          <h1 className="font-display text-[2rem] font-bold text-[#F8F5EE] tracking-tight">Crop & Plantation</h1>
+          <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">{crops.length} crop records</p>
         </div>
-        <Button onClick={() => { setForm(defaultForm); setEditId(null); setShowModal(true); }} className="bg-[#c8851e] hover:bg-[#a96618] text-white gap-2">
-          <Plus className="w-4 h-4" /> Add Crop
-        </Button>
+        <button 
+          onClick={() => { setForm(defaultForm); setEditId(null); setShowModal(true); }} 
+          whileHover={{ y: -3 }}
+          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] transition-all duration-300"
+          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
+        >
+          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+            <Plus className="w-4 h-4 text-white" strokeWidth={3} />
+          </div>
+          Add Crop
+        </button>
       </div>
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-        <Input placeholder="Search crops..." value={search} onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#c8851e]" />
+      <div className="relative max-w-md">
+        <div className="h-[56px] bg-[#121F17]/80 backdrop-blur-md border border-[#C49A5A]/30 rounded-[18px] flex items-center px-4 shadow-sm focus-within:shadow-[0_0_15px_rgba(196,154,90,0.3)] focus-within:border-[#C49A5A] transition-all duration-300">
+          <div className="w-8 h-8 rounded-full bg-[#08120D] border border-[#C49A5A]/30 flex items-center justify-center shrink-0">
+             <Search className="w-4 h-4 text-[#C49A5A]" />
+          </div>
+          <input
+            placeholder="Search crops..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-transparent border-none outline-none text-[#F8F5EE] placeholder:text-[#A8B5AA] pl-4 font-medium"
+          />
+        </div>
       </div>
 
-      <div className="bg-white/3 border border-white/8 rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/8 bg-white/2">
-              <th className="text-left px-5 py-3 text-white/50 font-medium">Crop</th>
-              <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Land</th>
-              <th className="text-left px-5 py-3 text-white/50 font-medium">Stage</th>
-              <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Plants</th>
-              <th className="text-left px-5 py-3 text-white/50 font-medium">Health</th>
-              <th className="text-right px-5 py-3 text-white/50 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {filtered.length === 0 ? (
-              <tr><td colSpan={6} className="text-center py-12 text-white/30">No crops found</td></tr>
-            ) : (
-              filtered.map((crop) => (
-                <tr key={crop.id} className="hover:bg-white/3 transition-colors">
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2">
-                      <Sprout className="w-4 h-4 text-[#4a9a4a]" />
-                      <div>
-                        <div className="text-white font-medium">{crop.name}</div>
-                        <div className="text-white/40 text-xs">{crop.variety || '—'}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 text-white/60 hidden md:table-cell">
-                    {lands.find((l) => l.id === crop.land_id)?.title || '—'}
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${stageColors[crop.growth_stage?.toLowerCase()] || 'bg-white/10 text-white/60'}`}>
-                      {crop.growth_stage?.replace('_', ' ').toLowerCase()}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 text-white/60 hidden md:table-cell">
-                    {crop.surviving_plants}/{crop.total_plants}
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      crop.health_status === 'EXCELLENT' ? 'bg-emerald-400/15 text-emerald-400' :
-                      crop.health_status === 'GOOD' ? 'bg-green-400/15 text-green-400' :
-                      crop.health_status === 'FAIR' ? 'bg-amber-400/15 text-amber-400' :
-                      'bg-red-400/15 text-red-400'
-                    }`}>
-                      {crop.health_status?.toLowerCase()}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2 justify-end">
-                      <button onClick={() => { setSelectedCropId(crop.id); setUpdateForm({ ...updateForm }); setShowUpdateModal(true); }}
-                        className="text-[#c8851e]/60 hover:text-[#e9be55] text-xs px-2 py-1 rounded border border-white/10 hover:border-[#c8851e]/30 transition-all">
-                        + Update
-                      </button>
-                      <button onClick={() => {
-                        setForm({ name: crop.name, variety: crop.variety || '', land_id: crop.land_id, planted_date: crop.planted_date || '', total_plants: String(crop.total_plants), surviving_plants: String(crop.surviving_plants), growth_stage: crop.growth_stage, health_status: crop.health_status, height_avg: '', notes: '' });
-                        setEditId(crop.id); setShowModal(true);
-                      }} className="text-white/40 hover:text-[#e9be55] p-1">
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button onClick={() => setConfirmDeleteId(crop.id)} className="text-white/40 hover:text-red-400 p-1">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+      <div 
+        className="rounded-[24px] overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(145deg, rgba(18,31,23,.95), rgba(10,15,12,.98))',
+          border: '1px solid rgba(196,154,90,.3)',
+          boxShadow: '0 20px 40px rgba(0,0,0,.5)'
+        }}
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 z-10 backdrop-blur-md">
+              <tr>
+                {['Crop', 'Land', 'Stage', 'Plants', 'Health', 'Actions'].map((h, i) => (
+                  <th key={i} className={`text-left px-7 py-4 font-bold text-[13px] tracking-wider uppercase text-[#C49A5A] whitespace-nowrap ${i === 5 ? 'text-right' : ''} ${i === 1 || i === 3 ? 'hidden md:table-cell' : ''}`} style={{ background: 'rgba(196,154,90,.08)', height: '64px' }}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#C49A5A]/10">
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-16 text-[#A8B5AA] font-medium text-base">
+                    No crops found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((crop) => (
+                  <tr key={crop.id} className="group transition-all duration-300 hover:bg-[rgba(196,154,90,.05)]" style={{ height: '80px' }}>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <div className="flex items-center gap-4">
+                        <div className="w-[40px] h-[40px] rounded-full bg-gradient-to-br from-[#121F17] to-[#0A1A12] border border-[#C49A5A]/50 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(196,154,90,0.2)]">
+                          <Sprout className="w-5 h-5 text-[#22C55E]" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[#F8F5EE] font-semibold text-[15px]">{crop.name}</span>
+                          <span className="text-[#A8B5AA] text-[12px]">{crop.variety || '—'}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[5px]">
+                      {lands.find((l) => l.id === crop.land_id)?.title || '—'}
+                    </td>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider ${
+                        crop.growth_stage?.toLowerCase() === 'sapling' ? 'bg-[#22C55E]/12 text-[#22C55E]' :
+                        crop.growth_stage?.toLowerCase() === 'juvenile' ? 'bg-[#EAB308]/12 text-[#EAB308]' :
+                        crop.growth_stage?.toLowerCase() === 'mature' ? 'bg-[#3B82F6]/12 text-[#3B82F6]' :
+                        'bg-white/10 text-white/60'
+                      }`}>
+                        {crop.growth_stage?.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <span className="text-[#F8F5EE] font-bold">{crop.surviving_plants}</span> / {crop.total_plants}
+                    </td>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider ${
+                        crop.health_status === 'EXCELLENT' || crop.health_status === 'GOOD' ? 'text-[#22C55E]' :
+                        crop.health_status === 'FAIR' ? 'text-[#EAB308]' :
+                        'text-[#EF4444]'
+                      }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          crop.health_status === 'EXCELLENT' || crop.health_status === 'GOOD' ? 'bg-[#22C55E]' :
+                          crop.health_status === 'FAIR' ? 'bg-[#EAB308]' :
+                          'bg-[#EF4444]'
+                        }`} />
+                        {crop.health_status?.toLowerCase()}
+                      </span>
+                    </td>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:-translate-x-[5px]">
+                      <div className="flex items-center gap-3 justify-end">
+                        <button onClick={() => { setSelectedCropId(crop.id); setUpdateForm({ ...updateForm }); setShowUpdateModal(true); }}
+                          className="h-[36px] px-4 rounded-full font-bold text-[11px] uppercase tracking-wider text-[#08120D] shadow-[0_4px_10px_rgba(196,154,90,0.2)] hover:shadow-[0_0_15px_rgba(196,154,90,0.4)] transition-all duration-300"
+                          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}>
+                          + Update
+                        </button>
+                        <button onClick={() => {
+                          setForm({ name: crop.name, variety: crop.variety || '', land_id: crop.land_id, planted_date: crop.planted_date || '', total_plants: String(crop.total_plants), surviving_plants: String(crop.surviving_plants), growth_stage: crop.growth_stage, health_status: crop.health_status, height_avg: '', notes: '' });
+                          setEditId(crop.id); setShowModal(true);
+                        }} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-[#C49A5A] hover:border-[#C49A5A] hover:shadow-[0_0_15px_rgba(196,154,90,0.3)] transition-all duration-300" title="Edit">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setConfirmDeleteId(crop.id)} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-red-500 hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300" title="Delete">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Crop Modal */}

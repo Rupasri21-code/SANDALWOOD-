@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Search, Edit2, Trash2, UserCheck, Eye, X } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, UserCheck, Eye, X, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +11,7 @@ import { toast } from 'sonner';
 import { InvestorWizard } from '@/components/admin/investors/investor-wizard';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 type Investor = {
   id: string;
@@ -350,80 +351,114 @@ export default function InvestorsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-8"
+    >
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-white">Investors</h1>
-          <p className="text-white/50 text-sm mt-1">{investors.length} total investors</p>
+          <h1 className="font-display text-[2rem] font-bold text-[#F8F5EE] tracking-tight">Investors</h1>
+          <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">{investors.length} Total Investors</p>
         </div>
-        <Button onClick={openNew} className="bg-[#c8851e] hover:bg-[#a96618] text-white gap-2">
-          <Plus className="w-4 h-4" /> Add Investor
-        </Button>
+        <motion.button 
+          onClick={openNew} 
+          whileHover={{ y: -3 }}
+          className="h-[50px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] transition-all duration-300"
+          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
+        >
+          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+            <Plus className="w-4 h-4 text-white" strokeWidth={3} />
+          </div>
+          Add Investor
+        </motion.button>
       </div>
 
       {/* Search */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-        <Input
-          placeholder="Search investors..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#c8851e]"
-        />
+      <div className="relative max-w-md">
+        <div className="h-[56px] bg-[#121F17]/80 backdrop-blur-md border border-[#C49A5A]/30 rounded-[18px] flex items-center px-4 shadow-sm focus-within:shadow-[0_0_15px_rgba(196,154,90,0.3)] focus-within:border-[#C49A5A] transition-all duration-300">
+          <div className="w-8 h-8 rounded-full bg-[#08120D] border border-[#C49A5A]/30 flex items-center justify-center shrink-0">
+             <Search className="w-4 h-4 text-[#C49A5A]" />
+          </div>
+          <input
+            placeholder="Search investors..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-transparent border-none outline-none text-[#F8F5EE] placeholder:text-[#A8B5AA] pl-4 font-medium"
+          />
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white/3 border border-white/8 rounded-2xl overflow-hidden">
+      {/* Table Container */}
+      <div 
+        className="rounded-[24px] overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(145deg, rgba(18,31,23,.95), rgba(10,15,12,.98))',
+          border: '1px solid rgba(196,154,90,.3)',
+          boxShadow: '0 20px 40px rgba(0,0,0,.5)'
+        }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/8 bg-white/2">
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Name</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Email</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Location</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Status</th>
-                <th className="text-right px-5 py-3 text-white/50 font-medium">Actions</th>
+            <thead className="sticky top-0 z-10 backdrop-blur-md">
+              <tr>
+                {['Name', 'Email', 'Location', 'Status', 'Actions'].map((h, i) => (
+                  <th key={i} className={`text-left px-7 py-4 font-bold text-[13px] tracking-wider uppercase text-[#C49A5A] whitespace-nowrap ${i === 4 ? 'text-right' : ''} ${i === 1 || i === 2 ? 'hidden md:table-cell' : ''}`} style={{ background: 'rgba(196,154,90,.08)', height: '64px' }}>
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#C49A5A]/10">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-12 text-white/30">
+                  <td colSpan={5} className="text-center py-16 text-[#A8B5AA] font-medium text-base">
                     No investors found
                   </td>
                 </tr>
               ) : (
                 filtered.map((c) => (
-                  <tr key={c.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#c8851e]/20 border border-[#c8851e]/30 flex items-center justify-center shrink-0">
-                          <span className="text-[#e9be55] text-xs font-semibold">{c.full_name?.[0]}</span>
+                  <tr key={c.id} className="group transition-all duration-300 hover:bg-[rgba(196,154,90,.05)]" style={{ height: '80px' }}>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[6px]">
+                      <div className="flex items-center gap-4">
+                        <div className="w-[40px] h-[40px] rounded-full bg-gradient-to-br from-[#121F17] to-[#0A1A12] border border-[#C49A5A] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(196,154,90,0.2)]">
+                          <span className="text-[#C49A5A] text-sm font-bold uppercase">{c.full_name?.[0]}</span>
                         </div>
-                        <span className="text-white font-medium">{c.full_name}</span>
+                        <div className="flex flex-col">
+                          <span className="text-[#F8F5EE] font-semibold text-[15px]">{c.full_name}</span>
+                          <span className="text-[#A8B5AA] text-[12px] md:hidden">{c.email}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-white/60">{c.email}</td>
-                    <td className="px-5 py-3 text-white/60 hidden md:table-cell">{[c.city, c.state].filter(Boolean).join(', ') || '—'}</td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        c.status === 'active' ? 'bg-green-400/15 text-green-400' :
-                        c.status === 'pending' ? 'bg-amber-400/15 text-amber-400' :
-                        'bg-red-400/15 text-red-400'
+                    <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[6px]">{c.email}</td>
+                    <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[6px]">
+                      <div className="flex items-center gap-2">
+                         <MapPin className="w-4 h-4 text-[#A8B5AA]" />
+                         {[c.city, c.state].filter(Boolean).join(', ') || '—'}
+                      </div>
+                    </td>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[6px]">
+                      <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider ${
+                        c.status === 'active' ? 'bg-[#22C55E]/12 text-[#22C55E]' :
+                        c.status === 'pending' ? 'bg-[#EAB308]/12 text-[#EAB308]' :
+                        'bg-red-500/12 text-red-500'
                       }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${c.status === 'active' ? 'bg-[#22C55E]' : c.status === 'pending' ? 'bg-[#EAB308]' : 'bg-red-500'}`} />
                         {c.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-2 justify-end">
-                        <button onClick={() => openView(c)} className="text-white/40 hover:text-white transition-colors p-1" title="View">
-                          <Eye className="w-3.5 h-3.5" />
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:-translate-x-[6px]">
+                      <div className="flex items-center gap-3 justify-end">
+                        <button onClick={() => openView(c)} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-[#3B82F6] hover:border-[#3B82F6] hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all duration-300" title="View">
+                          <Eye className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openEdit(c)} className="text-white/40 hover:text-[#e9be55] transition-colors p-1" title="Edit">
-                          <Edit2 className="w-3.5 h-3.5" />
+                        <button onClick={() => openEdit(c)} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-[#C49A5A] hover:border-[#C49A5A] hover:shadow-[0_0_15px_rgba(196,154,90,0.3)] transition-all duration-300" title="Edit">
+                          <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={() => setConfirmDeleteId(c.id)} className="text-white/40 hover:text-red-400 transition-colors p-1" title="Delete">
-                          <Trash2 className="w-3.5 h-3.5" />
+                        <button onClick={() => setConfirmDeleteId(c.id)} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-red-500 hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-300" title="Delete">
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -454,6 +489,6 @@ export default function InvestorsPage() {
         description="Are you sure you want to delete this investor? This action cannot be undone."
         confirmText="Delete"
       />
-    </div>
+    </motion.div>
   );
 }

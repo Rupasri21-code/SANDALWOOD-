@@ -3,7 +3,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
-import { generateAccessToken } from '../utils/generateToken';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/generateToken';
 import bcrypt from 'bcryptjs';
 import { loginSchema, resetPasswordSchema } from '../validators/auth.validator';
 import { logActivity } from '../services/notification.service';
@@ -33,15 +33,17 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
       throw new ApiError(401, 'Invalid email or password');
     }
 
-    // Generate Token
-    const token = generateAccessToken(user.id, user.role);
+    // Generate Access & Refresh Tokens
+    const accessToken = generateAccessToken(user.id, user.role);
+    const refreshToken = generateRefreshToken(user.id, user.role);
 
     // Log Activity
     await logActivity(user.id, 'User Login', `Logged in successfully from IP ${req.ip}`, req.ip);
 
     res.status(200).json(
       new ApiResponse(200, {
-        token,
+        accessToken,
+        refreshToken,
         user: {
           id: user.id,
           email: user.email,
@@ -50,6 +52,52 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
         },
       }, 'Login successful')
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refresh = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { refreshToken: incomingRefreshToken } = req.body;
+
+    if (!incomingRefreshToken) {
+      throw new ApiError(400, 'Refresh token is required');
+    }
+
+    try {
+      const decoded = verifyRefreshToken(incomingRefreshToken);
+
+      const user = await db.user.findUnique({
+        where: { id: decoded.id },
+      });
+
+      if (!user) {
+        throw new ApiError(401, 'User associated with refresh token no longer exists');
+      }
+
+      // Generate new Access Token
+      const accessToken = generateAccessToken(user.id, user.role);
+
+      res.status(200).json(
+        new ApiResponse(200, {
+          accessToken,
+        }, 'Token refreshed successfully')
+      );
+    } catch (err) {
+      throw new ApiError(401, 'Invalid or expired refresh token');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: 'Logged out successfully'
+    });
   } catch (error) {
     next(error);
   }

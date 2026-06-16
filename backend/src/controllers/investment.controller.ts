@@ -3,6 +3,11 @@ import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { z } from 'zod';
+import {
+  sendWhatsAppInvestmentCreated,
+  sendWhatsAppInvestmentStatusUpdated,
+  getInvestorWhatsAppNumber,
+} from '../services/whatsapp.service';
 
 const createInvestmentSchema = z.object({
   investorId: z.string().min(1, 'Investor is required'),
@@ -111,6 +116,23 @@ export const createInvestment = async (req: Request, res: Response, next: NextFu
       },
     });
 
+    // WhatsApp: notify investor about their new investment record
+    try {
+      const waPhone = getInvestorWhatsAppNumber(investor);
+      if (waPhone) {
+        await sendWhatsAppInvestmentCreated(
+          waPhone,
+          investor.full_name,
+          investment.investment_type,
+          investment.amount,
+          investment.contract_number,
+          investment.roi_percentage
+        );
+      }
+    } catch (waErr: any) {
+      console.error('⚠️ Failed to send WhatsApp investment created notification:', waErr.message || waErr);
+    }
+
     res.status(201).json(
       new ApiResponse(201, investment, 'Investment record created successfully')
     );
@@ -145,6 +167,27 @@ export const updateInvestment = async (req: Request, res: Response, next: NextFu
         notes: validated.notes,
       },
     });
+
+    // WhatsApp: notify investor only when the status has changed
+    if (validated.status && validated.status !== existing.status) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppInvestmentStatusUpdated(
+              waPhone,
+              investor.full_name,
+              updated.contract_number,
+              existing.status,
+              updated.status
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp investment status update notification:', waErr.message || waErr);
+      }
+    }
 
     res.status(200).json(
       new ApiResponse(200, updated, 'Investment updated successfully')

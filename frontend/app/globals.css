@@ -73,6 +73,15 @@
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    cursor: default;
+  }
+
+  input, textarea {
+    cursor: text;
+  }
+
+  a, button, [role="button"] {
+    cursor: pointer;
   }
 }
 

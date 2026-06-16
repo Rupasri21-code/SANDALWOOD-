@@ -22,6 +22,11 @@ const envSchema = z.object({
   TWILIO_ACCOUNT_SID: z.string().optional(),
   TWILIO_AUTH_TOKEN: z.string().optional(),
   TWILIO_WHATSAPP_NUMBER: z.string().optional(),
+  TWILIO_TESTING_NUMBER: z.string().optional(),
+  JWT_ACCESS_SECRET: z.string().optional(),
+  JWT_REFRESH_SECRET: z.string().optional(),
+  ACCESS_TOKEN_EXPIRES_IN: z.string().default('15m'),
+  REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -31,4 +36,9 @@ if (!parsedEnv.success) {
   process.exit(1);
 }
 
-export const env = parsedEnv.data;
+export const env = {
+  ...parsedEnv.data,
+  JWT_ACCESS_SECRET: parsedEnv.data.JWT_ACCESS_SECRET || parsedEnv.data.JWT_SECRET,
+  JWT_REFRESH_SECRET: parsedEnv.data.JWT_REFRESH_SECRET || parsedEnv.data.JWT_SECRET,
+};
+
