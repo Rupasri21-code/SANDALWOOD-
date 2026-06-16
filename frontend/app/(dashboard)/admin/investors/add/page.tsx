@@ -147,7 +147,7 @@ export default function AddInvestorPage() {
         plotPhotos: formData.plotPhotosPreviews.join(','),
       };
 
-      const res = await fetch("http://localhost:5000/api/v1/investors", {
+      const res = await fetch("http://localhost:5001/api/v1/investors", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -562,6 +562,64 @@ export default function AddInvestorPage() {
                 )}
                 <input id="landDocumentUpload" type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, 'landDocumentPreview')} />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 7: Nominee Details */}
+        <section className="bg-[#F7F0E4] rounded-xl border border-[#C49A5A]/30 overflow-hidden shadow-sm">
+          <div className="bg-[#12372A] px-6 py-4 flex items-center">
+            <Users className="w-5 h-5 text-[#C49A5A] mr-3" />
+            <h2 className="text-xl font-semibold text-white" style={{ fontFamily: 'Playfair Display, serif' }}>7. Nominee Details</h2>
+          </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Name *</label>
+              <input type="text" name="nomineeName" required value={formData.nomineeName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C49A5A] outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Relationship *</label>
+              <select name="nomineeRelation" required value={formData.nomineeRelation} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white focus:ring-[#C49A5A]">
+                <option value="">Select Relationship</option>
+                <option value="Spouse">Spouse</option>
+                <option value="Child">Child</option>
+                <option value="Parent">Parent</option>
+                <option value="Sibling">Sibling</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Phone *</label>
+              <input 
+                type="tel" 
+                name="nomineePhone" 
+                required 
+                pattern="^[6-9]\d{9}$" 
+                title="Must be a valid 10-digit Indian mobile number" 
+                value={formData.nomineePhone} 
+                onChange={handleChange} 
+                className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-[#C49A5A]" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Email</label>
+              <input type="email" name="nomineeEmail" value={formData.nomineeEmail} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-[#C49A5A]" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Aadhaar (12 digits)</label>
+              <input 
+                type="text" 
+                name="nomineeAadhaar" 
+                pattern="^\d{12}$" 
+                title="Aadhaar Number must be exactly 12 digits" 
+                value={formData.nomineeAadhaar} 
+                onChange={handleChange} 
+                className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-[#C49A5A]" 
+              />
+            </div>
+            <div className="md:col-span-2 lg:col-span-3">
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Address</label>
+              <textarea name="nomineeAddress" rows={2} value={formData.nomineeAddress} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-[#C49A5A]" />
             </div>
           </div>
         </section>

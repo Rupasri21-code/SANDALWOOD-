@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { Sprout, Activity, ArrowUpRight, CheckCircle, Leaf, FileText, Image as ImageIcon, Download } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 export default function PortalPlantationPage() {
   const { profile } = useAuth();
@@ -91,22 +91,24 @@ export default function PortalPlantationPage() {
           {/* Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Active Trees', value: totalTrees.toString(), icon: Sprout, change: 'Current', color: 'from-blue-500/20 to-blue-600/10', border: 'border-blue-500/20' },
-          { label: 'Growth Stage', value: currentStage?.replace('_', ' ') || 'Pending', icon: Activity, change: 'Latest', color: 'from-green-500/20 to-green-600/10', border: 'border-green-500/20' },
-          { label: 'Survival Rate', value: survivalRate, icon: Leaf, change: 'Current', color: 'from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20' },
-          { label: 'Health Status', value: currentHealth, icon: FileText, change: 'Current', color: 'from-purple-500/20 to-purple-600/10', border: 'border-purple-500/20' },
+          { label: 'Active Trees', value: totalTrees.toString(), icon: Sprout, change: 'Current', color: 'linear-gradient(135deg, #0F2745, #153C72, #1E5DB4)', shadow: 'rgba(30,93,180,0.6)' },
+          { label: 'Growth Stage', value: currentStage?.replace('_', ' ') || 'Pending', icon: Activity, change: 'Latest', color: 'linear-gradient(135deg, #0E2A1D, #12643A, #1F8A50)', shadow: 'rgba(31,138,80,0.6)' },
+          { label: 'Survival Rate', value: survivalRate, icon: Leaf, change: 'Current', color: 'linear-gradient(135deg, #3A2804, #8A6411, #D4A017)', shadow: 'rgba(212,160,23,0.6)' },
+          { label: 'Health Status', value: currentHealth, icon: FileText, change: 'Current', color: 'linear-gradient(135deg, #24143D, #4A247A, #7B3FE4)', shadow: 'rgba(123,63,228,0.6)' },
         ].map((card, i) => (
-          <div key={i} className={`bg-gradient-to-br ${card.color} border ${card.border} rounded-2xl p-5`}>
-            <div className="flex items-start justify-between mb-3">
-              <div className="p-2 rounded-lg bg-white/5">
-                <card.icon className="w-4 h-4 text-white/70" />
+          <div key={i} className="rounded-[24px] p-6 relative overflow-hidden group hover:scale-[1.03] hover:brightness-[1.08] transition-all duration-300 flex flex-col justify-between" style={{ background: card.color, border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[24px] pointer-events-none" style={{ boxShadow: `0 0 30px ${card.shadow} inset, 0 0 25px ${card.shadow}` }} />
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[24px]" />
+            <div className="flex items-start justify-between mb-4 relative z-10">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20 shadow-sm backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.12)' }}>
+                <card.icon className="w-5 h-5 text-[#C49A5A]" />
               </div>
-              <span className="text-[#22C55E] text-xs font-medium flex items-center gap-0.5">
+              <span className="text-white/90 bg-black/20 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide flex items-center gap-1 backdrop-blur-sm border border-white/20 shadow-sm">
                 {card.change} <ArrowUpRight className="w-3 h-3" />
               </span>
             </div>
-            <div className="font-display text-2xl font-bold text-white mb-0.5 capitalize">{card.value}</div>
-            <div className="text-white/50 text-xs">{card.label}</div>
+            <div className="font-display text-2xl font-bold text-white mb-0.5 capitalize relative z-10 drop-shadow-md">{card.value}</div>
+            <div className="text-white/90 text-sm font-semibold relative z-10 tracking-wide drop-shadow-sm">{card.label}</div>
           </div>
         ))}
       </div>

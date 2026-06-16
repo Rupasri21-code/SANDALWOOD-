@@ -37,7 +37,10 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
 
       req.user = user as { id: string; email: string; role: 'ADMIN' | 'INVESTOR' };
       next();
-    } catch (err) {
+    } catch (err: any) {
+      if (err.name === 'TokenExpiredError') {
+        throw new ApiError(401, 'Access token expired');
+      }
       throw new ApiError(401, 'Not authorized, invalid or expired token');
     }
   } catch (error) {

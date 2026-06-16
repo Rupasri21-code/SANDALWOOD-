@@ -3,6 +3,11 @@ import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { z } from 'zod';
+import {
+  sendWhatsAppPaymentReceived,
+  sendWhatsAppPaymentStatusUpdated,
+  getInvestorWhatsAppNumber,
+} from '../services/whatsapp.service';
 
 const createPaymentSchema = z.object({
   investmentId: z.string().optional(),
@@ -105,6 +110,20 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
       },
     });
 
+    try {
+      const waPhone = getInvestorWhatsAppNumber(investor);
+      if (waPhone) {
+        await sendWhatsAppPaymentReceived(
+          waPhone,
+          payment.amount.toString(),
+          payment.transaction_id,
+          payment.status
+        );
+      }
+    } catch (waErr: any) {
+      console.error('⚠️ Failed to send WhatsApp payment received notification:', waErr.message || waErr);
+    }
+
     res.status(201).json(
       new ApiResponse(201, payment, 'Payment recorded successfully')
     );
@@ -138,6 +157,28 @@ export const updatePayment = async (req: Request, res: Response, next: NextFunct
         notes: validated.notes,
       },
     });
+
+    // WhatsApp: notify investor only when the payment status has changed
+    if (validated.status && validated.status !== existing.status) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPaymentStatusUpdated(
+              waPhone,
+              investor.full_name,
+              updated.amount,
+              updated.transaction_id,
+              existing.status,
+              updated.status
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp payment status update notification:', waErr.message || waErr);
+      }
+    }
 
     res.status(200).json(
       new ApiResponse(200, updated, 'Payment updated successfully')

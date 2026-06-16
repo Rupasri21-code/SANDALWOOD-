@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { setupAxiosInterceptors, setupFetchInterceptor } from './api';
 
 type Profile = {
   id: string;
@@ -27,7 +28,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -69,6 +70,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    setupAxiosInterceptors(signOut);
+    setupFetchInterceptor(signOut);
+
     const token = localStorage.getItem('token');
     if (token) {
       fetchProfile(token).finally(() => setLoading(false));
@@ -91,12 +95,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || 'Login failed');
       }
       
-      const token = data.data.token;
-      localStorage.setItem('token', token);
+      const accessToken = data.data.accessToken;
+      const refreshToken = data.data.refreshToken;
+      localStorage.setItem('token', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
       
       const fakeUser = { id: data.data.user.id, email: data.data.user.email };
       setUser(fakeUser);
-      setSession({ access_token: token, user: fakeUser });
+      setSession({ access_token: accessToken, user: fakeUser });
       setProfile({
         id: data.data.user.id,
         email: data.data.user.email,
@@ -111,7 +119,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch(`${API_URL}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (err) {
+      console.error('Logout request failed:', err);
+    }
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     setUser(null);
     setSession(null);
     setProfile(null);

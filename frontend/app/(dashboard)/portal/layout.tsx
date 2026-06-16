@@ -12,8 +12,9 @@ import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { motion } from 'framer-motion';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 const navItems = [
   { href: '/portal', label: 'Overview', icon: LayoutDashboard, exact: true },
@@ -61,7 +62,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#10140E] flex items-center justify-center">
+      <div className="min-h-screen bg-[#08120D] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -81,41 +82,41 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   };
 
   return (
-    <div className="flex h-screen bg-[#10140E] overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#08120D] overflow-hidden font-sans">
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-[#06261C] border-r border-white/5 flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="p-6 border-b border-white/5">
+      <aside className={`fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-[#032B1F] border-r border-[#C49A5A]/30 flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-6 border-b border-[#C49A5A]/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-[#C49A5A] bg-[#0B2F24] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full border border-[#C49A5A] bg-[#0B1A12] flex items-center justify-center shadow-[0_0_12px_rgba(196,154,90,0.2)]">
               <TreePine className="w-5 h-5 text-[#C49A5A]" />
             </div>
             <div>
-              <span className="font-display text-base font-bold text-[#F7F0E4] tracking-wide">Chandan Nilayam</span>
-              <span className="block text-[9px] text-[#C49A5A] tracking-[0.2em] uppercase mt-0.5">Investor Portal</span>
+              <span className="font-display text-base font-bold text-[#F8F5EE] tracking-wide">Chandan Nilayam</span>
+              <span className="block text-[9px] text-[#C49A5A] tracking-[0.2em] uppercase mt-0.5 font-medium">Investor Portal</span>
             </div>
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#C49A5A]/20 scrollbar-track-transparent">
           {navItems.map((item) => {
             const active = isActive(item);
             const isNotif = item.href === '/portal/notifications';
             return (
               <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all group ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all group relative overflow-hidden ${
                   active
-                    ? 'bg-gradient-to-r from-[rgba(196,154,90,0.15)] to-transparent text-[#C49A5A] border border-[rgba(196,154,90,0.3)]'
-                    : 'text-[#B8B8A8] hover:text-[#F7F0E4] hover:bg-white/5 border border-transparent'
+                    ? 'bg-gradient-to-r from-[#C49A5A]/15 to-transparent text-[#C49A5A] border border-[#C49A5A]/35 shadow-[0_0_15px_rgba(196,154,90,0.1)]'
+                    : 'text-[#A8B5AA] hover:text-[#F8F5EE] hover:bg-white/5 border border-transparent hover:border-[#C49A5A]/20'
                 }`}
               >
-                <item.icon className={`w-5 h-5 shrink-0 transition-colors ${active ? 'text-[#C49A5A]' : 'text-[#B8B8A8] group-hover:text-[#F7F0E4]'}`} strokeWidth={active ? 2 : 1.5} />
+                <item.icon className={`w-5 h-5 shrink-0 transition-colors ${active ? 'text-[#C49A5A]' : 'text-[#A8B5AA] group-hover:text-[#F8F5EE]'}`} strokeWidth={active ? 2 : 1.5} />
                 <span className={`flex-1 ${active ? 'font-medium' : ''}`}>{item.label}</span>
                 {isNotif && unread > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-[#C49A5A] text-[#06261C] text-[10px] flex items-center justify-center font-bold">{unread}</span>
+                  <span className="w-5 h-5 rounded-full bg-[#C49A5A] text-[#032B1F] text-[10px] flex items-center justify-center font-bold shadow-[0_0_8px_rgba(196,154,90,0.5)]">{unread}</span>
                 )}
                 {active && <ChevronRight className="w-4 h-4 text-[#C49A5A] opacity-70" />}
               </Link>
@@ -123,51 +124,51 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5 bg-black/20">
-          <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
-            <div className="w-10 h-10 rounded-full bg-[#12372A] border border-[#C49A5A]/40 flex items-center justify-center">
+        <div className="p-4 border-t border-[#C49A5A]/20 bg-[#08120D]/30">
+          <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-[#101A13] border border-[#C49A5A]/35 shadow-lg group hover:border-[#C49A5A]/60 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-[#0B1A12] border border-[#C49A5A]/60 flex items-center justify-center shadow-[0_0_10px_rgba(196,154,90,0.15)] group-hover:shadow-[0_0_15px_rgba(196,154,90,0.3)] transition-shadow">
               <span className="text-[#C49A5A] text-sm font-bold">{profile.full_name?.[0] || 'U'}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[#F7F0E4] text-sm font-medium truncate">{profile.full_name || 'Investor'}</div>
-              <div className="text-[#B8B8A8] text-[11px] truncate">{profile.email}</div>
+              <div className="text-[#F8F5EE] text-sm font-medium truncate">{profile.full_name || 'Investor'}</div>
+              <div className="text-[#A8B5AA] text-[11px] truncate">{profile.email}</div>
             </div>
           </div>
-          <Button onClick={() => setShowSignoutConfirm(true)} variant="ghost" className="w-full h-11 text-[#B8B8A8] hover:text-red-400 hover:bg-red-500/10 gap-2 justify-start rounded-xl font-medium">
+          <Button onClick={() => setShowSignoutConfirm(true)} variant="ghost" className="w-full h-11 text-[#A8B5AA] hover:text-[#ff6b6b] hover:bg-[#ff6b6b]/10 gap-2 justify-start rounded-xl font-medium transition-colors">
             <LogOut className="w-4 h-4" /> Sign Out
           </Button>
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-[#10140E]">
-        <header className="bg-[#10140E] border-b border-white/5 px-8 py-5 flex items-center justify-between sticky top-0 z-20">
+      <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-[#08120D] to-[#0B1A12]">
+        <header className="bg-[#08120D]/80 backdrop-blur-md border-b border-[#C49A5A]/20 px-8 py-5 flex items-center justify-between sticky top-0 z-20 shadow-sm">
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-[#B8B8A8] hover:text-[#F7F0E4] transition-colors">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-[#A8B5AA] hover:text-[#C49A5A] transition-colors">
               <Menu className="w-6 h-6" />
             </button>
-            <div className="flex items-center gap-2 text-sm text-[#B8B8A8]">
-              <span className="text-[#F7F0E4] font-medium tracking-wide">Portal</span>
-              <ChevronRight className="w-4 h-4 opacity-50" />
+            <div className="flex items-center gap-3 text-sm text-[#A8B5AA]">
+              <span className="text-[#F8F5EE] font-medium tracking-wide">Portal</span>
+              <ChevronRight className="w-4 h-4 opacity-40" />
               <span className="capitalize text-[#C49A5A] font-medium">{pathname.split('/').pop() || 'Overview'}</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <div className="flex items-center gap-5">
+            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] text-xs font-medium shadow-[0_0_12px_rgba(34,197,94,0.1)]">
+              <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
               System Operational
             </div>
-            <Link href="/portal/notifications" className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-colors">
-              <Bell className="w-5 h-5 text-[#F7F0E4]" />
+            <Link href="/portal/notifications" className="relative p-2.5 rounded-full bg-[#101A13] hover:bg-[#121F17] border border-[#C49A5A]/35 transition-all hover:shadow-[0_0_12px_rgba(196,154,90,0.2)] group hover:scale-105">
+              <Bell className="w-5 h-5 text-[#F8F5EE] group-hover:text-[#C49A5A] transition-colors" />
               {unread > 0 && (
-                <span className="absolute 0 right-0 w-2.5 h-2.5 rounded-full bg-[#C49A5A] border-2 border-[#10140E]" />
+                <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-[#C49A5A] border-[2px] border-[#101A13]" />
               )}
             </Link>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-[#C49A5A]/20 scrollbar-track-transparent">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

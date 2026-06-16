@@ -1,8 +1,8 @@
 import express from 'express';
-import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
 import { env } from './config/env';
+import { corsMiddleware } from './middleware/cors.middleware';
 import { limiter } from './middleware/rateLimit.middleware';
 import { errorHandler } from './middleware/error.middleware';
 
@@ -20,6 +20,7 @@ import inquiryRoutes from './routes/inquiry.routes';
 import notificationRoutes from './routes/notification.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import uploadRoutes from './routes/upload.routes';
+import testRoutes from './routes/test.routes';
 
 const app = express();
 
@@ -29,17 +30,7 @@ app.use(helmet({
 }));
 
 // CORS Configuration
-const allowedOrigins = env.ALLOWED_ORIGINS.split(',');
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Blocked by CORS policy'));
-    }
-  },
-  credentials: true,
-}));
+app.use(corsMiddleware);
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
@@ -73,6 +64,7 @@ app.use(`${API_PREFIX}/inquiries`, inquiryRoutes);
 app.use(`${API_PREFIX}/notifications`, notificationRoutes);
 app.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
 app.use(`${API_PREFIX}/upload`, uploadRoutes);
+app.use(`${API_PREFIX}/test`, testRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

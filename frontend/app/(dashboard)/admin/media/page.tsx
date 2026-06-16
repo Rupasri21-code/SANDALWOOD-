@@ -33,7 +33,7 @@ const CATEGORIES = [
 
 const VISIBILITY_OPTIONS: Visibility[] = ['Specific Investor', 'All Investors'];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 const formatBytes = (bytes: number, decimals = 2) => {
     if (!+bytes) return '0 Bytes';

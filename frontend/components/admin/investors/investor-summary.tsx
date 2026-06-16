@@ -100,7 +100,7 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
   };
 
   const Section = ({ title, icon: Icon, children }: any) => (
-    <div className="mb-8 bg-[#1A1A15] border border-white/10 rounded-xl overflow-hidden print:border-gray-300 print:bg-white print:text-black">
+    <div className="mb-8 bg-[#1A1A15] border border-white/10 rounded-xl overflow-hidden print:border-gray-300 print:bg-white print:text-black print:break-inside-avoid">
       <div className="bg-white/5 px-6 py-4 flex items-center gap-3 border-b border-white/10 print:bg-gray-100 print:border-gray-300">
         <Icon className="w-5 h-5 text-[#c8851e] print:text-black" />
         <h3 className="text-lg font-semibold text-white print:text-black">{title}</h3>
@@ -131,7 +131,7 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
 
   return (
     <>
-      <div className="flex flex-col h-full bg-[#141410] print:bg-white overflow-hidden w-full max-w-6xl mx-auto border-l border-white/10 shadow-2xl animate-in slide-in-from-right">
+      <div className="flex flex-col h-full print:h-auto print:static print:block print:w-full print:overflow-visible bg-[#141410] print:bg-white overflow-hidden w-full max-w-6xl mx-auto border-l border-white/10 shadow-2xl animate-in slide-in-from-right">
         {/* Header (Hidden in Print) */}
         <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5 print:hidden shrink-0">
           <div>
@@ -154,7 +154,7 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar print:p-0 print:overflow-visible" ref={printRef}>
+        <div id="printable-profile-record" className="flex-1 overflow-y-auto p-8 custom-scrollbar print:p-0 print:overflow-visible" ref={printRef}>
           
           {/* Print Header */}
           <div className="hidden print:block mb-8 text-center border-b border-gray-300 pb-6">
@@ -476,6 +476,51 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
           )}
         </div>
       </div>
+
+      {/* Global CSS for Print Mode */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          /* Reset viewport height, positioning, and overflow constraints on all page ancestors */
+          html, body, #__next, main, [role="dialog"] {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            position: static !important;
+          }
+          /* Prevent fixed-overlay containers from clipping the content height */
+          .fixed {
+            position: absolute !important;
+            height: auto !important;
+            min-height: 100% !important;
+            overflow: visible !important;
+          }
+          /* Hide everything except the printable profile record */
+          body * {
+            visibility: hidden !important;
+          }
+          #printable-profile-record, #printable-profile-record * {
+            visibility: visible !important;
+          }
+          #printable-profile-record {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            color: black !important;
+          }
+          /* Ensure backgrounds and colors are rendered in PDF export */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+        }
+      `}} />
 
       {/* Viewer Modal */}
       {preview && (

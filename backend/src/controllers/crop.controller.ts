@@ -3,6 +3,7 @@ import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { z } from 'zod';
+import { sendWhatsAppPlantationUpdate, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 
 const createCropSchema = z.object({
   landId: z.string().min(1, 'Land ID is required'),
@@ -115,6 +116,27 @@ export const createCrop = async (req: Request, res: Response, next: NextFunction
       },
     });
 
+    if (land.investor_id) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: land.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPlantationUpdate(
+              waPhone,
+              crop.name,
+              crop.growth_stage,
+              crop.health_status,
+              crop.surviving_plants,
+              crop.total_plants
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp plantation update notification:', waErr.message || waErr);
+      }
+    }
+
     res.status(201).json(
       new ApiResponse(201, crop, 'Crop record created successfully')
     );
@@ -128,7 +150,10 @@ export const updateCrop = async (req: Request, res: Response, next: NextFunction
     const { id } = req.params;
     const validated = createCropSchema.partial().parse(req.body);
 
-    const existing = await db.crop.findUnique({ where: { id } });
+    const existing = await db.crop.findUnique({
+      where: { id },
+      include: { land: true }
+    });
     if (!existing) {
       throw new ApiError(404, 'Crop record not found');
     }
@@ -147,6 +172,27 @@ export const updateCrop = async (req: Request, res: Response, next: NextFunction
         notes: validated.notes,
       },
     });
+
+    if (existing.land && existing.land.investor_id) {
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: existing.land.investor_id } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppPlantationUpdate(
+              waPhone,
+              updated.name,
+              updated.growth_stage,
+              updated.health_status,
+              updated.surviving_plants,
+              updated.total_plants
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('⚠️ Failed to send WhatsApp plantation update notification:', waErr.message || waErr);
+      }
+    }
 
     res.status(200).json(
       new ApiResponse(200, updated, 'Crop record updated successfully')

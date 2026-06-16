@@ -4,6 +4,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { z } from 'zod';
+import { sendWhatsAppAdminBroadcast, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 
 const createNotificationSchema = z.object({
   recipientId: z.string().min(1, 'Recipient is required'),
@@ -110,6 +111,18 @@ export const createNotification = async (req: AuthRequest, res: Response, next: 
       if (inserts.length > 0) {
         await db.notification.createMany({ data: inserts });
       }
+
+      // Broadcast to WhatsApp
+      for (const inv of investors) {
+        const waPhone = getInvestorWhatsAppNumber(inv);
+        if (waPhone) {
+          try {
+            await sendWhatsAppAdminBroadcast(waPhone, data.title, data.message);
+          } catch (waErr: any) {
+            console.error(`WhatsApp broadcast to ${waPhone} failed:`, waErr.message || waErr);
+          }
+        }
+      }
       
       return res.status(201).json(
         new ApiResponse(201, null, `Notification sent to ${inserts.length} investors`)
@@ -129,6 +142,22 @@ export const createNotification = async (req: AuthRequest, res: Response, next: 
       }
     });
     
+    if (validated.recipientId) {
+      try {
+        const investor = await db.investorProfile.findFirst({
+          where: { user_id: validated.recipientId }
+        });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppAdminBroadcast(waPhone, validated.title, validated.message);
+          }
+        }
+      } catch (waErr: any) {
+        console.error('WhatsApp failed:', waErr.message || waErr);
+      }
+    }
+
     res.status(201).json(
       new ApiResponse(201, notif, 'Notification created successfully')
     );
