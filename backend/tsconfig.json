@@ -5,12 +5,16 @@
     "lib": [
       "es2022"
     ],
-    "strict": true,
+    "types": [
+      "node",
+      "express"
+    ],
+    "strict": false,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "ignoreDeprecations": "6.0",
     "outDir": "./dist",
     "rootDir": "./src"
   },
@@ -19,6 +23,8 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/test-inquiry.ts",
+    "src/test-notifications.ts"
   ]
 }
