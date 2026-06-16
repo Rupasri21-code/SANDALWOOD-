@@ -4,6 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary.service';
 import { createNotification } from '../services/notification.service';
+import { sendWhatsAppDocumentUploaded, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 import path from 'path';
 
 export const listDocuments = async (req: Request, res: Response, next: NextFunction) => {
@@ -101,6 +102,19 @@ export const createDocument = async (req: Request, res: Response, next: NextFunc
         link: '/portal/documents',
         sendEmailAlert: true,
       });
+    }
+
+    try {
+      const waPhone = getInvestorWhatsAppNumber(investor);
+      if (waPhone) {
+        await sendWhatsAppDocumentUploaded(
+          waPhone,
+          doc.title,
+          doc.category
+        );
+      }
+    } catch (waErr: any) {
+      console.error('WhatsApp Failed:', waErr.message || waErr);
     }
 
     res.status(201).json(

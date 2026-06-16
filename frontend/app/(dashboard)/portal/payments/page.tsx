@@ -1,14 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Download, FileText, TrendingUp, CreditCard, Calendar, CheckCircle } from 'lucide-react';
+import { Download, FileText, TrendingUp, CreditCard, Calendar, CheckCircle, X, Printer } from 'lucide-react';
+import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 export default function PortalPaymentsPage() {
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState<any[]>([]);
   const [totalInvestment, setTotalInvestment] = useState(0);
+  const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -42,6 +44,14 @@ export default function PortalPaymentsPage() {
   if (loading) {
     return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-[#C49A5A] border-t-transparent rounded-full animate-spin" /></div>;
   }
+
+  const handleDownloadReceipt = (p: any) => {
+    if (p.receipt_url) {
+      window.open(p.receipt_url, '_blank');
+      return;
+    }
+    setSelectedReceipt(p);
+  };
 
   const totalPaid = payments.filter(p => p.status === 'COMPLETED').reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
   const pendingAmount = payments.filter(p => p.status === 'PENDING').reduce((sum, p) => sum + (Number(p.amount) || 0), 0) + Math.max(0, totalInvestment - totalPaid);
@@ -109,7 +119,10 @@ export default function PortalPaymentsPage() {
                   </td>
                   <td className="p-5 text-right">
                     {p.status === 'COMPLETED' ? (
-                      <button className="inline-flex items-center gap-1.5 text-[#C49A5A] hover:text-[#F7F0E4] text-xs font-medium transition-colors">
+                      <button 
+                        onClick={() => handleDownloadReceipt(p)}
+                        className="inline-flex items-center gap-1.5 text-[#C49A5A] hover:text-[#F7F0E4] text-xs font-medium transition-colors"
+                      >
                         <Download className="w-3.5 h-3.5" /> Download
                       </button>
                     ) : p.notes && p.notes.includes('http') ? (
@@ -126,6 +139,144 @@ export default function PortalPaymentsPage() {
           </table>
         </div>
       </div>
+
+      {selectedReceipt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm no-print">
+          <div className="bg-[#141410] border border-[#C49A5A]/30 rounded-2xl w-full max-w-xl overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 border-b border-white/10">
+              <h2 className="text-white font-semibold flex items-center gap-2">
+                <FileText className="w-5 h-5 text-[#C49A5A]" /> Payment Receipt
+              </h2>
+              <button 
+                onClick={() => setSelectedReceipt(null)}
+                className="p-1 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Receipt Content */}
+            <div className="p-6 overflow-y-auto max-h-[70vh] space-y-6" id="printable-receipt">
+              <div className="border border-[#C49A5A]/20 rounded-xl p-6 bg-gradient-to-b from-white/5 to-transparent space-y-6 print:border-gray-300 print:text-black print:bg-white">
+                
+                {/* Brand / Receipt Header */}
+                <div className="text-center border-b border-white/10 pb-5 print:border-gray-200">
+                  <h3 className="text-xl font-bold text-[#F7F0E4] print:text-black font-display">Chandan Nilayam</h3>
+                  <p className="text-[10px] text-[#C49A5A] uppercase tracking-widest mt-0.5 print:text-gray-500 font-semibold">Official Payment Receipt</p>
+                </div>
+
+                {/* Amount Section */}
+                <div className="text-center bg-white/5 rounded-xl py-5 px-4 border border-white/5 print:bg-gray-50 print:border-gray-200">
+                  <span className="text-xs text-white/50 print:text-gray-500 block">Amount Paid</span>
+                  <span className="text-3xl font-extrabold text-[#C49A5A] print:text-black mt-1 block">
+                    ₹{Number(selectedReceipt.amount).toLocaleString('en-IN')}
+                  </span>
+                </div>
+
+                {/* Details Table */}
+                <div className="space-y-3">
+                  {[
+                    { label: 'Transaction ID', value: selectedReceipt.transaction_id || 'N/A', mono: true },
+                    { label: 'Payment Date', value: new Date(selectedReceipt.payment_date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) },
+                    { label: 'Payment Mode', value: selectedReceipt.payment_method?.replace('_', ' ') || 'N/A', capitalize: true },
+                    { label: 'Payment Type', value: selectedReceipt.payment_type?.replace('_', ' ') || 'N/A', capitalize: true },
+                    { label: 'Status', value: selectedReceipt.status, badge: true }
+                  ].map((field, i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0 print:border-gray-200">
+                      <span className="text-xs text-white/50 print:text-gray-500">{field.label}</span>
+                      {field.badge ? (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20 print:bg-green-50 print:text-green-700 print:border-green-200">
+                          {field.value}
+                        </span>
+                      ) : (
+                        <span className={`text-xs text-white font-medium print:text-black ${field.mono ? 'font-mono' : ''} ${field.capitalize ? 'capitalize' : ''}`}>
+                          {field.value}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer Notes */}
+                <div className="text-center border-t border-white/5 pt-5 text-[10px] text-white/40 leading-relaxed print:border-gray-200 print:text-gray-500">
+                  Thank you for your investment with Chandan Nilayam Sandalwood Investments.<br />
+                  This is a system generated receipt and does not require a signature.
+                </div>
+
+              </div>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="flex gap-3 p-5 border-t border-white/10 bg-black/20 justify-end">
+              <button 
+                onClick={() => setSelectedReceipt(null)}
+                className="px-4 py-2 rounded-lg text-sm text-white/60 hover:bg-white/5 hover:text-white transition-colors"
+              >
+                Close
+              </button>
+              <button 
+                onClick={() => window.print()}
+                className="px-4 py-2 rounded-lg text-sm bg-[#C49A5A] hover:bg-[#A96618] text-white font-medium flex items-center gap-2 transition-colors"
+              >
+                <Printer className="w-4 h-4" /> Print Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Global CSS for Print Mode */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          /* Hide everything except the receipt */
+          body * {
+            visibility: hidden !important;
+          }
+          #printable-receipt, #printable-receipt * {
+            visibility: visible !important;
+          }
+          #printable-receipt {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            color: black !important;
+          }
+          /* Ensure text and tables render well on white paper */
+          #printable-receipt .print\\:text-black {
+            color: black !important;
+          }
+          #printable-receipt .print\\:border-gray-300 {
+            border-color: #d1d5db !important;
+          }
+          #printable-receipt .print\\:border-gray-200 {
+            border-color: #e5e7eb !important;
+          }
+          #printable-receipt .print\\:bg-white {
+            background-color: white !important;
+          }
+          #printable-receipt .print\\:bg-gray-55 {
+            background-color: #f9fafb !important;
+          }
+          #printable-receipt .print\\:text-gray-500 {
+            color: #6b7280 !important;
+          }
+          #printable-receipt .print\\:bg-green-50 {
+            background-color: #f0fdf4 !important;
+          }
+          #printable-receipt .print\\:text-green-700 {
+            color: #15803d !important;
+          }
+          #printable-receipt .print\\:border-green-200 {
+            border-color: #bbf7d0 !important;
+          }
+        }
+      `}} />
     </div>
   );
 }

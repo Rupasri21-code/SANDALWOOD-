@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, X, TrendingUp, ArrowUpRight } from 'lucide-react';
+import { Plus, X, TrendingUp, ArrowUpRight, Activity, Users, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
 type Investment = {
   id: string;
@@ -43,19 +43,54 @@ export default function InvestmentsPage() {
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('No authentication token found in localStorage');
+      return;
+    }
+
     try {
-      const [invRes, custRes, landsRes] = await Promise.all([
-        fetch(`${API_URL}/investments`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/lands`, { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      
-      const [invData, custData, landsData] = await Promise.all([invRes.json(), custRes.json(), landsRes.json()]);
-      setInvestments(invData.success ? invData.data : []);
-      setInvestors(custData.success ? custData.data : []);
-      setLands(landsData.success ? landsData.data : []);
-    } catch (e) {
-      console.error(e);
+      const res = await fetch(`${API_URL}/investments`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        setInvestments(data.data);
+      } else {
+        console.error('Failed to fetch investments:', data.message);
+        toast.error('Failed to fetch investments: ' + data.message);
+        setInvestments([]);
+      }
+    } catch (e: any) {
+      console.error('Error fetching investments:', e);
+      toast.error('Error fetching investments: ' + e.message);
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        setInvestors(data.data);
+      } else {
+        console.error('Failed to fetch investors:', data.message);
+        toast.error('Failed to fetch investors: ' + data.message);
+        setInvestors([]);
+      }
+    } catch (e: any) {
+      console.error('Error fetching investors:', e);
+      toast.error('Error fetching investors: ' + e.message);
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/lands`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        setLands(data.data);
+      } else {
+        console.error('Failed to fetch lands:', data.message);
+        toast.error('Failed to fetch lands: ' + data.message);
+        setLands([]);
+      }
+    } catch (e: any) {
+      console.error('Error fetching lands:', e);
+      toast.error('Error fetching lands: ' + e.message);
     }
   };
 
@@ -151,82 +186,148 @@ export default function InvestmentsPage() {
   const landTitle = (id: string | null) => id ? lands.find((l) => l.id === id)?.title || '—' : '—';
 
   return (
-    <div className="space-y-6">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8"
+    >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold text-white">Investments</h1>
-          <p className="text-white/50 text-sm mt-1">{investments.length} investment records</p>
+          <h1 className="font-display text-[2rem] font-bold text-[#F8F5EE] tracking-tight">Investments</h1>
+          <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">{investments.length} investment records</p>
         </div>
-        <Button onClick={() => { setForm(defaultForm); setEditId(null); setShowModal(true); }} className="bg-[#c8851e] hover:bg-[#a96618] text-white gap-2">
-          <Plus className="w-4 h-4" /> Add Investment
-        </Button>
+        <button 
+          onClick={() => { setForm(defaultForm); setEditId(null); setShowModal(true); }} 
+          whileHover={{ y: -3 }}
+          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] transition-all duration-300"
+          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
+        >
+          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+            <Plus className="w-4 h-4 text-white" strokeWidth={3} />
+          </div>
+          Add Investment
+        </button>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid sm:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-[#c8851e]/20 to-[#c8851e]/10 border border-[#c8851e]/20 rounded-2xl p-5">
-          <div className="text-white/50 text-xs mb-1">Total AUM</div>
-          <div className="font-display text-2xl font-bold text-white">₹{(totalAUM / 1e7).toFixed(2)} Cr</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div 
+          style={{ background: 'linear-gradient(135deg, #0F2745, #153C72, #1E5DB4)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}
+          className="rounded-[24px] p-6 flex flex-col justify-between h-[130px] relative overflow-hidden group hover:scale-[1.03] hover:brightness-[1.08] transition-all duration-300"
+        >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[24px] pointer-events-none" style={{ boxShadow: '0 0 30px rgba(30,93,180,0.6) inset, 0 0 25px rgba(30,93,180,0.6)' }} />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[24px]" />
+          <div className="flex items-start justify-between relative z-10">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20 shadow-sm backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <Activity className="w-5 h-5 text-[#C49A5A]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-white tracking-tight drop-shadow-md">₹{(totalAUM / 1e7).toFixed(2)} Cr</div>
+          </div>
+          <div className="flex items-end justify-between relative z-10 mt-auto">
+            <div className="text-white/90 text-sm font-semibold tracking-wide drop-shadow-sm">Total Investment</div>
+          </div>
         </div>
-        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20 rounded-2xl p-5">
-          <div className="text-white/50 text-xs mb-1">Active Investments</div>
-          <div className="font-display text-2xl font-bold text-white">{activeCount}</div>
+
+        <div 
+          style={{ background: 'linear-gradient(135deg, #0E2A1D, #12643A, #1F8A50)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}
+          className="rounded-[24px] p-6 flex flex-col justify-between h-[130px] relative overflow-hidden group hover:scale-[1.03] hover:brightness-[1.08] transition-all duration-300"
+        >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[24px] pointer-events-none" style={{ boxShadow: '0 0 30px rgba(31,138,80,0.6) inset, 0 0 25px rgba(31,138,80,0.6)' }} />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[24px]" />
+          <div className="flex items-start justify-between relative z-10">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20 shadow-sm backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <Users className="w-5 h-5 text-[#C49A5A]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-white tracking-tight drop-shadow-md">{activeCount}</div>
+          </div>
+          <div className="flex items-end justify-between relative z-10 mt-auto">
+            <div className="text-white/90 text-sm font-semibold tracking-wide drop-shadow-sm">Active Investors</div>
+          </div>
         </div>
-        <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/20 rounded-2xl p-5">
-          <div className="text-white/50 text-xs mb-1">Avg. ROI</div>
-          <div className="font-display text-2xl font-bold text-white">
-            {investments.length > 0 ? (investments.reduce((s, i) => s + i.roi_percentage, 0) / investments.length).toFixed(1) : 0}%
+
+        <div 
+          style={{ background: 'linear-gradient(135deg, #3A2804, #8A6411, #D4A017)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}
+          className="rounded-[24px] p-6 flex flex-col justify-between h-[130px] relative overflow-hidden group hover:scale-[1.03] hover:brightness-[1.08] transition-all duration-300"
+        >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[24px] pointer-events-none" style={{ boxShadow: '0 0 30px rgba(212,160,23,0.6) inset, 0 0 25px rgba(212,160,23,0.6)' }} />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[24px]" />
+          <div className="flex items-start justify-between relative z-10">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20 shadow-sm backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <Percent className="w-5 h-5 text-[#C49A5A]" />
+            </div>
+            <div className="font-display text-2xl font-bold text-white tracking-tight drop-shadow-md">
+              {investments.length > 0 ? (investments.reduce((s, i) => s + i.roi_percentage, 0) / investments.length).toFixed(1) : 0}%
+            </div>
+          </div>
+          <div className="flex items-end justify-between relative z-10 mt-auto">
+            <div className="text-white/90 text-sm font-semibold tracking-wide drop-shadow-sm">Average ROI</div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white/3 border border-white/8 rounded-2xl overflow-hidden">
+      <div 
+        className="rounded-[24px] overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(145deg, rgba(18,31,23,.95), rgba(10,15,12,.98))',
+          border: '1px solid rgba(196,154,90,.3)',
+          boxShadow: '0 20px 40px rgba(0,0,0,.5)'
+        }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/8 bg-white/2">
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Investor</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Amount</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">Land</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium hidden md:table-cell">ROI</th>
-                <th className="text-left px-5 py-3 text-white/50 font-medium">Status</th>
-                <th className="text-right px-5 py-3 text-white/50 font-medium">Actions</th>
+            <thead className="sticky top-0 z-10 backdrop-blur-md">
+              <tr>
+                {['Investor', 'Amount', 'Land', 'ROI', 'Status', 'Actions'].map((h, i) => (
+                  <th key={i} className={`text-left px-7 py-4 font-bold text-[13px] tracking-wider uppercase text-[#C49A5A] whitespace-nowrap ${i === 5 ? 'text-right' : ''} ${i === 2 || i === 3 ? 'hidden md:table-cell' : ''}`} style={{ background: 'rgba(196,154,90,.08)', height: '64px' }}>
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#C49A5A]/10">
               {investments.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-12 text-white/30">No investments yet</td></tr>
+                <tr>
+                  <td colSpan={6} className="text-center py-16 text-[#A8B5AA] font-medium text-base">
+                    No investments yet
+                  </td>
+                </tr>
               ) : (
                 investments.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-white/3 transition-colors">
-                    <td className="px-5 py-3">
-                      <div className="text-white font-medium">{investorName(inv.investor_id)}</div>
-                      <div className="text-white/40 text-xs">{inv.contract_number || '—'}</div>
+                  <tr key={inv.id} className="group transition-all duration-300 hover:bg-[rgba(196,154,90,.05)]" style={{ height: '80px' }}>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <div className="text-[#F8F5EE] font-semibold text-[15px] mb-1">{investorName(inv.investor_id)}</div>
+                      <div className="text-[#A8B5AA] text-[12px]">{inv.contract_number || '—'}</div>
                     </td>
-                    <td className="px-5 py-3">
-                      <div className="text-[#e9be55] font-semibold">₹{inv.amount.toLocaleString('en-IN')}</div>
-                      <div className="text-white/40 text-xs">{inv.investment_date}</div>
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <div className="text-[#C49A5A] font-bold text-[15px] mb-1">₹{inv.amount.toLocaleString('en-IN')}</div>
+                      <div className="text-[#A8B5AA] text-[12px]">{inv.investment_date}</div>
                     </td>
-                    <td className="px-5 py-3 text-white/60 hidden md:table-cell">{landTitle(inv.land_id)}</td>
-                    <td className="px-5 py-3 hidden md:table-cell">
-                      <span className="flex items-center gap-1 text-green-400 text-xs">
+                    <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[5px]">
+                      {landTitle(inv.land_id)}
+                    </td>
+                    <td className="px-7 py-4 hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-[11px] uppercase tracking-wider bg-[#22C55E]/12 text-[#22C55E]">
                         <ArrowUpRight className="w-3 h-3" /> {inv.roi_percentage}%
                       </span>
                     </td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        inv.status === 'ACTIVE' ? 'bg-green-400/15 text-green-400' :
-                        inv.status === 'MATURED' ? 'bg-[#c8851e]/15 text-[#e9be55]' :
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
+                      <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider ${
+                        inv.status === 'ACTIVE' ? 'bg-[#22C55E]/12 text-[#22C55E]' :
+                        inv.status === 'MATURED' ? 'bg-[#3B82F6]/12 text-[#3B82F6]' :
+                        inv.status === 'PENDING' ? 'bg-[#EAB308]/12 text-[#EAB308]' :
                         'bg-white/10 text-white/60'
                       }`}>
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          inv.status === 'ACTIVE' ? 'bg-[#22C55E]' : 
+                          inv.status === 'MATURED' ? 'bg-[#3B82F6]' : 
+                          inv.status === 'PENDING' ? 'bg-[#EAB308]' : 
+                          'bg-white/60'
+                        }`} />
                         {inv.status?.toLowerCase()}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className="px-7 py-4 transition-transform duration-300 group-hover:-translate-x-[5px] text-right">
                       <button onClick={() => {
                         setForm({ ...defaultForm, investor_id: inv.investor_id, land_id: inv.land_id || '', amount: String(inv.amount), roi_percentage: String(inv.roi_percentage), expected_returns: String(inv.expected_returns), status: inv.status, contract_number: inv.contract_number, investment_date: inv.investment_date });
                         setEditId(inv.id); setShowModal(true);
-                      }} className="text-[#c8851e]/60 hover:text-[#e9be55] text-xs px-2 py-1 rounded border border-white/10 hover:border-[#c8851e]/30">
+                      }} className="h-[36px] px-5 rounded-full font-bold text-[11px] uppercase tracking-wider border border-[#C49A5A] text-[#C49A5A] hover:bg-[#C49A5A] hover:text-[#08120D] hover:shadow-[0_0_15px_rgba(196,154,90,0.4)] transition-all duration-300 inline-flex items-center justify-center">
                         Edit
                       </button>
                     </td>

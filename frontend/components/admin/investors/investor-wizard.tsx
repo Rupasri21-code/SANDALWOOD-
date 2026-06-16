@@ -96,18 +96,58 @@ const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "i
           previewUrl = url.replace('/image/upload/', '/raw/upload/');
         }
         return (
-        <div onClick={() => setPreviewData && setPreviewData({url: previewUrl, isPdf})} className="flex items-start gap-4 p-3 bg-[#141410]/50 rounded-lg border border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
-          <div className="w-16 h-16 shrink-0 rounded-md overflow-hidden bg-white/5 flex items-center justify-center border border-white/10">
-            {isPdf ? <FileIcon className="w-8 h-8 text-red-400" /> : <img src={url} alt={title} className="w-full h-full object-cover" />}
+        <div onClick={() => setPreviewData && setPreviewData({url: previewUrl, isPdf})} className="flex flex-col bg-[#1A1A1A] rounded-xl shadow-lg border border-white/10 w-full cursor-pointer overflow-hidden group select-none">
+          {/* Top Half: Thumbnail (Dark Background) */}
+          <div className="h-32 bg-[#141410] flex items-center justify-center overflow-hidden relative border-b border-white/5 group-hover:bg-[#1C1C1A] transition-colors">
+             {isPdf ? (
+               url.includes('cloudinary') ? (
+                 <img src={url.replace('.pdf', '.jpg')} className="w-full h-full object-cover object-top opacity-80" onError={(e) => { e.currentTarget.style.display='none' }} />
+               ) : (
+                 <iframe src={`${url}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} className="w-full h-[300px] -mt-20 pointer-events-none opacity-80 bg-white" />
+               )
+             ) : (
+               <img src={url} alt={title} className="w-full h-full object-cover opacity-80" />
+             )}
+             {/* Overlay for view action */}
+             <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="bg-black/60 rounded-full py-1.5 px-3 backdrop-blur-sm border border-white/10 text-white flex items-center gap-1.5">
+                  <Eye className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium tracking-wide">Preview</span>
+                </div>
+             </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">{formData[`${fieldName}Name`] || 'Document'}</p>
-            <p className="text-xs text-white/50 mt-1">{formData[`${fieldName}Size`]} • Uploaded {formData[`${fieldName}Date`]}</p>
-            <div className="flex items-center gap-3 mt-3" onClick={e => e.stopPropagation()}>
-              <a href={previewUrl} download target="_blank" rel="noopener noreferrer" className="text-xs text-[#c8851e] hover:text-[#a96618] flex items-center gap-1"><Download className="w-3 h-3" /> Download</a>
-              <button onClick={() => fileRef.current?.click()} type="button" className="text-xs text-[#c8851e] hover:text-[#a96618] flex items-center gap-1">Replace</button>
-              <button onClick={handleRemove} type="button" className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"><Trash2 className="w-3 h-3" /> Remove</button>
-            </div>
+          
+          {/* Middle: PDF/IMG details */}
+          <div className="flex items-center gap-3 p-4 relative">
+             <div className={`w-11 h-11 shrink-0 ${isPdf ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'} border rounded-lg flex items-center justify-center shadow-inner`}>
+                <span className="font-bold text-[11px] tracking-wider uppercase">{isPdf ? 'PDF' : 'IMG'}</span>
+             </div>
+             <div className="flex-1 min-w-0 pr-8">
+                <p className="text-white text-sm font-medium truncate mb-1">{formData[`${fieldName}Name`] || title}</p>
+                <div className="flex items-center gap-2">
+                   <span className="text-white/40 text-xs font-medium">{isPdf ? 'PDF' : 'IMG'}</span>
+                   <span className="text-white/20 text-[10px]">•</span>
+                   <span className="text-white/40 text-xs">{formData[`${fieldName}Size`] || 'Uploaded'}</span>
+                </div>
+             </div>
+             {/* Uploaded date fake ticks */}
+             <div className="absolute right-4 top-4 flex flex-col items-end gap-1">
+                <span className="text-white/30 text-[10px] uppercase tracking-wider">{new Date().toLocaleDateString(undefined, {month: 'short', day: 'numeric'})}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-green-400/80" />
+             </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="flex items-center border-t border-white/5 bg-[#141410]" onClick={e => e.stopPropagation()}>
+             <a href={previewUrl} download target="_blank" rel="noopener noreferrer" className="flex-1 py-3 flex items-center justify-center gap-1.5 text-[#c8851e] hover:text-[#e9be55] hover:bg-white/5 font-medium text-[13px] border-r border-white/5 transition-colors">
+                <Download className="w-3.5 h-3.5" /> Download
+             </a>
+             <button onClick={() => fileRef.current?.click()} type="button" className="flex-1 py-3 flex items-center justify-center gap-1.5 text-white/60 hover:text-white hover:bg-white/5 font-medium text-[13px] border-r border-white/5 transition-colors">
+                Replace
+             </button>
+             <button onClick={handleRemove} type="button" className="flex-1 py-3 flex items-center justify-center gap-1.5 text-red-400/90 hover:text-red-400 hover:bg-white/5 font-medium text-[13px] transition-colors">
+                <Trash2 className="w-3.5 h-3.5" /> Remove
+             </button>
           </div>
         </div>
         );
@@ -271,10 +311,11 @@ export function InvestorWizard({
         }
         return true;
       case 9: // Nominee
-        if (!formData.nomineeName) { toast.error("Nominee Name is required"); return false; }
+        if (!formData.nomineeName || formData.nomineeName.length < 2) { toast.error("Nominee Name is required (min 2 chars)"); return false; }
         if (!formData.nomineeRelation) { toast.error("Nominee Relationship is required"); return false; }
-        if (!formData.nomineePhone) { toast.error("Nominee Phone is required"); return false; }
-        if (!formData.nomineeDocumentUrl) { toast.error("Please upload at least one valid government document."); return false; }
+        if (!formData.nomineePhone || !/^[6-9]\d{9}$/.test(formData.nomineePhone)) { toast.error("Nominee Phone must be a valid 10-digit mobile number"); return false; }
+        if (formData.nomineeEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.nomineeEmail)) { toast.error("Invalid nominee email format"); return false; }
+        if (formData.nomineeAadhaar && !/^\d{12}$/.test(formData.nomineeAadhaar)) { toast.error("Nominee Aadhaar must be exactly 12 digits"); return false; }
         return true;
       default:
         return true;
@@ -484,6 +525,11 @@ export function InvestorWizard({
     if (!formData.plotConfiguration) { toast.error("Plot Configuration is required"); setActiveSection(6); return; }
     if (!formData.plotPhotosUrls || formData.plotPhotosUrls.length === 0) { toast.error("At least 1 Plot Photo is mandatory"); setActiveSection(6); return; }
     if (!formData.paymentStatus) { toast.error("Payment Status is required"); setActiveSection(7); return; }
+    if (!formData.nomineeName || formData.nomineeName.length < 2) { toast.error("Nominee Name is required (min 2 chars)"); setActiveSection(9); return; }
+    if (!formData.nomineeRelation) { toast.error("Nominee Relationship is required"); setActiveSection(9); return; }
+    if (!formData.nomineePhone || !/^[6-9]\d{9}$/.test(formData.nomineePhone)) { toast.error("Nominee Phone must be a valid 10-digit mobile number"); setActiveSection(9); return; }
+    if (formData.nomineeEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.nomineeEmail)) { toast.error("Invalid nominee email format"); setActiveSection(9); return; }
+    if (formData.nomineeAadhaar && !/^\d{12}$/.test(formData.nomineeAadhaar)) { toast.error("Nominee Aadhaar must be exactly 12 digits"); setActiveSection(9); return; }
 
     onSave(formData);
   };
@@ -527,7 +573,7 @@ export function InvestorWizard({
 
   if (isViewMode) {
     return (
-      <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-end p-0">
+      <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-end p-0 print:static print:block print:w-full print:h-auto print:overflow-visible">
         <InvestorSummary formData={formData} onClose={onClose} onEdit={() => toast.info('Please click the Edit (pencil) icon in the table to edit.')} />
       </div>
     );

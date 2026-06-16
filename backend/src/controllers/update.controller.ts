@@ -118,6 +118,48 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
         link: '/portal/plantation',
         sendEmailAlert: validated.sendAlert || false,
       });
+
+      // WhatsApp Integration
+      try {
+        const { getInvestorWhatsAppNumber, sendWhatsAppPlantationUpdate, sendWhatsAppDocumentUploaded } = require('../services/whatsapp.service');
+        const waPhone = getInvestorWhatsAppNumber(land.investor);
+        
+        if (waPhone) {
+          // If crop ID is provided, try to fetch crop details for a full plantation update message
+          if (validated.cropId) {
+            const crop = await db.crop.findUnique({ where: { id: validated.cropId } });
+            if (crop) {
+              await sendWhatsAppPlantationUpdate(
+                waPhone,
+                crop.name || 'Sandalwood',
+                crop.growth_stage || 'N/A',
+                crop.health_status || 'N/A',
+                crop.surviving_plants || 0,
+                crop.total_plants || 0
+              );
+            }
+          } else {
+            // Fallback generic message using admin broadcast if crop isn't specified
+            const { sendWhatsAppAdminBroadcast } = require('../services/whatsapp.service');
+            await sendWhatsAppAdminBroadcast(
+              waPhone,
+              `Plantation Update: ${validated.title}`,
+              validated.description
+            );
+          }
+
+          // If photos were uploaded
+          if (images.length > 0) {
+            await sendWhatsAppDocumentUploaded(
+              waPhone,
+              `${images.length} new photo(s) attached to update`,
+              'Plantation Update'
+            );
+          }
+        }
+      } catch (waErr: any) {
+        console.error('WhatsApp sending failed for plantation update:', waErr.message || waErr);
+      }
     }
 
     res.status(201).json(

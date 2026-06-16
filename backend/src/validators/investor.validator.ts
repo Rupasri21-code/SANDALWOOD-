@@ -95,12 +95,12 @@ export const baseInvestorSchema = z.object({
   passbookVerificationStatus: sanitizedString().optional(),
   
   // Section 9: Nominee Details
-  nomineeName: sanitizedString().min(1, 'Nominee Name is required'),
+  nomineeName: sanitizedString().min(2, 'Nominee Name must be at least 2 characters'),
   nomineeRelation: sanitizedString().min(1, 'Nominee Relationship is required'),
-  nomineePhone: sanitizedString().min(1, 'Nominee Phone is required'),
-  nomineeEmail: sanitizedEmail().optional(),
-  nomineeAadhaar: sanitizedString().optional(),
-  nomineeAddress: sanitizedString().optional(),
+  nomineePhone: sanitizedString().regex(/^[6-9]\d{9}$/, 'Nominee Phone must be a valid 10-digit Indian mobile number'),
+  nomineeEmail: sanitizedEmail().email('Invalid nominee email address').optional().or(z.literal('')),
+  nomineeAadhaar: sanitizedString().regex(/^\d{12}$/, 'Nominee Aadhaar Number must be exactly 12 digits').optional().or(z.literal('')),
+  nomineeAddress: sanitizedString().min(5, 'Nominee Address must be at least 5 characters').optional().or(z.literal('')),
   nomineeIdUrl: sanitizedString().optional(),
   
   // Section 10: Communication

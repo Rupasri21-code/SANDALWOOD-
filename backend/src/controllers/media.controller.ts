@@ -3,6 +3,7 @@ import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary.service';
+import { sendWhatsAppDocumentUploaded, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 import path from 'path';
 
 export const listMedia = async (req: Request, res: Response, next: NextFunction) => {
@@ -67,6 +68,18 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
         })),
       });
 
+      // Broadcast to WhatsApp
+      for (const inv of allInvestors) {
+        const waPhone = getInvestorWhatsAppNumber(inv);
+        if (waPhone) {
+          try {
+            await sendWhatsAppDocumentUploaded(waPhone, title || req.file!.originalname, category || 'General');
+          } catch (waErr: any) {
+            console.error(`WhatsApp broadcast to ${waPhone} failed:`, waErr.message || waErr);
+          }
+        }
+      }
+
       res.status(201).json(
         new ApiResponse(201, null, `Media uploaded and assigned to ${allInvestors.length} investors`)
       );
@@ -82,6 +95,18 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
           category: category || 'General',
         },
       });
+
+      try {
+        const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
+        if (investor) {
+          const waPhone = getInvestorWhatsAppNumber(investor);
+          if (waPhone) {
+            await sendWhatsAppDocumentUploaded(waPhone, media.title, media.category);
+          }
+        }
+      } catch (waErr: any) {
+        console.error('WhatsApp failed:', waErr.message || waErr);
+      }
 
       res.status(201).json(
         new ApiResponse(201, media, 'Media uploaded successfully')

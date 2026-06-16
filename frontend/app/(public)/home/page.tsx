@@ -35,6 +35,12 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import SiteVisitSection from '@/components/public/site-visit-section';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Form validation schema
 const inquirySchema = z.object({
@@ -45,6 +51,12 @@ const inquirySchema = z.object({
   budgetRange: z.string().min(1, 'Please select your budget'),
   plotSize: z.string().min(1, 'Please select your preferred plot size'),
   message: z.string().optional(),
+  agreePrivacy: z.literal(true, {
+    errorMap: () => ({ message: 'You must agree to the Privacy Policy' }),
+  }),
+  agreeTerms: z.literal(true, {
+    errorMap: () => ({ message: 'You must agree to the Terms & Conditions' }),
+  }),
 });
 
 type InquiryFormValues = z.infer<typeof inquirySchema>;
@@ -190,6 +202,11 @@ export default function HomePage() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const [prevHeroImage, setPrevHeroImage] = useState<number | null>(null);
 
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
   const heroSequence = [
     '/gallery_01.png',
     '/gallery_02.jpg',
@@ -225,6 +242,7 @@ export default function HomePage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
@@ -317,11 +335,11 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="font-serif text-5xl md:text-6xl lg:text-[75px] font-bold tracking-tight text-[#0B2F24] leading-[1.1] mb-8 font-display"
+            className="font-serif text-5xl md:text-6xl lg:text-[75px] font-bold tracking-tight text-white leading-[1.1] mb-8 font-display"
             style={{ 
               fontFamily: "'Cormorant Garamond', 'Playfair Display', serif", 
               fontWeight: 700, 
-              textShadow: '0 2px 10px rgba(255, 255, 255, 0.5)' 
+              textShadow: '0 4px 20px rgba(0, 0, 0, 0.4)' 
             }}
           >
             ROOTED IN NATURE.<br />
@@ -861,7 +879,7 @@ export default function HomePage() {
                 <img 
                   src={img.url} 
                   alt={img.title} 
-                  className="w-full h-full object-cover" 
+                  className={`w-full h-full object-cover transition-transform duration-500 ${i === 0 ? 'scale-[1.25]' : ''}`} 
                 />
               </div>
             ))}
@@ -1073,6 +1091,49 @@ export default function HomePage() {
                   <span className="absolute right-3.5 top-3 text-[11px] text-[#8B5E3C]/50">✍️</span>
                 </div>
 
+                {/* Privacy and Terms Checkboxes */}
+                <div className="col-span-1 md:col-span-2 flex flex-col gap-3 text-left py-2">
+                  <div className="flex flex-col gap-1">
+                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        disabled={!privacyAccepted || !termsAccepted}
+                        checked={privacyAccepted && termsAccepted}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          if (!checked) {
+                            setPrivacyAccepted(false);
+                            setTermsAccepted(false);
+                            setValue('agreePrivacy', undefined as any, { shouldValidate: true });
+                            setValue('agreeTerms', undefined as any, { shouldValidate: true });
+                          }
+                        }}
+                        className="w-4 h-4 rounded border-[rgba(139,94,60,0.35)] bg-[#F7F0E4] text-[#0B2F24] focus:ring-[#C49A5A] accent-[#0B2F24] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      />
+                      <span className="text-xs text-[#3B2416] font-semibold font-sans">
+                        I have read and agree to the{' '}
+                        <button type="button" onClick={() => setIsPrivacyOpen(true)} className="text-[#8B5E3C] hover:text-[#C49A5A] underline transition-colors font-bold">
+                          Privacy Policy
+                        </button>
+                        {' '}and{' '}
+                        <button type="button" onClick={() => setIsTermsOpen(true)} className="text-[#8B5E3C] hover:text-[#C49A5A] underline transition-colors font-bold">
+                          Terms & Conditions
+                        </button>
+                      </span>
+                    </label>
+                    {(!privacyAccepted || !termsAccepted) && (
+                      <p className="text-[#8B5E3C]/80 text-[10px] font-sans pl-7">Please click and accept both agreements to proceed.</p>
+                    )}
+                    {(errors.agreePrivacy || errors.agreeTerms) && (privacyAccepted && termsAccepted) && (
+                      <p className="text-red-500 text-[10px] font-sans pl-7">You must check the box to agree to the policies.</p>
+                    )}
+                    
+                    {/* Hidden inputs to keep react-hook-form happy */}
+                    <input type="hidden" {...register('agreePrivacy')} />
+                    <input type="hidden" {...register('agreeTerms')} />
+                  </div>
+                </div>
+
                 {/* Submit button */}
                 <button
                   type="submit"
@@ -1098,6 +1159,79 @@ export default function HomePage() {
 
       {/* 10. Visit Our Investment Site */}
       <SiteVisitSection />
+
+      {/* Privacy Policy Modal */}
+      <Dialog open={isPrivacyOpen} onOpenChange={setIsPrivacyOpen}>
+        <DialogContent className="sm:max-w-md bg-[#F7F0E4] border-[#C49A5A] z-50">
+          <DialogHeader>
+            <DialogTitle className="text-[#12372A] font-serif text-2xl">Privacy Policy</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-[#3B2416] max-h-[60vh] overflow-y-auto pr-4 mb-4 font-sans">
+            <p className="mb-2">We value your privacy. By proceeding, you agree that your data will be securely processed and stored by Chandan Nilayam Investments.</p>
+            <p className="mb-2">We will not share your personal information with any third-party marketers without your explicit consent.</p>
+            <p>You can find our full privacy policy details at our office.</p>
+          </div>
+          <div className="flex items-center space-x-2 pt-4 border-t border-[rgba(139,94,60,0.15)]">
+            <input 
+              type="checkbox" 
+              id="privacy-accept" 
+              checked={privacyAccepted}
+              onChange={(e) => {
+                setPrivacyAccepted(e.target.checked);
+                if (e.target.checked && termsAccepted) {
+                  setValue('agreePrivacy', true, { shouldValidate: true });
+                  setValue('agreeTerms', true, { shouldValidate: true });
+                } else if (!e.target.checked || !termsAccepted) {
+                  setValue('agreePrivacy', undefined as any, { shouldValidate: true });
+                  setValue('agreeTerms', undefined as any, { shouldValidate: true });
+                }
+                setTimeout(() => setIsPrivacyOpen(false), 300);
+              }}
+              className="w-4 h-4 rounded border-[#C49A5A] text-[#12372A] focus:ring-[#C49A5A] cursor-pointer" 
+            />
+            <label htmlFor="privacy-accept" className="text-sm font-bold leading-none cursor-pointer text-[#12372A] font-sans">
+              I accept the Privacy Policy
+            </label>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Terms & Conditions Modal */}
+      <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
+        <DialogContent className="sm:max-w-md bg-[#F7F0E4] border-[#C49A5A] z-50">
+          <DialogHeader>
+            <DialogTitle className="text-[#12372A] font-serif text-2xl">Terms & Conditions</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-[#3B2416] max-h-[60vh] overflow-y-auto pr-4 mb-4 font-sans">
+            <p className="mb-2">By submitting this inquiry, you confirm that the information provided is accurate.</p>
+            <p className="mb-2">This inquiry does not constitute a legally binding agreement to purchase land. It is solely an expression of interest.</p>
+            <p>Our team will contact you to explain the exact terms, returns, and agreements.</p>
+          </div>
+          <div className="flex items-center space-x-2 pt-4 border-t border-[rgba(139,94,60,0.15)]">
+            <input 
+              type="checkbox" 
+              id="terms-accept" 
+              checked={termsAccepted}
+              onChange={(e) => {
+                setTermsAccepted(e.target.checked);
+                if (e.target.checked && privacyAccepted) {
+                  setValue('agreePrivacy', true, { shouldValidate: true });
+                  setValue('agreeTerms', true, { shouldValidate: true });
+                } else if (!e.target.checked || !privacyAccepted) {
+                  setValue('agreePrivacy', undefined as any, { shouldValidate: true });
+                  setValue('agreeTerms', undefined as any, { shouldValidate: true });
+                }
+                setTimeout(() => setIsTermsOpen(false), 300);
+              }}
+              className="w-4 h-4 rounded border-[#C49A5A] text-[#12372A] focus:ring-[#C49A5A] cursor-pointer" 
+            />
+            <label htmlFor="terms-accept" className="text-sm font-bold leading-none cursor-pointer text-[#12372A] font-sans">
+              I accept the Terms & Conditions
+            </label>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

@@ -27,7 +27,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/home" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5E3C] to-[#C49A5A] flex items-center justify-center border border-[#0B2F24]/15">
             <TreePine className="w-5 h-5 text-white" />
           </div>
@@ -47,8 +47,10 @@ export default function Navbar() {
           <a href="#plantation" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Our Plantation</a>
           <a href="#benefits" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Investor Benefits</a>
           <a href="#portal" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Portal</a>
-          <Link href="/login" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Login</Link>
           <a href="#gallery" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Gallery</a>
+          <Link href="/login" className="bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full px-6 py-2.5 font-bold text-xs tracking-wider uppercase transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 flex items-center justify-center border border-white/10">
+            Login
+          </Link>
         </div>
 
         {/* Button */}
@@ -77,8 +79,10 @@ export default function Navbar() {
           <a href="#plantation" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Our Plantation</a>
           <a href="#benefits" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Investor Benefits</a>
           <a href="#portal" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Portal</a>
-          <Link href="/login" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Login</Link>
           <a href="#gallery" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Gallery</a>
+          <Link href="/login" onClick={() => setMobileOpen(false)} className="block w-full text-center bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full py-3 font-bold uppercase text-xs tracking-wider transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 border border-white/10">
+            Login
+          </Link>
           <a href="#investor-inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">
             <Button className="w-full bg-[#C8851E] text-white py-3 rounded-xl font-bold uppercase text-xs tracking-wider">
               Investor Inquiry
