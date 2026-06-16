@@ -140,8 +140,7 @@ export default function NotificationsPage() {
         </div>
         <button 
           onClick={() => { setForm({ recipient_id: '', investor_id: '', title: '', message: '', type: 'info', link: '' }); setSendToAll(false); setShowModal(true); }} 
-          whileHover={{ y: -3 }}
-          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] transition-all duration-300"
+          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] hover:-translate-y-1 transition-all duration-300"
           style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
         >
           <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
