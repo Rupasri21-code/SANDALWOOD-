@@ -1,22 +1,34 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
+// @ts-ignore
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { ApiError } from '../utils/ApiError';
+import { env } from '../config/env';
 
-const uploadDir = path.join(__dirname, '../../uploads');
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: env.CLOUDINARY_CLOUD_NAME,
+  api_key: env.CLOUDINARY_API_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET,
+});
 
-// Ensure directory exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req: any, file: any) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    let resourceType = 'auto';
+    if (ext === '.mp4') {
+      resourceType = 'video';
+    } else if (['.pdf', '.doc', '.docx'].includes(ext)) {
+      resourceType = 'raw'; // use 'raw' for non-media files
+    }
+    
+    return {
+      folder: 'sandalwood_uploads',
+      resource_type: resourceType,
+      public_id: file.fieldname + '-' + Date.now() + Math.round(Math.random() * 1e9),
+    };
   },
 });
 
