@@ -13,11 +13,13 @@ model User {
   email        String           @unique
   username     String           @unique
   password     String
-  role         String           @default("INVESTOR")
-  created_at   DateTime         @default(now())
-  updated_at   DateTime         @updatedAt
-  activityLogs ActivityLog[]
-  profile      InvestorProfile?
+  role                   String           @default("INVESTOR")
+  reset_password_token   String?
+  reset_password_expires DateTime?
+  created_at             DateTime         @default(now())
+  updated_at             DateTime         @updatedAt
+  activityLogs           ActivityLog[]
+  profile                InvestorProfile?
 }
 
 model InvestorProfile {

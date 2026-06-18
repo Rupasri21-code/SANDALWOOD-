@@ -8,6 +8,21 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Country, State, City } from 'country-state-city';
+
+const allCountries = Country.getAllCountries();
+
+const getStates = (countryName: string) => {
+  const country = allCountries.find(c => c.name === countryName);
+  return country ? State.getStatesOfCountry(country.isoCode) : [];
+};
+
+const getCities = (countryName: string, stateName: string) => {
+  const country = allCountries.find(c => c.name === countryName);
+  if (!country) return [];
+  const state = State.getStatesOfCountry(country.isoCode).find(s => s.name === stateName);
+  return state ? City.getCitiesOfState(country.isoCode, state.isoCode) : [];
+};
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -30,7 +45,7 @@ type Land = {
 type Investor = { id: string; full_name: string };
 
 const defaultForm = {
-  title: '', description: '', location: '', district: '', state: '',
+  title: '', description: '', location: '', district: '', state: '', country: 'India',
   survey_number: '', total_area: '', unit: 'acres', purchase_price: '',
   current_value: '', status: 'active', investor_id: '', latitude: '', longitude: ''
 };
@@ -69,7 +84,7 @@ export default function LandsPage() {
 
   const openNew = () => { setForm(defaultForm); setEditId(null); setShowModal(true); };
   const openEdit = (l: Land) => {
-    setForm({ ...defaultForm, title: l.title, location: l.location, district: l.district, state: l.state, total_area: String(l.total_area), unit: l.unit, status: l.status, purchase_price: String(l.purchase_price), current_value: String(l.current_value), latitude: l.latitude ? String(l.latitude) : '', longitude: l.longitude ? String(l.longitude) : '', investor_id: '' });
+    setForm({ ...defaultForm, title: l.title, location: l.location, district: l.district, state: l.state, country: 'India', total_area: String(l.total_area), unit: l.unit, status: l.status, purchase_price: String(l.purchase_price), current_value: String(l.current_value), latitude: l.latitude ? String(l.latitude) : '', longitude: l.longitude ? String(l.longitude) : '', investor_id: '' });
     // Note: Investor ID needs an explicit fetch if it was returned in a different field, but we'll stick to the current implementation.
     setEditId(l.id);
     setShowModal(true);
@@ -284,22 +299,38 @@ export default function LandsPage() {
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white/70 text-xs mb-1">Location</Label>
-                  <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
+                  <Label className="text-white/70 text-xs mb-1">Country</Label>
+                  <select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value, state: '', district: '' })}
+                    className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
+                    <option value="" className="bg-[#141410]">Select Country</option>
+                    {allCountries.map(c => <option key={c.isoCode} value={c.name} className="bg-[#141410]">{c.name}</option>)}
+                  </select>
                 </div>
                 <div>
-                  <Label className="text-white/70 text-xs mb-1">District</Label>
-                  <Input value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
+                  <Label className="text-white/70 text-xs mb-1">State</Label>
+                  <select value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value, district: '' })} disabled={!form.country}
+                    className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e] disabled:opacity-50">
+                    <option value="" className="bg-[#141410]">Select State</option>
+                    {getStates(form.country).map(s => <option key={s.isoCode} value={s.name} className="bg-[#141410]">{s.name}</option>)}
+                  </select>
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white/70 text-xs mb-1">State</Label>
-                  <Input value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })}
+                  <Label className="text-white/70 text-xs mb-1">District / City</Label>
+                  <select value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} disabled={!form.state}
+                    className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e] disabled:opacity-50">
+                    <option value="" className="bg-[#141410]">Select City</option>
+                    {getCities(form.country, form.state).map(c => <option key={c.name} value={c.name} className="bg-[#141410]">{c.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-white/70 text-xs mb-1">Location / Village</Label>
+                  <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}
                     className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                 </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-white/70 text-xs mb-1">Survey Number</Label>
                   <Input value={form.survey_number} onChange={(e) => setForm({ ...form, survey_number: e.target.value })}

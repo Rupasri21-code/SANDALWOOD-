@@ -9,12 +9,20 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 
-const INDIA_STATES_CITIES: Record<string, string[]> = {
-  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore"],
-  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar"],
-  "Karnataka": ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru"],
-  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik"],
-  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli"]
+import { Country, State, City } from 'country-state-city';
+
+const allCountries = Country.getAllCountries();
+
+const getStates = (countryName: string) => {
+  const country = allCountries.find(c => c.name === countryName);
+  return country ? State.getStatesOfCountry(country.isoCode) : [];
+};
+
+const getCities = (countryName: string, stateName: string) => {
+  const country = allCountries.find(c => c.name === countryName);
+  if (!country) return [];
+  const state = State.getStatesOfCountry(country.isoCode).find(s => s.name === stateName);
+  return state ? City.getCitiesOfState(country.isoCode, state.isoCode) : [];
 };
 
 export default function AddInvestorPage() {
@@ -75,6 +83,11 @@ export default function AddInvestorPage() {
     
     setFormData(prev => {
       const next = { ...prev, [name]: type === 'checkbox' ? checked : value };
+
+      if (name === 'currentCountry') { next.currentState = ''; next.currentDistrict = ''; }
+      if (name === 'currentState') { next.currentDistrict = ''; }
+      if (name === 'permanentCountry') { next.permanentState = ''; next.permanentDistrict = ''; }
+      if (name === 'permanentState') { next.permanentDistrict = ''; }
       
       // Auto-fill permanent address if sameAsPermanent is true
       if (name === 'sameAsPermanent' && checked) {
@@ -327,44 +340,26 @@ export default function AddInvestorPage() {
                 <div>
                   <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country</label>
                   <select name="currentCountry" value={formData.currentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                    <option value="India">India</option>
-                    <option value="Other">Other</option>
+                    <option value="">Select Country</option>
+                    {allCountries.map(c => <option key={c.isoCode} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 
-                {formData.currentCountry === 'India' ? (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State</label>
-                    <select name="currentState" value={formData.currentState} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                      <option value="">Select State</option>
-                      {Object.keys(INDIA_STATES_CITIES).map(state => (
-                        <option key={state} value={state}>{state}</option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State</label>
-                    <input type="text" name="currentState" value={formData.currentState} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province</label>
+                  <select name="currentState" value={formData.currentState} onChange={handleChange} disabled={!formData.currentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                    <option value="">Select State</option>
+                    {getStates(formData.currentCountry).map(s => <option key={s.isoCode} value={s.name}>{s.name}</option>)}
+                  </select>
+                </div>
 
-                {formData.currentCountry === 'India' && formData.currentState ? (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                    <select name="currentDistrict" value={formData.currentDistrict} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                      <option value="">Select City</option>
-                      {INDIA_STATES_CITIES[formData.currentState]?.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                    <input type="text" name="currentDistrict" value={formData.currentDistrict} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
+                  <select name="currentDistrict" value={formData.currentDistrict} onChange={handleChange} disabled={!formData.currentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                    <option value="">Select City</option>
+                    {getCities(formData.currentCountry, formData.currentState).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                  </select>
+                </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Village/Town</label>
@@ -394,44 +389,26 @@ export default function AddInvestorPage() {
                 <div>
                   <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country</label>
                   <select name="permanentCountry" value={formData.permanentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                    <option value="India">India</option>
-                    <option value="Other">Other</option>
+                    <option value="">Select Country</option>
+                    {allCountries.map(c => <option key={c.isoCode} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 
-                {formData.permanentCountry === 'India' ? (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State</label>
-                    <select name="permanentState" value={formData.permanentState} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                      <option value="">Select State</option>
-                      {Object.keys(INDIA_STATES_CITIES).map(state => (
-                        <option key={state} value={state}>{state}</option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State</label>
-                    <input type="text" name="permanentState" value={formData.permanentState} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province</label>
+                  <select name="permanentState" value={formData.permanentState} onChange={handleChange} disabled={!formData.permanentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                    <option value="">Select State</option>
+                    {getStates(formData.permanentCountry).map(s => <option key={s.isoCode} value={s.name}>{s.name}</option>)}
+                  </select>
+                </div>
 
-                {formData.permanentCountry === 'India' && formData.permanentState ? (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                    <select name="permanentDistrict" value={formData.permanentDistrict} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
-                      <option value="">Select City</option>
-                      {INDIA_STATES_CITIES[formData.permanentState]?.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                    <input type="text" name="permanentDistrict" value={formData.permanentDistrict} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
+                  <select name="permanentDistrict" value={formData.permanentDistrict} onChange={handleChange} disabled={!formData.permanentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                    <option value="">Select City</option>
+                    {getCities(formData.permanentCountry, formData.permanentState).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                  </select>
+                </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Village/Town</label>

@@ -1339,10 +1339,10 @@ export function InvestorWizard({
                           <Label className="text-xs text-white/50">Temporary Password</Label>
                           <p className="text-white font-mono">{formData.generatedPassword}</p>
                         </div>
-                        <Button type="button" variant="outline" size="sm" onClick={() => setFormData((p:any) => ({...p, generatedUsername: null, generatedPassword: null}))} className="w-full mt-2 border-red-500/30 text-red-400 hover:bg-red-500/10">Clear Credentials</Button>
+                        <Button type="button" size="sm" onClick={() => setFormData((p:any) => ({...p, generatedUsername: null, generatedPassword: null}))} className="w-full mt-2 border border-red-500/30 bg-transparent text-red-400 hover:bg-red-500/10 transition-colors">Clear Credentials</Button>
                       </div>
                     ) : (
-                      <Button type="button" onClick={generateCredentials} variant="outline" className="border-[#c8851e]/30 text-[#c8851e] hover:bg-[#c8851e]/10">
+                      <Button type="button" onClick={generateCredentials} className="border border-[#c8851e]/30 bg-transparent text-[#c8851e] hover:bg-[#c8851e]/10 transition-colors">
                         Generate Credentials Now
                       </Button>
                     )}
@@ -1497,13 +1497,13 @@ export function InvestorWizard({
                       <Camera className="w-8 h-8 text-red-400" />
                     </div>
                     <p className="text-red-400 font-medium">{cameraError}</p>
-                    <Button type="button" onClick={closeCamera} variant="outline" className="border-white/10 text-white hover:bg-white/5">Close Camera</Button>
+                    <Button type="button" onClick={closeCamera} className="border border-white/20 bg-white/5 text-white hover:bg-white/10 transition-colors">Close Camera</Button>
                   </div>
                 ) : capturedPhotoUrl ? (
                   <div className="w-full space-y-4">
                     <img src={capturedPhotoUrl} alt="Captured" className="w-full h-auto max-h-[60vh] object-contain rounded-lg border border-white/10" />
                     <div className="flex items-center gap-3 justify-center">
-                      <Button type="button" onClick={retakePhoto} variant="outline" className="border-white/10 text-white hover:bg-white/5">Retake Photo</Button>
+                      <Button type="button" onClick={retakePhoto} className="border border-white/20 bg-white/5 text-white hover:bg-white/10 transition-colors">Retake Photo</Button>
                       <Button type="button" onClick={saveCapturedPhoto} className="bg-[#c8851e] hover:bg-[#a96618] text-white border-0">Save Photo</Button>
                     </div>
                   </div>

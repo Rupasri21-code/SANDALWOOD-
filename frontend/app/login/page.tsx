@@ -150,7 +150,7 @@ export default function LoginPage() {
                 </div>
                 <span className="text-sm text-[#D8CBB3] group-hover:text-[#F7F0E4] transition-colors">Remember Me</span>
               </label>
-              <Link href="#" className="text-sm text-[#D9A441] hover:text-[#F7F0E4] transition-colors">Forgot Password?</Link>
+              <Link href="/forgot-password" className="text-sm text-[#D9A441] hover:text-[#F7F0E4] transition-colors">Forgot Password?</Link>
             </motion.div>
 
             <motion.button
@@ -273,7 +273,7 @@ export default function LoginPage() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.6 }}>
             <h2 className={`text-[24px] md:text-[34px] text-[#D9A441] mb-2 md:mb-3 ${cormorant.className}`}>Grow with Nature. Invest with Confidence.</h2>
             <p className="max-w-lg mx-auto text-[13px] md:text-[15.5px] leading-relaxed mb-6 md:mb-10 font-semibold text-[#4ADE80] drop-shadow-[0_0_15px_rgba(74,222,128,0.7)] tracking-wide">
-              A smarter path to long-term wealth through premium plantation assets. Join us in building a greener tomorrow with sandalwood plantations that create a lasting legacy.
+              A smarter way to build wealth and a greener future
             </p>
           </motion.div>
 

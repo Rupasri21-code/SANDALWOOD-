@@ -1,59 +1,29 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { env } from '../config/env';
 
-let transporterPromise: Promise<nodemailer.Transporter> | null = null;
-
-const getTransporter = async () => {
-  if (!transporterPromise) {
-    transporterPromise = (async () => {
-      if (env.SMTP_HOST && env.SMTP_USER && env.SMTP_USER !== 'placeholder-user') {
-        return nodemailer.createTransport({
-          host: env.SMTP_HOST,
-          port: env.SMTP_PORT,
-          secure: env.SMTP_PORT === 465, // true for 465, false for other ports
-          auth: {
-            user: env.SMTP_USER,
-            pass: env.SMTP_PASS,
-          },
-        });
-      } else {
-        console.log('⏳ Creating Ethereal test account for email...');
-        const testAccount = await nodemailer.createTestAccount();
-        return nodemailer.createTransport({
-          host: 'smtp.ethereal.email',
-          port: 587,
-          secure: false,
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-        });
-      }
-    })();
-  }
-  return transporterPromise;
-};
+const resend = new Resend(env.RESEND_API_KEY || 're_placeholder');
 
 export const sendEmail = async (to: string, subject: string, html: string, text?: string) => {
   try {
-    const transporter = await getTransporter();
-    const info = await transporter.sendMail({
-      from: env.SMTP_FROM,
-      to,
+    const { data, error } = await resend.emails.send({
+      from: env.SMTP_FROM || 'Arbor Vest Investments <onboarding@resend.dev>',
+      to: [to],
       subject,
       html,
       text,
     });
-    console.log(`📧 Email sent successfully! Message ID: ${info.messageId}`);
-    
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    if (previewUrl) {
-      console.log(`🔗 Email Preview URL: ${previewUrl}`);
+
+    if (error) {
+      console.error('❌ Resend API Error:', error);
+      return { success: false, error };
     }
-    
-    return info;
+
+    console.log(`📧 Email sent successfully! Message ID: ${data?.id}`);
+    return { success: true, data };
   } catch (error) {
-    console.error('❌ Failed to send email:', error);
+    // Catch block ensures failure does not crash the calling function
+    console.error('❌ Failed to send email via Resend:', error);
+    return { success: false, error };
   }
 };
 
@@ -128,4 +98,37 @@ export const sendDocumentAlert = async (email: string, fullName: string, docTitl
     </div>
   `;
   return sendEmail(email, subject, html);
+};
+
+export const sendPaymentNotification = async (email: string, fullName: string, amount: string, date: string) => {
+  const subject = 'Payment Received - Arbor Vest Investments';
+  const html = `
+    <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
+      <h2 style="color: #062E1F;">Payment Confirmation</h2>
+      <p>Dear ${fullName},</p>
+      <p>We have successfully received your payment of <strong>${amount}</strong> on <strong>${date}</strong>.</p>
+      <p>You can view the payment details and download the receipt from your investor portal.</p>
+      <div style="margin: 20px 0;">
+        <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Payments</a>
+      </div>
+      <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+    </div>
+  `;
+  return sendEmail(email, subject, html);
+};
+
+export const sendGeneralNotification = async (email: string, fullName: string, subjectLine: string, messageBody: string) => {
+  const html = `
+    <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
+      <p>Dear ${fullName},</p>
+      <p>${messageBody}</p>
+      <div style="margin: 20px 0;">
+        <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to Portal</a>
+      </div>
+      <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+    </div>
+  `;
+  return sendEmail(email, subjectLine, html);
 };

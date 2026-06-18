@@ -7,6 +7,8 @@ import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '.
 import bcrypt from 'bcryptjs';
 import { loginSchema, resetPasswordSchema } from '../validators/auth.validator';
 import { logActivity } from '../services/notification.service';
+import crypto from 'crypto';
+import { sendEmail } from '../services/email.service';
 
 export const login = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -102,6 +104,114 @@ export const logout = async (req: AuthRequest, res: Response, next: NextFunction
     next(error);
   }
 };
+
+export const forgotPassword = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      throw new ApiError(400, 'Email is required');
+    }
+
+    const user = await db.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new ApiError(404, 'User with this email does not exist');
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        reset_password_token: resetToken,
+        reset_password_expires: resetTokenExpiry,
+      },
+    });
+
+    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    const message = `
+      <h1>Password Reset Requested</h1>
+      <p>You requested a password reset. Please click the link below to set a new password:</p>
+      <a href="${resetUrl}" target="_blank">${resetUrl}</a>
+      <p>This link is valid for 1 hour.</p>
+    `;
+
+    console.log(`🔑 [DEBUG] Password Reset Link for ${user.email}: ${resetUrl}`);
+
+    try {
+      const emailResult = await sendEmail(user.email, 'Arbor Vest - Password Reset', message);
+
+      if (!emailResult || !emailResult.success) {
+        const errorMsg = emailResult?.error?.message || 'Email could not be sent';
+        throw new ApiError(400, `Email sending failed: ${errorMsg}`);
+      }
+
+      res.status(200).json(new ApiResponse(200, null, 'Password reset email sent'));
+    } catch (err) {
+      // Check if it's a Resend sandbox restriction error (contains the registered owner email)
+      const isSandboxError = err instanceof ApiError && err.message.includes('gopidesirupasri@gmail.com');
+
+      if (!isSandboxError) {
+        // Clean up token if email fails for other reasons
+        await db.user.update({
+          where: { id: user.id },
+          data: {
+            reset_password_token: null,
+            reset_password_expires: null,
+          },
+        });
+      }
+
+      if (err instanceof ApiError) {
+        throw err;
+      }
+      throw new ApiError(500, 'Email could not be sent');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPasswordConfirm = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      throw new ApiError(400, 'Token and new password are required');
+    }
+
+    const user = await db.user.findFirst({
+      where: {
+        reset_password_token: token,
+        reset_password_expires: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      throw new ApiError(400, 'Invalid or expired reset token');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        reset_password_token: null,
+        reset_password_expires: null,
+      },
+    });
+
+    res.status(200).json(new ApiResponse(200, null, 'Password has been successfully reset.'));
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const getMe = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {

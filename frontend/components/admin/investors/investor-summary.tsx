@@ -322,13 +322,13 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
                   <tbody className="divide-y divide-white/5">
                     {formData.payments.map((p: any, idx: number) => (
                       <tr key={idx} className="hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3 text-white/80">{new Date(p.payment_date).toLocaleDateString()}</td>
+                        <td className="px-4 py-3 text-white/80">{p.payment_date ? new Date(p.payment_date).toLocaleDateString() : '—'}</td>
                         <td className="px-4 py-3 font-medium text-white">₹{Number(p.amount).toLocaleString()}</td>
-                        <td className="px-4 py-3 text-white/60 capitalize">{p.payment_type.replace('_', ' ')}</td>
-                        <td className="px-4 py-3 text-white/60">{p.payment_mode}</td>
+                        <td className="px-4 py-3 text-white/60 capitalize">{p.payment_type?.replace('_', ' ') || '—'}</td>
+                        <td className="px-4 py-3 text-white/60">{p.payment_mode || '—'}</td>
                         <td className="px-4 py-3">
                           <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${p.payment_status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                            {p.payment_status}
+                            {p.payment_status || '—'}
                           </span>
                         </td>
                       </tr>
@@ -404,12 +404,12 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
                            <img src={m.media_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={m.title} />
                         )}
                         <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-white/80 capitalize">
-                          {m.media_type.replace('_', ' ')}
+                          {m.media_type?.replace('_', ' ') || '—'}
                         </div>
                       </div>
                       <div className="p-4 flex-1 flex flex-col">
                         <p className="text-white text-sm font-medium line-clamp-1" title={m.title}>{m.title}</p>
-                        <p className="text-white/50 text-xs mt-1">{new Date(m.upload_date).toLocaleDateString()}</p>
+                        <p className="text-white/50 text-xs mt-1">{m.upload_date ? new Date(m.upload_date).toLocaleDateString() : '—'}</p>
                         {m.description && (
                           <p className="text-white/60 text-xs mt-2 line-clamp-2">{m.description}</p>
                         )}
