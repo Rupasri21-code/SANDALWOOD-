@@ -6,7 +6,7 @@ const resend = new Resend(env.RESEND_API_KEY || 're_placeholder');
 export const sendEmail = async (to: string, subject: string, html: string, text?: string) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: env.SMTP_FROM || 'Arbor Vest Investments <onboarding@resend.dev>',
+      from: 'Chandan Nilayam Investments <onboarding@resend.dev>',
       to: [to],
       subject,
       html,
@@ -28,10 +28,10 @@ export const sendEmail = async (to: string, subject: string, html: string, text?
 };
 
 export const sendCredentials = async (email: string, fullName: string, passwordPlain: string) => {
-  const subject = 'Welcome to Arbor Vest - Your Investor Portal Credentials';
+  const subject = 'Welcome to Chandan Nilayam - Your Investor Portal Credentials';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
-      <h2 style="color: #062E1F;">Welcome to Arbor Vest Sandalwood Investments!</h2>
+      <h2 style="color: #062E1F;">Welcome to Chandan Nilayam Sandalwood Investments!</h2>
       <p>Dear ${fullName},</p>
       <p>We are excited to partner with you in your sandalwood investment journey. A secure investor account has been created for you.</p>
       <p>You can access your portal to monitor plot details, crop growth, investments, payments, and documents.</p>
@@ -62,7 +62,7 @@ export const sendInquiryConfirmation = async (email: string, fullName: string) =
 };
 
 export const sendUpdateNotification = async (email: string, fullName: string, updateTitle: string, updateDescription: string) => {
-  const subject = 'New Plantation Update - Arbor Vest';
+  const subject = 'New Plantation Update - Chandan Nilayam';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">New Plantation Update Available</h2>
@@ -76,14 +76,14 @@ export const sendUpdateNotification = async (email: string, fullName: string, up
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to Portal</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
 };
 
 export const sendDocumentAlert = async (email: string, fullName: string, docTitle: string) => {
-  const subject = 'New Document Uploaded to Your Portal - Arbor Vest';
+  const subject = 'New Document Uploaded to Your Portal - Chandan Nilayam';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">New Document Shared</h2>
@@ -94,14 +94,14 @@ export const sendDocumentAlert = async (email: string, fullName: string, docTitl
         <a href="http://localhost:3000/login" style="background-color: #9A6A2F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Documents</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
 };
 
 export const sendPaymentNotification = async (email: string, fullName: string, amount: string, date: string) => {
-  const subject = 'Payment Received - Arbor Vest Investments';
+  const subject = 'Payment Received - Chandan Nilayam Investments';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">Payment Confirmation</h2>
@@ -112,7 +112,7 @@ export const sendPaymentNotification = async (email: string, fullName: string, a
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Payments</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
@@ -127,7 +127,7 @@ export const sendGeneralNotification = async (email: string, fullName: string, s
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to Portal</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Arbor Vest Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subjectLine, html);

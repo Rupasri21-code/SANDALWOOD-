@@ -158,8 +158,8 @@ export default function MediaLibraryPage() {
               url: m.file_url,
               category: m.category,
               date: new Date(m.created_at).toISOString().split('T')[0],
-              visibility: 'Specific Investor' as Visibility,
-              assignedTo: m.investor?.full_name || 'Unknown',
+              visibility: m.investor_id ? ('Specific Investor' as Visibility) : ('All Investors' as Visibility),
+              assignedTo: m.investor?.full_name || 'All Investors',
               showInDashboard: true,
               uploadedBy: 'Admin'
             };

@@ -1,6 +1,6 @@
 const http = require('http');
 
-const data = JSON.stringify({ identifier: 'admin@sandalwood.com', password: 'Admin@123' });
+const data = JSON.stringify({ identifier: 'admin@sandalwood.com', password: 'Admin@123m' });
 
 const req1 = http.request({
   host: 'localhost',

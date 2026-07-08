@@ -11,8 +11,11 @@ import { api } from '@/lib/api';
 const SITE_ADDRESS = "Dornala, Andhra Pradesh, India";
 
 const siteVisitSchema = z.object({
-  fullName: z.string().min(2, "Full Name is required"),
-  phone: z.string().min(10, "Valid phone number is required"),
+  fullName: z.string().min(3, "Full Name must be at least 3 characters"),
+  phone: z.string()
+    .min(10, "Phone must be at least 10 digits")
+    .max(15, "Phone number is too long")
+    .regex(/^\+?[0-9\s\-]+$/, "Invalid phone number format"),
   location: z.string().min(3, "Location is required for directions"),
   visitDate: z.string().optional(),
   visitTime: z.string().optional(),

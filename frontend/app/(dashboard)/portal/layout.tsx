@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
+import BrandLogo from '@/components/BrandLogo';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { motion } from 'framer-motion';
@@ -91,12 +92,13 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       <aside className={`fixed lg:relative inset-y-0 left-0 z-40 w-64 bg-[#032B1F] border-r border-[#C49A5A]/30 flex flex-col shadow-2xl transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 border-b border-[#C49A5A]/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-[#C49A5A] bg-[#0B1A12] flex items-center justify-center shadow-[0_0_12px_rgba(196,154,90,0.2)]">
-              <TreePine className="w-5 h-5 text-[#C49A5A]" />
+            <div className="w-12 h-12 rounded-full border border-[#C49A5A] bg-[#0B1A12] flex items-center justify-center shadow-[0_0_12px_rgba(196,154,90,0.2)]">
+              <BrandLogo height={42} />
             </div>
             <div>
-              <span className="font-display text-base font-bold text-[#F8F5EE] tracking-wide">Chandan Nilayam</span>
-              <span className="block text-[9px] text-[#C49A5A] tracking-[0.2em] uppercase mt-0.5 font-medium">Investor Portal</span>
+              <span className="font-display text-sm font-bold text-[#F8F5EE] tracking-wide block leading-none">Chandan</span>
+              <span className="font-display text-[10px] font-bold text-[#C49A5A] tracking-wider block mt-1 leading-none uppercase">Nilayam</span>
+              <span className="block text-[8px] text-[#C49A5A]/60 tracking-[0.2em] uppercase mt-1 font-medium">Investor Portal</span>
             </div>
           </div>
         </div>

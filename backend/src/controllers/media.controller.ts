@@ -56,16 +56,16 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
         throw new ApiError(400, 'No investors found to assign media to');
       }
       
-      await db.media.createMany({
-        data: allInvestors.map(inv => ({
-          investor_id: inv.id,
+      const media = await db.media.create({
+        data: {
+          investor_id: null,
           land_id: null,
           title: title || req.file!.originalname,
           description,
           file_url: fileUrl,
           file_type: fileType,
           category: category || 'General',
-        })),
+        },
       });
 
       // Broadcast to WhatsApp
@@ -81,7 +81,7 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
       }
 
       res.status(201).json(
-        new ApiResponse(201, null, `Media uploaded and assigned to ${allInvestors.length} investors`)
+        new ApiResponse(201, media, `Media uploaded and assigned to all investors`)
       );
     } else {
       const media = await db.media.create({

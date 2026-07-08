@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { 
-  TreePine, 
   MapPin, 
   Phone, 
   Mail, 
@@ -11,6 +10,7 @@ import {
   Linkedin, 
   Youtube 
 } from 'lucide-react';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function Footer() {
   return (
@@ -22,22 +22,30 @@ export default function Footer() {
           
           {/* Column 1: Logo, Brand & Copyright */}
           <div className="flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5E3C] to-[#C49A5A] flex items-center justify-center border border-white/10 shadow-md">
-                <TreePine className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-left">
-                <span className="font-serif text-lg font-bold tracking-wide text-white block">CHANDAN</span>
-                <span className="block text-[9px] text-[#C49A5A] tracking-[0.22em] uppercase font-bold -mt-1 font-sans">
-                  NILAYAM
-                </span>
+            <div className="mb-6 flex flex-col items-start gap-4">
+              <BrandLogo height={54} />
+              <div className="flex flex-col gap-2 items-start">
+                <p className="text-[10px] uppercase tracking-[0.32em] text-[#C49A5A] font-semibold font-sans">
+                  A Project by GK
+                </p>
+                
+                <div className="mt-1 flex items-center gap-3">
+                  <div className="w-8 h-[1px] bg-gradient-to-r from-[#C49A5A] to-transparent"></div>
+                  <div className="flex flex-col">
+                    <span className="text-[7px] uppercase tracking-[0.25em] text-[#F7F0E4]/50 font-semibold mb-0.5">Initiated By</span>
+                    <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-black drop-shadow-sm">
+                      Mahalakshmi Reality Developers
+                    </span>
+                  </div>
+                </div>
+
               </div>
             </div>
             <p className="text-xs leading-relaxed max-w-xs text-[#F7F0E4]/70 mb-4 text-left font-sans">
-              Premium Sandalwood Investments. Building sustainable natural-backed wealth and legacy assets for generations.
+              Premium Sandalwood Investments. Building sustainable nature-backed wealth and legacy assets for generations.
             </p>
             <p className="text-[10px] text-[#F7F0E4]/50 font-sans mt-2">
-              &copy; {new Date().getFullYear()} Chandan Nilayam. All rights reserved.
+              &copy; {new Date().getFullYear()} Chandan Nilayam Investments. All rights reserved.
             </p>
           </div>
 
@@ -45,12 +53,13 @@ export default function Footer() {
           <div className="flex flex-col items-start text-left">
             <h4 className="text-xs font-black uppercase tracking-wider text-[#C49A5A] mb-6 font-sans">Quick Links</h4>
             <div className="flex flex-col gap-3 text-xs font-sans">
-              <a href="#opportunity" className="hover:text-[#C49A5A] transition-colors">The Opportunity</a>
-              <a href="#plantation" className="hover:text-[#C49A5A] transition-colors">Our Plantation</a>
-              <a href="#benefits" className="hover:text-[#C49A5A] transition-colors">Investor Benefits</a>
-              <a href="#portal" className="hover:text-[#C49A5A] transition-colors">Investor Portal</a>
-              <a href="#gallery" className="hover:text-[#C49A5A] transition-colors">Gallery</a>
-              <a href="#inquiry" className="hover:text-[#C49A5A] transition-colors">Contact Us</a>
+              <Link href="/home#opportunity" className="hover:text-[#C49A5A] transition-colors">The Opportunity</Link>
+              <Link href="/home#plantation" className="hover:text-[#C49A5A] transition-colors">Our Plantation</Link>
+              <Link href="/home#privileges" className="hover:text-[#C49A5A] transition-colors">Investor Privileges</Link>
+              <Link href="/home#amenities" className="hover:text-[#C49A5A] transition-colors">Lifestyle Amenities</Link>
+              <Link href="/home#calculator" className="hover:text-[#C49A5A] transition-colors">Plan Your Future</Link>
+              <Link href="/home#gallery" className="hover:text-[#C49A5A] transition-colors">Gallery</Link>
+              <Link href="/home#brochure" className="hover:text-[#C49A5A] transition-colors">Brochure</Link>
             </div>
           </div>
 
@@ -69,7 +78,7 @@ export default function Footer() {
               <span className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#C49A5A] shrink-0 mt-0.5" /> 
                 <a href="https://maps.google.com/?q=Dornala,+Andhra+Pradesh,+India" target="_blank" rel="noopener noreferrer" className="leading-relaxed hover:text-[#C49A5A] transition-colors">
-                  Dornala, Guntur District,<br />
+                  Dornala, Prakasam District,<br />
                   Andhra Pradesh, India
                 </a>
               </span>

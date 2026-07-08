@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, TreePine, Leaf } from 'lucide-react';
+import { Menu, X, Leaf, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,6 +20,7 @@ export default function Navbar() {
 
   return (
     <nav
+      suppressHydrationWarning={true}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-[#F7F0E4]/95 backdrop-blur-md border-b border-[#C49A5A]/20 py-3 shadow-md'
@@ -28,27 +30,21 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5E3C] to-[#C49A5A] flex items-center justify-center border border-[#0B2F24]/15">
-            <TreePine className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="font-serif text-lg md:text-xl font-bold text-[#0B2F24] tracking-wide block">
-              CHANDAN
-            </span>
-            <span className="block text-[9px] text-[#C49A5A] tracking-[0.22em] uppercase font-bold -mt-1 font-sans">
-              NILAYAM
-            </span>
+          <div className="flex flex-col items-center">
+            <BrandLogo height={40} logoClassName="object-contain" />
+            <span className="text-[7px] uppercase tracking-[0.2em] font-bold text-[#0B2F24]/70 mt-1 whitespace-nowrap">A PROJECT BY GK</span>
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-8">
+        {/* Desktop Links — use same-page anchors for site sections so they don't open separate pages */}
+        <div className="hidden lg:flex items-center gap-5">
           <a href="#opportunity" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">The Opportunity</a>
           <a href="#plantation" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Our Plantation</a>
-          <a href="#benefits" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Investor Benefits</a>
-          <a href="#portal" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Portal</a>
+          <a href="#privileges" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Investor Benefits</a>
+          <a href="#calculator" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Plan Your Future</a>
+          <a href="#brochure" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Brochure</a>
           <a href="#gallery" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Gallery</a>
-          <Link href="/login" className="bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full px-6 py-2.5 font-bold text-xs tracking-wider uppercase transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 flex items-center justify-center border border-white/10">
+          <Link href="/login" className="bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 flex items-center justify-center border border-white/10">
             Login
           </Link>
         </div>
@@ -56,8 +52,8 @@ export default function Navbar() {
         {/* Button */}
         <div className="hidden lg:flex items-center gap-4">
           <a href="#investor-inquiry">
-            <Button className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-6 py-2.5 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
-              Investor Inquiry <Leaf className="w-3.5 h-3.5" />
+            <Button className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
+              Investor Inquiry
             </Button>
           </a>
         </div>
@@ -74,13 +70,14 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-[#F8F4EB]/98 backdrop-blur-xl border-t border-[#C8851E]/20 px-6 py-4 space-y-3">
-          <a href="#opportunity" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">The Opportunity</a>
-          <a href="#plantation" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Our Plantation</a>
-          <a href="#benefits" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Investor Benefits</a>
-          <a href="#portal" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Portal</a>
-          <a href="#gallery" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Gallery</a>
-          <Link href="/login" onClick={() => setMobileOpen(false)} className="block w-full text-center bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full py-3 font-bold uppercase text-xs tracking-wider transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 border border-white/10">
+        <div className="lg:hidden bg-[#F8F4EB]/98 backdrop-blur-xl border-t border-[#C8851E]/20 px-6 py-4 space-y-2">
+          <a href="#opportunity" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">The Opportunity</a>
+          <a href="#plantation" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Our Plantation</a>
+          <a href="#privileges" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Investor Benefits</a>
+          <a href="#calculator" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Plan Your Future</a>
+          <a href="#brochure" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E] flex items-center gap-1.5"><FileText className="w-4 h-4" /> Brochure</a>
+          <a href="#gallery" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Gallery</a>
+          <Link href="/login" onClick={() => setMobileOpen(false)} className="block w-full text-center bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full py-2.5 font-bold uppercase text-xs tracking-wider transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 border border-white/10">
             Login
           </Link>
           <a href="#investor-inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">

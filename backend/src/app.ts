@@ -21,6 +21,7 @@ import notificationRoutes from './routes/notification.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import uploadRoutes from './routes/upload.routes';
 import testRoutes from './routes/test.routes';
+import testimonialRoutes from './routes/testimonial.routes';
 
 const app = express();
 
@@ -43,7 +44,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Arbor Vest Sandalwood Investments API — Online & Operational',
+    message: 'Chandan Nilayam Sandalwood Investments API — Online & Operational',
     timestamp: new Date(),
   });
 });
@@ -65,6 +66,7 @@ app.use(`${API_PREFIX}/notifications`, notificationRoutes);
 app.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
 app.use(`${API_PREFIX}/upload`, uploadRoutes);
 app.use(`${API_PREFIX}/test`, testRoutes);
+app.use(`${API_PREFIX}/testimonials`, testimonialRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

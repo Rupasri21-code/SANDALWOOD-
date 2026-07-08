@@ -23,7 +23,7 @@ async function main() {
   await prisma.user.deleteMany({});
 
   // 2. Create Passwords
-  const adminPasswordHash = await bcrypt.hash('Admin@123', 10);
+  const adminPasswordHash = await bcrypt.hash('Admin@123m', 10);
   const customerPasswordHash = await bcrypt.hash('Investor@123', 10);
 
   // 3. Create Users
@@ -222,7 +222,7 @@ async function main() {
       {
         name: 'Rajesh Patel',
         location: 'Ahmedabad, Gujarat',
-        text: "I invested in Arbor Vest 2 years ago. The transparency of the investor portal and direct agronomical reports gave me absolute peace of mind. My plots are growing exceptionally well.",
+        text: "I invested in Chandan Nilayam 2 years ago. The transparency of the investor portal and direct agronomical reports gave me absolute peace of mind. My plots are growing exceptionally well.",
         rating: 5,
         image_url: 'https://images.pexels.com/photos/8937582/pexels-photo-8937582.jpeg?auto=compress&cs=tinysrgb&w=100',
       },
@@ -236,7 +236,7 @@ async function main() {
       {
         name: 'Amit Sharma',
         location: 'Mumbai, Maharashtra',
-        text: "Sandalwood offers stellar physical asset hedging. Arbor Vest's complete managed services take care of land clearance, plantation, legal checks, and growth tracking seamlessly.",
+        text: "Sandalwood offers stellar physical asset hedging. Chandan Nilayam's complete managed services take care of land clearance, plantation, legal checks, and growth tracking seamlessly.",
         rating: 5,
         image_url: 'https://images.pexels.com/photos/9363120/pexels-photo-9363120.jpeg?auto=compress&cs=tinysrgb&w=100',
       },

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { TreePine, ArrowLeft, Mail } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
+import BrandLogo from '@/components/BrandLogo';
 import { toast } from 'sonner';
 
 export default function ForgotPasswordPage() {
@@ -54,7 +55,7 @@ export default function ForgotPasswordPage() {
 
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-16 h-16 rounded-full border border-[#D9A441] flex items-center justify-center mb-6">
-            <TreePine className="w-8 h-8 text-[#D9A441]" />
+            <BrandLogo height={32} logoClassName="h-8 w-8 object-contain" />
           </div>
 
           <h1 className="text-2xl text-[#F7F0E4] mb-2 font-semibold">Forgot Password</h1>

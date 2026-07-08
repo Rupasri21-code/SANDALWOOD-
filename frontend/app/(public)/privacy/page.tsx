@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
           
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">1. Introduction</h2>
           <p className="mb-4 leading-relaxed">
-            Welcome to Chandan Nilayam. We are committed to protecting your personal information and your right to privacy. 
+            Welcome to Chandan Nilayam Investments. We are committed to protecting your personal information and your right to privacy. 
             If you have any questions or concerns about our policy, or our practices with regards to your personal information, 
             please contact us.
           </p>
@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">5. Contact Us</h2>
           <p className="mb-4 leading-relaxed">
-            If you have questions or comments about this policy, you may email us at invest@chandannilayam.com.
+            If you have questions or comments about this policy, you may email us at invest@dornalasandalwood.com.
           </p>
         </div>
       </div>

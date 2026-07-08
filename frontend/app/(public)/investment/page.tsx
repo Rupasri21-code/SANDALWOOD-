@@ -1,261 +1,364 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, TrendingUp, Shield, Clock, BarChart3, Leaf, FileText } from 'lucide-react';
+import { Leaf, Award, Globe, TrendingUp, ShieldCheck, Sprout, Target, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const benefits = [
   {
+    title: 'High Appreciating Value',
+    description: 'Sandalwood prices have shown solid annual compounding growth over the past decades, outperforming many indices.',
     icon: TrendingUp,
-    title: 'Exceptional ROI',
-    value: '8–18%',
-    label: 'Annual Appreciation',
-    description: 'Sandalwood prices have consistently outperformed equity indices over 15-year periods.',
   },
   {
-    icon: Shield,
-    title: 'Tangible Asset Security',
-    value: '100%',
-    label: 'Title Clear Guarantee',
-    description: 'Your investment is backed by physical land with registered ownership in your name.',
+    title: 'Physical Land Ownership',
+    description: 'Every investment is backed by registered, surveyed physical plots with clear titles under your name.',
+    icon: ShieldCheck,
   },
   {
-    icon: Clock,
-    title: 'Long-Term Wealth',
-    value: '8–15x',
-    label: 'Capital Appreciation',
-    description: 'Patient investors who hold for 15 years see extraordinary wealth multiplication.',
+    title: 'Zero Market Correlation',
+    description: 'Commercial timber growth is unaffected by inflation, stock market volatility, or interest rate fluctuations.',
+    icon: Sprout,
   },
   {
-    icon: BarChart3,
-    title: 'Portfolio Diversification',
-    value: 'Zero',
-    label: 'Correlation to Markets',
-    description: 'Sandalwood returns are uncorrelated with stock markets, hedging portfolio risk.',
-  },
-];
-
-const plans = [
-  {
-    name: 'Seedling',
-    minInvestment: '₹10 Lakhs',
-    area: '0.5 Acres',
-    plants: 60,
-    features: [
-      'Legal land ownership certificate',
-      'Quarterly plantation reports',
-      'Investor portal access',
-      'Annual physical site visit',
-      'Dedicated relationship manager',
-    ],
-    highlighted: false,
-  },
-  {
-    name: 'Sapling',
-    minInvestment: '₹25 Lakhs',
-    area: '1.25 Acres',
-    plants: 150,
-    features: [
-      'Everything in Seedling',
-      'Premium plantation plot selection',
-      'Priority harvest allocation',
-      'Bi-annual site visits',
-      'Insurance coverage',
-      'Resale assistance',
-    ],
-    highlighted: true,
-  },
-  {
-    name: 'Grove',
-    minInvestment: '₹1 Crore+',
-    area: '5+ Acres',
-    plants: 600,
-    features: [
-      'Everything in Sapling',
-      'Dedicated plantation zone',
-      'Customized plantation design',
-      'Monthly reports & updates',
-      'Priority harvest & export',
-      'Family inheritance planning',
-      'Legal estate management',
-    ],
-    highlighted: false,
+    title: 'Sustainable Forestry',
+    description: 'Your investment helps expand forest cover, absorbs carbon dioxide, and promotes biodiversity.',
+    icon: Leaf,
   },
 ];
 
 export default function InvestmentPage() {
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative pt-32 pb-24 bg-[#0a1f0a]">
-        <div className="absolute inset-0 opacity-20">
+    <div className="bg-[#F7F0E4] min-h-screen text-[#1E1E1A] font-sans overflow-x-hidden relative">
+      
+      {/* 1. HERO SECTION */}
+      <section className="relative flex items-center justify-center overflow-hidden w-full h-[60vh] min-h-[450px]">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full z-0">
           <img
             src="https://images.pexels.com/photos/1563604/pexels-photo-1563604.jpeg?auto=compress&cs=tinysrgb&w=1920"
-            alt=""
+            alt="Sandalwood Forest"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-[#0a1f0a]/80" />
         </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-4">Investment Benefits</p>
-          <h1 className="font-display text-5xl md:text-6xl font-semibold text-white mb-6">
-            Why Smart Investors Choose <span className="text-gradient-gold">Sandalwood</span>
+        {/* Forest Green Gradient Overlay */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-[#0B2F24]/80 to-[#0B2F24]/90" />
+
+        <div className="relative z-20 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
+          {/* Badge */}
+          <div 
+            className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 mb-6 shadow-md border"
+            style={{
+              background: 'rgba(247, 240, 228, 0.85)',
+              borderColor: '#C49A5A',
+            }}
+          >
+            <Leaf className="w-4 h-4 text-[#8B5E3C]" />
+            <span className="text-[10px] font-bold tracking-[2px] uppercase text-[#8B5E3C]">
+              Investor Education
+            </span>
+          </div>
+
+          <h1 
+            className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6 leading-tight"
+            style={{ 
+              fontFamily: "'Cormorant Garamond', serif", 
+              textShadow: '0 4px 15px rgba(0, 0, 0, 0.4)' 
+            }}
+          >
+            A Rare Natural Asset<br />with Long-Term Value
           </h1>
-          <p className="text-white/70 text-lg max-w-2xl mx-auto">
-            A rare combination of tangible assets, consistent appreciation, and environmental impact
-            that no financial product can replicate.
+          <p className="text-[#E6D3B3] text-base md:text-lg max-w-2xl leading-relaxed font-serif" style={{ fontFamily: "'Lora', serif" }}>
+            Learn why sandalwood is considered one of the world's most valuable timber assets and how managed cultivation unlocks legacy wealth.
           </p>
         </div>
-      </section>
 
-      {/* Key Benefits */}
-      <section className="py-20 bg-[#faf6f2]">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {benefits.map((b, i) => (
-            <div key={i} className="bg-white rounded-2xl p-8 border border-[#e8e0d8] hover:border-[#c8851e]/30 hover:shadow-lg transition-all text-center">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#c8851e] to-[#e9be55] flex items-center justify-center mb-5">
-                <b.icon className="w-6 h-6 text-white" />
-              </div>
-              <div className="font-display text-3xl font-bold text-[#1a1a1a] mb-0.5">{b.value}</div>
-              <div className="text-[#c8851e] text-xs font-semibold tracking-widest uppercase mb-3">{b.label}</div>
-              <h3 className="font-semibold text-[#1a1a1a] mb-2">{b.title}</h3>
-              <p className="text-[#6b6b6b] text-sm leading-relaxed">{b.description}</p>
-            </div>
-          ))}
+        {/* Bottom wave divider */}
+        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-20">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[40px]">
+            <path d="M0,35 C300,105 600,15 900,105 L1200,55 L1200,120 L0,120 Z" />
+          </svg>
         </div>
       </section>
 
-      {/* Comparison */}
-      <section className="py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-3">Asset Comparison</p>
-            <h2 className="font-display text-4xl font-semibold text-[#1a1a1a]">
-              How Sandalwood Stacks Up
+      {/* 2. WHAT IS SANDALWOOD INVESTMENT? */}
+      <section className="py-24 bg-[#F7F0E4] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-12 gap-16 items-center">
+            
+            {/* Left Col - Image */}
+            <div className="lg:col-span-5 flex justify-center w-full">
+              <div className="relative w-full max-w-[480px] aspect-[0.9] rounded-[2.5rem] p-3 bg-[#F3E8D2] border border-[#C49A5A]/30 shadow-[0_20px_50px_rgba(139,94,60,0.2)]">
+                <div className="w-full h-full rounded-[2.2rem] overflow-hidden relative">
+                  <img 
+                    src="/sandalwood_showcase.png" 
+                    alt="Sandalwood Logs" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.pexels.com/photos/6784121/pexels-photo-6784121.jpeg?auto=compress&cs=tinysrgb&w=800';
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Col - Content */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3">THE FUNDAMENTALS</span>
+              <h2 
+                className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#12372A] mb-6 leading-tight"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                What is Sandalwood Investment?
+              </h2>
+              <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
+                Managed Sandalwood Investment is a unique asset class that combines land ownership with commercial forestry. You buy a clearly demarcated plot of land near Dornala. On this plot, we plant certified East Indian Sandalwood (*Santalum album*) saplings.
+              </p>
+              <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
+                Sandalwood is a hemiparasitic tree, meaning it requires primary and secondary host plants to draw nutrients and develop its high-value aromatic heartwood. Managing this host-system requires strict agronomic expertise.
+              </p>
+              <p className="text-[#2F3E2F] text-base leading-relaxed font-sans">
+                Our agricultural management team maintains your plot over the 15-year growth cycle. When the trees mature and harvest occurs, the proceeds from the aromatic heartwood are shared with you, delivering substantial wealth.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 3. WHY SANDALWOOD IS VALUABLE (DEMAND & SCARCITY) */}
+      <section className="py-24 bg-[#0B2F24] relative text-white">
+        {/* Top curved wave */}
+        <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[40px] rotate-180">
+            <path d="M0,35 C300,105 600,15 900,105 L1200,55 L1200,120 L0,120 Z" />
+          </svg>
+        </div>
+
+        <div className="relative z-20 max-w-7xl mx-auto px-6 py-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[#C49A5A] text-xs font-bold tracking-[0.2em] uppercase block mb-3">GLOBAL ECONOMICS</span>
+            <h2 
+              className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#F7F0E4] leading-tight"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Rising Demand. Shrinking Supply.
+            </h2>
+            <p className="text-[#E6D3B3] text-sm md:text-base leading-relaxed mt-4 font-sans">
+              East Indian Sandalwood stands as one of the world's most expensive woods due to severe demand-supply imbalances.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            
+            {/* Demand card 1 */}
+            <div className="bg-[#12372A] border border-[#C49A5A]/30 p-10 rounded-[2rem] shadow-xl flex flex-col items-start hover:-translate-y-2 transition-transform duration-300">
+              <div className="w-12 h-12 bg-[#C49A5A]/15 border border-[#C49A5A] rounded-xl flex items-center justify-center mb-6 text-[#C49A5A]">
+                <Globe className="w-6 h-6" />
+              </div>
+              <h3 className="font-serif text-xl font-bold mb-3 text-[#F7F0E4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Multi-Industry Use
+              </h3>
+              <p className="text-[#E6D3B3] text-xs md:text-sm leading-relaxed font-sans">
+                Widely demanded in high-end French perfumery, traditional medicine, luxury soaps, skin care, religious ceremonies, and fine woodwork.
+              </p>
+            </div>
+
+            {/* Demand card 2 */}
+            <div className="bg-[#12372A] border border-[#C49A5A]/30 p-10 rounded-[2rem] shadow-xl flex flex-col items-start hover:-translate-y-2 transition-transform duration-300">
+              <div className="w-12 h-12 bg-[#C49A5A]/15 border border-[#C49A5A] rounded-xl flex items-center justify-center mb-6 text-[#C49A5A]">
+                <Award className="w-6 h-6" />
+              </div>
+              <h3 className="font-serif text-xl font-bold mb-3 text-[#F7F0E4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Extreme Scarcity
+              </h3>
+              <p className="text-[#E6D3B3] text-xs md:text-sm leading-relaxed font-sans">
+                Natural reserves in government forests have shrunk dramatically due to over-harvesting. Cultivated private farms represent the only stable supply path for the future.
+              </p>
+            </div>
+
+            {/* Demand card 3 */}
+            <div className="bg-[#12372A] border border-[#C49A5A]/30 p-10 rounded-[2rem] shadow-xl flex flex-col items-start hover:-translate-y-2 transition-transform duration-300">
+              <div className="w-12 h-12 bg-[#C49A5A]/15 border border-[#C49A5A] rounded-xl flex items-center justify-center mb-6 text-[#C49A5A]">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <h3 className="font-serif text-xl font-bold mb-3 text-[#F7F0E4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Compounding Prices
+              </h3>
+              <p className="text-[#E6D3B3] text-xs md:text-sm leading-relaxed font-sans">
+                Limited legal harvests maintain high premium pricing. Raw wood prices have registered consistent year-on-year increases, forming a robust hedge.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Bottom curved wave */}
+        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[40px]">
+            <path d="M0,35 C300,105 600,15 900,105 L1200,55 L1200,120 L0,120 Z" />
+          </svg>
+        </div>
+      </section>
+
+      {/* 4. LONG-TERM VALUE EXPLANATION */}
+      <section className="py-24 bg-[#F7F0E4]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-12 gap-16 items-center">
+            
+            {/* Left side: Content */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3">TIMELINE & COMPOUNDING</span>
+              <h2 
+                className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#12372A] mb-6 leading-tight"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                Why Time is Your Greatest Ally
+              </h2>
+              <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
+                Sandalwood cultivation is a long-term investment asset. The *Santalum album* species takes around 15 years to develop high-density heartwood containing rich levels of sandalwood oil (santalol).
+              </p>
+              <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
+                During the initial 1 to 5 years, the saplings establish strong root-parasitic bonds and rapid vegetative growth. From years 5 to 10, the trunk widens, and transition wood starts forming. Between years 10 and 15, the core heartwood expands rapidly, depositing the oil.
+              </p>
+              <p className="text-[#2F3E2F] text-base leading-relaxed font-sans">
+                Harvesting before 15 years results in low oil concentrations and lower quality ratings. By patient holding, you allow the crop to reach its peak market grade, delivering a high multiplier on your original investment.
+              </p>
+            </div>
+
+            {/* Right side: Image */}
+            <div className="lg:col-span-5 flex justify-center w-full">
+              <div className="relative w-full max-w-[480px] aspect-[0.9] rounded-[2.5rem] p-3 bg-[#F3E8D2] border border-[#C49A5A]/30 shadow-[0_20px_50px_rgba(139,94,60,0.2)]">
+                <div className="w-full h-full rounded-[2.2rem] overflow-hidden relative">
+                  <img 
+                    src="https://images.pexels.com/photos/15124451/pexels-photo-15124451.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                    alt="Growth cycle" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. MANAGED CULTIVATION EXPLANATION */}
+      <section className="py-24 bg-[#F3E8D2] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-12 gap-16 items-center">
+            
+            {/* Left side: Image */}
+            <div className="lg:col-span-5 order-last lg:order-first flex justify-center w-full">
+              <div className="relative w-full max-w-[480px] aspect-[0.9] rounded-[2.5rem] p-3 bg-[#F7F0E4] border border-[#C49A5A]/30 shadow-[0_20px_50px_rgba(139,94,60,0.2)]">
+                <div className="w-full h-full rounded-[2.2rem] overflow-hidden relative">
+                  <img 
+                    src="https://images.unsplash.com/photo-1464254786740-b97e5420c299?auto=format&fit=crop&q=80&w=800" 
+                    alt="Managed Farming" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right side: Content */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3">SCIENTIFIC MANAGEMENT</span>
+              <h2 
+                className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#12372A] mb-6 leading-tight"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                Our Scientific Cultivation Model
+              </h2>
+              <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
+                Cultivating sandalwood is not a simple agricultural task. Sandalwood trees need host plants for survival. We employ a carefully engineered host pattern:
+              </p>
+              
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#8B5E3C] shrink-0 mt-2" />
+                  <p className="text-[#2F3E2F] text-sm"><strong className="text-[#12372A]">Primary Hosts:</strong> Cajanus cajan (Red gram) or Crotalaria are planted next to young saplings to provide nitrogen fixation and early support.</p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#8B5E3C] shrink-0 mt-2" />
+                  <p className="text-[#2F3E2F] text-sm"><strong className="text-[#12372A]">Secondary/Permanent Hosts:</strong> Casuarina, Melia dubia, or Neem trees are planted in between rows to sustain the sandalwood roots throughout their mid-to-late growth stages.</p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#8B5E3C] shrink-0 mt-2" />
+                  <p className="text-[#2F3E2F] text-sm"><strong className="text-[#12372A]">Drip Irrigation & Soil Care:</strong> Sandalwood is sensitive to waterlogging. We maintain customized drip irrigation channels to deliver moisture directly to roots without stagnation.</p>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 6. BENEFITS FOR INVESTORS */}
+      <section className="py-24 bg-[#F7F0E4]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3">TANGIBLE ADVANTAGES</span>
+            <h2 
+              className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#12372A] leading-tight"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Benefits That Grow with You
             </h2>
           </div>
-          <div className="overflow-x-auto rounded-2xl border border-[#e8e0d8]">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-[#faf6f2]">
-                  <th className="text-left p-5 text-[#1a1a1a] font-semibold">Asset Class</th>
-                  <th className="text-center p-5 text-[#1a1a1a] font-semibold">Avg. Return (15yr)</th>
-                  <th className="text-center p-5 text-[#1a1a1a] font-semibold">Market Correlation</th>
-                  <th className="text-center p-5 text-[#1a1a1a] font-semibold">Tangible Asset</th>
-                  <th className="text-center p-5 text-[#1a1a1a] font-semibold">ESG Positive</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { asset: 'Sandalwood (Chandan Nilayam)', return: '12–18%', correlation: 'None', tangible: true, esg: true, highlight: true },
-                  { asset: 'Equity Mutual Funds', return: '10–14%', correlation: 'High', tangible: false, esg: false, highlight: false },
-                  { asset: 'Real Estate', return: '6–10%', correlation: 'Low', tangible: true, esg: false, highlight: false },
-                  { asset: 'Gold', return: '7–9%', correlation: 'Low', tangible: true, esg: false, highlight: false },
-                  { asset: 'Fixed Deposits', return: '5–7%', correlation: 'None', tangible: false, esg: false, highlight: false },
-                ].map((row, i) => (
-                  <tr key={i} className={`border-t border-[#e8e0d8] ${row.highlight ? 'bg-[#fdf3e0]' : 'hover:bg-[#faf6f2]'}`}>
-                    <td className="p-5 font-medium text-[#1a1a1a]">
-                      {row.highlight && <span className="inline-block w-2 h-2 rounded-full bg-[#c8851e] mr-2" />}
-                      {row.asset}
-                    </td>
-                    <td className="text-center p-5 text-[#c8851e] font-semibold">{row.return}</td>
-                    <td className="text-center p-5 text-[#6b6b6b]">{row.correlation}</td>
-                    <td className="text-center p-5">{row.tangible ? '✓' : '—'}</td>
-                    <td className="text-center p-5">{row.esg ? '✓' : '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
 
-      {/* Investment Plans */}
-      <section className="py-20 bg-[#faf6f2]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-3">Investment Plans</p>
-            <h2 className="font-display text-4xl font-semibold text-[#1a1a1a]">Choose Your Path</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {plans.map((plan, i) => (
-              <div
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {benefits.map((b, i) => (
+              <div 
                 key={i}
-                className={`rounded-2xl p-8 border-2 flex flex-col transition-all ${
-                  plan.highlighted
-                    ? 'bg-[#0a1f0a] border-[#c8851e] shadow-2xl shadow-[#c8851e]/20 scale-[1.02]'
-                    : 'bg-white border-[#e8e0d8] hover:border-[#c8851e]/40 hover:shadow-lg'
-                }`}
+                className="bg-[#F3E8D2] border border-[#C49A5A]/30 p-8 rounded-3xl shadow-sm flex flex-col items-start hover:shadow-md transition-shadow"
               >
-                {plan.highlighted && (
-                  <div className="text-center mb-4">
-                    <span className="bg-[#c8851e] text-white text-xs font-semibold px-3 py-1 rounded-full">Most Popular</span>
-                  </div>
-                )}
-                <div className={`font-display text-2xl font-semibold mb-1 ${plan.highlighted ? 'text-white' : 'text-[#1a1a1a]'}`}>
-                  {plan.name}
+                <div className="w-12 h-12 bg-[#8B5E3C]/10 border border-[#8B5E3C]/35 rounded-xl flex items-center justify-center text-[#8B5E3C] mb-6">
+                  <b.icon className="w-6 h-6" />
                 </div>
-                <div className={`text-3xl font-bold mb-1 ${plan.highlighted ? 'text-[#e9be55]' : 'text-[#c8851e]'}`}>
-                  {plan.minInvestment}
-                </div>
-                <div className={`text-xs mb-6 ${plan.highlighted ? 'text-white/50' : 'text-[#6b6b6b]'}`}>
-                  {plan.area} · {plan.plants} plants
-                </div>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((f, j) => (
-                    <li key={j} className="flex items-start gap-3 text-sm">
-                      <span className={`text-[#c8851e] font-bold mt-0.5 shrink-0`}>✓</span>
-                      <span className={plan.highlighted ? 'text-white/80' : 'text-[#6b6b6b]'}>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/contact#inquiry">
-                  <Button
-                    className={`w-full ${
-                      plan.highlighted
-                        ? 'bg-gradient-to-r from-[#c8851e] to-[#e0a63a] hover:from-[#a96618] hover:to-[#c8851e] text-white'
-                        : 'border border-[#c8851e]/40 bg-transparent text-[#c8851e] hover:bg-[#c8851e]/10'
-                    }`}
-                  >
-                    Get Started
-                  </Button>
-                </Link>
+                <h3 className="font-serif text-lg font-bold text-[#12372A] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  {b.title}
+                </h3>
+                <p className="text-[#2F3E2F] text-xs leading-relaxed font-sans">
+                  {b.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Tax Benefits */}
-      <section className="py-20 bg-[#0a1f0a]">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <Leaf className="w-12 h-12 text-[#e9be55] mx-auto mb-6" />
-          <p className="text-[#c8851e] text-sm font-medium tracking-widest uppercase mb-3">Tax Advantages</p>
-          <h2 className="font-display text-4xl font-semibold text-white mb-6">
-            Agricultural Income Tax Benefits
+      {/* 7. CTA SECTION */}
+      <section className="relative py-28 bg-[#0B2F24] overflow-hidden text-center text-white">
+        {/* Top curved wave */}
+        <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[40px] rotate-180">
+            <path d="M0,35 C300,105 600,15 900,105 L1200,55 L1200,120 L0,120 Z" />
+          </svg>
+        </div>
+
+        <div className="relative z-20 max-w-4xl mx-auto px-6 py-4 flex flex-col items-center">
+          <span className="text-[#C49A5A] text-xs font-bold tracking-[0.2em] uppercase block mb-4">START TODAY</span>
+          <h2 
+            className="font-serif text-4xl md:text-5xl font-bold text-white mb-6 leading-tight"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Explore the Sandalwood Opportunity
           </h2>
-          <p className="text-white/60 text-lg mb-10 max-w-xl mx-auto">
-            Income from sandalwood plantations is classified as agricultural income under Indian tax law,
-            offering significant exemptions for qualifying investors.
+          <p className="text-[#E6D3B3] text-sm md:text-base leading-relaxed max-w-xl mb-10 font-sans">
+            Have questions about land titles, tax exemptions, or returns? Speak to our team of investment advisors today.
           </p>
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
-            {[
-              { title: 'Agricultural Income Exemption', desc: 'Income from harvesting classified as agricultural under Sec. 2(1A) of Income Tax Act.' },
-              { title: 'Long-Term Capital Gains Benefits', desc: 'Favourable LTCG treatment on sale of agricultural land in rural areas.' },
-              { title: 'No GST on Agricultural Produce', desc: 'Sandalwood sale proceeds are not subject to GST under Schedule I.' },
-            ].map((item, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-6 text-left hover:border-[#c8851e]/30 transition-all">
-                <FileText className="w-5 h-5 text-[#e9be55] mb-3" />
-                <div className="text-white font-semibold mb-2 text-sm">{item.title}</div>
-                <p className="text-white/50 text-xs leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-white/30 text-xs">
-            * Tax benefits subject to applicable law. Consult your tax advisor for personalized advice.
-          </p>
+          <Link href="/inquiry">
+            <Button 
+              size="lg"
+              className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white hover:opacity-90 px-10 py-6 text-sm font-semibold uppercase tracking-wider rounded-full transition-all flex items-center justify-center gap-2 border border-white/10 shadow-lg"
+            >
+              EXPLORE THE OPPORTUNITY <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
       </section>
+
     </div>
   );
 }

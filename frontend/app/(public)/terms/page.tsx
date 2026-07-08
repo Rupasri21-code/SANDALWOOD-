@@ -33,13 +33,13 @@ export default function TermsAndConditionsPage() {
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">3. Use License</h2>
           <p className="mb-4 leading-relaxed">
-            Permission is granted to temporarily download one copy of the materials on Chandan Nilayam's Website for 
+            Permission is granted to temporarily download one copy of the materials on Chandan Nilayam Investments' Website for 
             personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, 
             and under this license you may not:
             <ul className="list-disc pl-6 mt-2 space-y-2">
               <li>modify or copy the materials;</li>
               <li>use the materials for any commercial purpose or for any public display;</li>
-              <li>attempt to reverse engineer any software contained on Chandan Nilayam's Website;</li>
+              <li>attempt to reverse engineer any software contained on Chandan Nilayam Investments' Website;</li>
               <li>remove any copyright or other proprietary notations from the materials; or</li>
               <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
             </ul>
@@ -47,14 +47,14 @@ export default function TermsAndConditionsPage() {
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">4. Limitations</h2>
           <p className="mb-4 leading-relaxed">
-            Chandan Nilayam or its suppliers will not be hold accountable for any damages that will arise with the use or 
-            inability to use the materials on Chandan Nilayam's Website, even if Chandan Nilayam or an authorize 
+            Chandan Nilayam Investments or its suppliers will not be hold accountable for any damages that will arise with the use or 
+            inability to use the materials on Chandan Nilayam Investments' Website, even if Chandan Nilayam Investments or an authorize 
             representative of this Website has been notified, orally or written, of the possibility of such damage.
           </p>
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">5. Governing Law</h2>
           <p className="mb-4 leading-relaxed">
-            Any claim related to Chandan Nilayam's Website shall be governed by the laws of India without regards to its 
+            Any claim related to Chandan Nilayam Investments' Website shall be governed by the laws of India without regards to its 
             conflict of law provisions.
           </p>
         </div>

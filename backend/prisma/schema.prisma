@@ -246,7 +246,7 @@ model Document {
 
 model Media {
   id          String          @id @default(uuid())
-  investor_id String
+  investor_id String?
   land_id     String?
   title       String
   description String?
@@ -254,8 +254,8 @@ model Media {
   file_type   String
   category    String
   created_at  DateTime        @default(now())
-  investor    InvestorProfile @relation(fields: [investor_id], references: [id], onDelete: Cascade)
-  land        LandPlot?       @relation(fields: [land_id], references: [id])
+  investor    InvestorProfile? @relation(fields: [investor_id], references: [id], onDelete: Cascade)
+  land        LandPlot?        @relation(fields: [land_id], references: [id])
 }
 
 model Inquiry {

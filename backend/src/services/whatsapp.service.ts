@@ -74,7 +74,7 @@ export const sendWhatsAppMessage = async (toPhone: string, messageBody: string) 
  * Existing login credential message (MUST NOT BE DELETED OR BROKEN)
  */
 export const sendWhatsAppCredentials = async (phone: string, fullName: string, email: string, passwordPlain: string) => {
-  const messageBody = `*Welcome to Arbor Vest Sandalwood Investments!* 🌿\n\nDear ${fullName},\n\nYour secure investor portal account has been created by the Administration.\n\nYou can access your portal to monitor plot details, crop growth, investments, and documents.\n\n*Portal URL:* http://localhost:3000/login\n*Username:* ${email}\n*Temporary Password:* ${passwordPlain}\n\n⚠️ _Please change your password immediately after logging in for the first time._\n\nFor support, please reply to this message.\n\nRegards,\nArbor Vest Team`;
+  const messageBody = `*Welcome to Chandan Nilayam Sandalwood Investments!* 🌿\n\nDear ${fullName},\n\nYour secure investor portal account has been created by the Administration.\n\nYou can access your portal to monitor plot details, crop growth, investments, and documents.\n\n*Portal URL:* http://localhost:3000/login\n*Username:* ${email}\n*Temporary Password:* ${passwordPlain}\n\n⚠️ _Please change your password immediately after logging in for the first time._\n\nFor support, please reply to this message.\n\nRegards,\nChandan Nilayam Team`;
 
   return sendWhatsAppMessage(phone, messageBody);
 };

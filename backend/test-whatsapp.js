@@ -26,7 +26,7 @@ async function testWhatsApp() {
     console.log(`🚀 Sending test message from ${fromNumber} to ${toTestNumber}...`);
     
     const message = await client.messages.create({
-      body: 'Hello from Arbor Vest Investments! This is a test WhatsApp message to verify the Twilio setup.',
+      body: 'Hello from Chandan Nilayam Investments! This is a test WhatsApp message to verify the Twilio setup.',
       from: fromNumber,
       to: toTestNumber,
     });

@@ -200,7 +200,7 @@ export default function PortalPaymentsPage() {
 
                 {/* Footer Notes */}
                 <div className="text-center border-t border-white/5 pt-5 text-[10px] text-white/40 leading-relaxed print:border-gray-200 print:text-gray-500">
-                  Thank you for your investment with Chandan Nilayam Sandalwood Investments.<br />
+                  Thank you for your investment with Chandan Nilayam Investments.<br />
                   This is a system generated receipt and does not require a signature.
                 </div>
 

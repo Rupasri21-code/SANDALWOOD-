@@ -39,7 +39,12 @@ export const listMyDocuments = async (req: Request, res: Response, next: NextFun
     });
 
     const media = await db.media.findMany({
-      where: { investor_id: profile.id },
+      where: {
+        OR: [
+          { investor_id: profile.id },
+          { investor_id: null }
+        ]
+      },
       orderBy: { created_at: 'desc' },
     });
 
