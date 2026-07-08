@@ -25,10 +25,24 @@ export default function Loading() {
               style={{ animation: 'loader 2.2s ease-in-out infinite' }}
             />
           </div>
-          <p className="mt-4 text-xs uppercase tracking-[0.35em] text-[#C49A5A]/80">A project by GK</p>
+          <div className="mt-8 flex flex-col items-center justify-center opacity-90 animate-in fade-in duration-1000 delay-500">
+            <p className="text-[10px] uppercase tracking-[0.35em] text-[#C49A5A] font-semibold font-sans mb-3">
+              A Project by GK
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#C49A5A]/60"></div>
+              <div className="flex flex-col items-center">
+                <span className="text-[7px] uppercase tracking-[0.25em] text-white/50 font-semibold mb-1">Initiated By</span>
+                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-black drop-shadow-sm">
+                  Mahalakshmi Reality Developers
+                </span>
+              </div>
+              <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#C49A5A]/60"></div>
+            </div>
+          </div>
         </div>
 
-        <div className="relative z-10 flex gap-3">
+        <div className="relative z-10 flex gap-3 mt-4">
           <span className="h-3 w-3 rounded-full bg-[#C49A5A] animate-pulse" />
           <span className="h-3 w-3 rounded-full bg-[#C49A5A] opacity-70 animate-pulse" style={{ animationDelay: '0.18s' }} />
           <span className="h-3 w-3 rounded-full bg-[#C49A5A] opacity-50 animate-pulse" style={{ animationDelay: '0.36s' }} />

@@ -52,7 +52,7 @@ export default function Navbar() {
         {/* Button */}
         <div className="hidden lg:flex items-center gap-4">
           <a href="#investor-inquiry">
-            <Button className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
+            <Button suppressHydrationWarning className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
               Investor Inquiry
             </Button>
           </a>
@@ -81,7 +81,7 @@ export default function Navbar() {
             Login
           </Link>
           <a href="#investor-inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">
-            <Button className="w-full bg-[#C8851E] text-white py-3 rounded-xl font-bold uppercase text-xs tracking-wider">
+            <Button suppressHydrationWarning className="w-full bg-[#C8851E] text-white py-3 rounded-xl font-bold uppercase text-xs tracking-wider">
               Investor Inquiry
             </Button>
           </a>

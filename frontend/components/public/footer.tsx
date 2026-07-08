@@ -67,13 +67,16 @@ export default function Footer() {
           <div className="flex flex-col items-start text-left">
             <h4 className="text-xs font-black uppercase tracking-wider text-[#C49A5A] mb-6 font-sans">Contact Us</h4>
             <div className="flex flex-col gap-4 text-xs font-sans">
-              <span className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-[#C49A5A] shrink-0" /> 
-                <a href="tel:+917337331000" className="hover:text-[#C49A5A] transition-colors">+91 733 733 1000</a>
+              <span className="flex items-start gap-3">
+                <Phone className="w-4 h-4 text-[#C49A5A] shrink-0 mt-0.5" /> 
+                <div className="flex flex-col gap-1">
+                  <a href="tel:+919063016733" className="hover:text-[#C49A5A] transition-colors">+91 906 301 6733</a>
+                  <a href="tel:+916300016733" className="hover:text-[#C49A5A] transition-colors">+91 630 001 6733</a>
+                </div>
               </span>
               <span className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-[#C49A5A] shrink-0" /> 
-                <a href="mailto:invest@chandannilayam.com" className="hover:text-[#C49A5A] transition-colors">invest@chandannilayam.com</a>
+                <a href="mailto:chandhannilayam@gmail.com" className="hover:text-[#C49A5A] transition-colors">chandhannilayam@gmail.com</a>
               </span>
               <span className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#C49A5A] shrink-0 mt-0.5" /> 

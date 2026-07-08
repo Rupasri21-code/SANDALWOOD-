@@ -118,7 +118,7 @@ export default function InvestmentPage() {
                 Sandalwood is a hemiparasitic tree, meaning it requires primary and secondary host plants to draw nutrients and develop its high-value aromatic heartwood. Managing this host-system requires strict agronomic expertise.
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed font-sans">
-                Our agricultural management team maintains your plot over the 15-year growth cycle. When the trees mature and harvest occurs, the proceeds from the aromatic heartwood are shared with you, delivering substantial wealth.
+                Our agricultural management team maintains your plot over the 12-year growth cycle. When the trees mature and harvest occurs, the proceeds from the aromatic heartwood are shared with you, delivering substantial wealth.
               </p>
             </div>
 
@@ -216,13 +216,13 @@ export default function InvestmentPage() {
                 Why Time is Your Greatest Ally
               </h2>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
-                Sandalwood cultivation is a long-term investment asset. The *Santalum album* species takes around 15 years to develop high-density heartwood containing rich levels of sandalwood oil (santalol).
+                Sandalwood cultivation is a long-term investment asset. The *Santalum album* species takes around 12 years to develop high-density heartwood containing rich levels of sandalwood oil (santalol).
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
                 During the initial 1 to 5 years, the saplings establish strong root-parasitic bonds and rapid vegetative growth. From years 5 to 10, the trunk widens, and transition wood starts forming. Between years 10 and 15, the core heartwood expands rapidly, depositing the oil.
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed font-sans">
-                Harvesting before 15 years results in low oil concentrations and lower quality ratings. By patient holding, you allow the crop to reach its peak market grade, delivering a high multiplier on your original investment.
+                Harvesting before 12 years results in low oil concentrations and lower quality ratings. By patient holding, you allow the crop to reach its peak market grade, delivering a high multiplier on your original investment.
               </p>
             </div>
 

@@ -90,7 +90,7 @@ type InquiryFormValues = z.infer<typeof inquirySchema>;
 
 const stats = [
   {
-    value: '50',
+    value: '100+',
     label: 'ACRES',
     description: 'Premium Land\nNear Dornala',
     icon: MapPin,
@@ -102,7 +102,7 @@ const stats = [
     icon: Trees,
   },
   {
-    value: '15+',
+    value: '12+',
     label: 'YEARS',
     description: 'Sandalwood\nGrowth Cycle',
     icon: TreePine,
@@ -143,7 +143,7 @@ const journeySteps = [
   {
     num: '01',
     title: 'Land Acquisition',
-    description: 'Prime 50 acres near Dornala, secured with clear titles.',
+    description: 'Prime 100 acres near Dornala, secured with clear titles.',
   },
   {
     num: '02',
@@ -226,7 +226,7 @@ const initialTestimonials = [
 
 const heroStats = [
   {
-    value: '50+',
+    value: '100+',
     label: 'ACRES OF PREMIUM LAND',
     icon: Trees,
   },
@@ -236,7 +236,7 @@ const heroStats = [
     icon: MapPin,
   },
   {
-    value: '15+',
+    value: '12+',
     label: 'YEARS OF GROWTH',
     icon: Sprout,
   },
@@ -254,7 +254,7 @@ const faqData = [
   },
   {
     question: "Why is sandalwood considered a valuable long-term investment?",
-    answer: "Sandalwood is globally renowned for its fragrance, medicinal properties, and cultural significance, yet natural reserves are rapidly depleting. Cultivated sandalwood represents a secure, high-value asset class with a consistent supply-demand deficit, ensuring strong price appreciation and high compounding returns over its 15-year growth cycle."
+    answer: "Sandalwood is globally renowned for its fragrance, medicinal properties, and cultural significance, yet natural reserves are rapidly depleting. Cultivated sandalwood represents a secure, high-value asset class with a consistent supply-demand deficit, ensuring strong price appreciation and high compounding returns over its 12-year growth cycle."
   },
   {
     question: "Are there any future developments planned around the project?",
@@ -305,10 +305,10 @@ export default function HomePage() {
   useEffect(() => {
     const fadeTimer = setTimeout(() => {
       setFadeSplash(true);
-    }, 2500);
+    }, 800);
     const removeTimer = setTimeout(() => {
       setShowSplash(false);
-    }, 3200);
+    }, 1200);
 
     return () => {
       clearTimeout(fadeTimer);
@@ -630,14 +630,14 @@ export default function HomePage() {
         <div className="relative z-30 max-w-5xl mx-auto px-6 w-full text-center flex flex-col items-center justify-center pb-12">
           {/* Badge */}
           <div 
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2 mb-6 border bg-black/35 backdrop-blur-md"
+            className="inline-flex flex-col sm:flex-row items-center justify-center text-center gap-1 sm:gap-2 rounded-[18px] sm:rounded-full px-4 sm:px-5 py-2 sm:py-2 mb-4 sm:mb-6 border bg-black/35 backdrop-blur-md max-w-[90vw]"
             style={{
               borderColor: '#C49A5A',
             }}
           >
-            <Compass className="w-4 h-4 text-[#C49A5A]" />
+            <Compass className="w-3 h-3 sm:w-4 sm:h-4 text-[#C49A5A] shrink-0" />
             <span 
-              className="text-[11px] font-semibold tracking-[3px] uppercase"
+              className="text-[9px] sm:text-[11px] font-semibold tracking-[1px] sm:tracking-[3px] uppercase leading-snug sm:leading-none"
               style={{ 
                 color: '#C49A5A',
                 fontFamily: "'Montserrat', sans-serif"
@@ -651,7 +651,7 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="text-4xl md:text-5xl lg:text-[68px] font-bold tracking-tight leading-[1.15] mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[68px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6"
             style={{ 
               color: '#F7F2E8',
               fontFamily: "'Cormorant Garamond', serif", 
@@ -684,23 +684,23 @@ export default function HomePage() {
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full sm:w-auto justify-center items-center px-2">
             <a href="#opportunity" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto hover:opacity-90 text-white shadow-xl px-10 py-7 text-sm font-semibold uppercase tracking-wider rounded-full transition-all duration-300 font-sans flex items-center justify-center gap-2 border border-[#C49A5A]/20"
+                className="w-full sm:w-auto hover:opacity-90 text-white shadow-xl px-6 sm:px-10 py-6 sm:py-7 text-xs sm:text-sm font-semibold uppercase tracking-wider rounded-full transition-all duration-300 font-sans flex items-center justify-center gap-2 border border-[#C49A5A]/20"
                 style={{ backgroundColor: '#C49A5A' }}
               >
-                <Compass className="w-4 h-4 text-white" /> EXPLORE THE OPPORTUNITY
+                <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" /> EXPLORE THE OPPORTUNITY
               </Button>
             </a>
             <a href="#plantation" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
-                className="w-full sm:w-auto hover:opacity-90 text-white shadow-xl px-10 py-7 text-sm font-semibold uppercase tracking-wider rounded-full transition-all border border-[#C49A5A]/40 font-sans flex items-center justify-center gap-2"
+                className="w-full sm:w-auto hover:opacity-90 text-white shadow-xl px-6 sm:px-10 py-6 sm:py-7 text-xs sm:text-sm font-semibold uppercase tracking-wider rounded-full transition-all border border-[#C49A5A]/40 font-sans flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#12372A' }}
               >
-                VIEW PLANTATION <ArrowRight className="w-4 h-4 text-white" />
+                VIEW PLANTATION <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </Button>
             </a>
           </div>
@@ -877,7 +877,7 @@ export default function HomePage() {
 
               {/* Description */}
               <p className="text-[#E6D3B3] text-sm md:text-[15px] leading-[1.6] mb-8 font-sans max-w-md">
-                We own and nurture 50 acres of premium land near Dornala. Every step is managed with care, transparency and expertise.
+                We own and nurture 100 acres of premium land near Dornala. Every step is managed with care, transparency and expertise.
               </p>
 
               {/* Button */}
@@ -1643,17 +1643,25 @@ export default function HomePage() {
                     dx={-8}
                   />
                   <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(10,38,30,0.95)', 
-                      borderColor: 'rgba(196,154,90,0.5)',
-                      borderRadius: '12px',
-                      fontSize: '13px',
-                      color: '#F7F0E4',
-                      boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                    cursor={{ fill: 'rgba(196,154,90,0.05)' }}
+                    content={({ active, payload, label }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-[rgba(10,38,30,0.95)] border border-[#C49A5A]/50 rounded-[12px] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-50">
+                            <div className="text-[#D9B36D] font-bold mb-2 text-[13px]">{label.replace('Year ', 'Yr ')}</div>
+                            <div className="flex flex-col gap-1 text-[12px]">
+                              {payload.map((entry, index) => (
+                                <div key={index} className="flex justify-between gap-4 text-[#F7F0E4]">
+                                  <span style={{ color: entry.color }}>{entry.name === 'value' ? 'Plantation Value' : 'Total Investment'}</span>
+                                  <span className="font-bold">{formatCurrency(entry.value as number)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
                     }}
-                    itemStyle={{ fontSize: '12px', padding: '2px 0' }}
-                    formatter={(value: number, name: string) => [formatCurrency(value), name === 'value' ? 'Plantation Value' : 'Total Investment']}
-                    labelStyle={{ color: '#D9B36D', fontWeight: 'bold', marginBottom: '8px' }}
                   />
                   {/* Dashed Investment Line */}
                   <Line 

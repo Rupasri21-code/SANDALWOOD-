@@ -17,9 +17,9 @@ export default function ContentManagementPage() {
     heroTitle: 'ROOTED IN NATURE. GROWING WEALTH.',
     heroSubtitle: 'Premium Sandalwood Plots Near Dornala. Legacy land. Long-term value.',
     badgeText: 'PREMIUM SANDALWOOD PLOTS NEAR DORNALA',
-    statsAum: '50 Acres',
+    statsAum: '100 Acres',
     statsInvestors: '1000+',
-    statsGrowth: '15+ Years',
+    statsGrowth: '12+ Years',
   });
 
   // 2. Gallery Content State

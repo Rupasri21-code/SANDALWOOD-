@@ -73,7 +73,7 @@ export default function LoginPage() {
         } else {
           router.push('/portal');
         }
-      }, 500);
+      }, 100);
     } catch (err) {
       console.error('Login error:', err);
       toast.error('An unexpected error occurred.');
@@ -170,22 +170,7 @@ export default function LoginPage() {
             </motion.div>
           </div>
 
-          <div className="px-8 pb-10 pt-4">
-            <div className="flex flex-col gap-6 sm:flex-row sm:justify-between max-w-[460px] mx-auto">
-              {[
-                { icon: Shield, title: 'Secure & Trusted' },
-                { icon: Leaf, title: 'Sustainable Future' },
-                { icon: TrendingUp, title: 'Growth Focused' }
-              ].map((item, index) => (
-                <div key={index} className="flex flex-col items-center gap-3 text-center w-1/3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#C49A5A]/30 text-[#D9B36D]">
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  <p className="text-[12px] font-semibold text-[#F7F0E4] leading-tight">{item.title}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+
         </section>
 
         {/* RIGHT SIDE - ARTWORK & HERO (52%) */}
@@ -249,7 +234,7 @@ export default function LoginPage() {
               {[
                 { value: '1000+', label: 'Happy Investors', icon: Users },
                 { value: '500+', label: 'Acres Planted', icon: Leaf },
-                { value: '15+', label: 'Years of Trust', icon: Shield }
+                { value: '12+', label: 'Years of Trust', icon: Shield }
               ].map((stat, i) => {
                 const Icon = stat.icon;
                 return (

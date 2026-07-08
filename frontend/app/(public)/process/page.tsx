@@ -50,7 +50,7 @@ const steps = [
   {
     num: '07',
     title: 'Harvest & Returns',
-    description: 'Harvesting mature timber after 15 years. Heartwood is sold, and profits are distributed to plot holders.',
+    description: 'Harvesting mature timber after 12 years. Heartwood is sold, and profits are distributed to plot holders.',
     icon: TrendingUp,
     image: 'https://images.pexels.com/photos/6784121/pexels-photo-6784121.jpeg?auto=compress&cs=tinysrgb&w=300',
   },

@@ -93,10 +93,10 @@ export default function PlantationPage() {
                 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#12372A] mb-6 leading-tight"
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
               >
-                A Model 50-Acre Agricultural Estate
+                A Model 100-Acre Agricultural Estate
               </h2>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
-                Our plantation represents 50 acres of premium, high-value agricultural land. The estate is divided systematically into blocks and plots, each connected by access roads to allow seamless monitoring and maintenance.
+                Our plantation represents 100 acres of premium, high-value agricultural land. The estate is divided systematically into blocks and plots, each connected by access roads to allow seamless monitoring and maintenance.
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
                 The entire boundary is walled and fenced, with central security outposts managing access. Every tree is tagged and cataloged digitally in our database, which feeds crop updates directly to your investor portal.

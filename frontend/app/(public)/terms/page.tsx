@@ -18,44 +18,42 @@ export default function TermsAndConditionsPage() {
           
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">1. Agreement to Terms</h2>
           <p className="mb-4 leading-relaxed">
-            By accessing our website, you agree to be bound by these Terms and Conditions and agree that you are 
-            responsible for the agreement with any applicable local laws. If you disagree with any of these terms, 
-            you are prohibited from accessing this site. The materials contained in this Website are protected by 
-            copyright and trade mark law.
+            By accessing our website and participating in the Chandan Nilayam Investments program, you agree to be bound by these Terms and Conditions. 
+            These terms constitute a legally binding agreement between you ("Investor") and Chandan Nilayam Investments ("Company") regarding your purchase of agricultural land and participation in our sandalwood plantation management.
           </p>
 
-          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">2. Investment Risks</h2>
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">2. Land Registration & Ownership</h2>
           <p className="mb-4 leading-relaxed">
-            All investments carry risks, including the possible loss of principal. Past performance of our plantations 
-            or similar agricultural investments does not guarantee future results. Investors should carefully consider 
-            their financial situation and risk tolerance before investing.
+            Upon full payment of the investment amount, the Company will execute a registered Sale Deed in the name of the Investor for the designated plot(s). 
+            The Investor becomes the absolute owner of the land. The Company acts as the exclusive agricultural manager of the plantation on the Investor's behalf for the agreed tenure (typically 12 years).
           </p>
 
-          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">3. Use License</h2>
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">3. Plantation Management & Profit Sharing</h2>
           <p className="mb-4 leading-relaxed">
-            Permission is granted to temporarily download one copy of the materials on Chandan Nilayam Investments' Website for 
-            personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, 
-            and under this license you may not:
-            <ul className="list-disc pl-6 mt-2 space-y-2">
-              <li>modify or copy the materials;</li>
-              <li>use the materials for any commercial purpose or for any public display;</li>
-              <li>attempt to reverse engineer any software contained on Chandan Nilayam Investments' Website;</li>
-              <li>remove any copyright or other proprietary notations from the materials; or</li>
-              <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
-            </ul>
+            The Company guarantees expert cultivation, security, and maintenance of the sandalwood trees. Upon maturity and legal harvest of the sandalwood crop, the net profits generated from the sale of the timber will be shared between the Investor and the Company as per the specific ratio outlined in your formal registered Agreement of Sale and Plantation Management Agreement. 
+            The Investor is strictly prohibited from privately harvesting or felling the sandalwood trees without the Company's consent, as red sandalwood is a highly regulated commodity under government law.
           </p>
 
-          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">4. Limitations</h2>
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">4. Investor Privileges (Clubhouse & Darshanam)</h2>
+          <ul className="list-disc pl-6 mb-4 space-y-2">
+            <li><strong>Clubhouse & Resort Access:</strong> Investors are granted membership access to the Chandan Nilayam Clubhouse and eco-resort facilities, subject to advance booking, availability, and specific tier-based usage limits as outlined in your welcome kit.</li>
+            <li><strong>VIP Srisailam Darshanam:</strong> The Company provides complimentary VIP Srisailam Darshanam tickets. These must be requested through our portal or support team at least 15 days in advance and are subject to temple authority availability and schedules.</li>
+          </ul>
+
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">5. Investment Risks & Projections</h2>
           <p className="mb-4 leading-relaxed">
-            Chandan Nilayam Investments or its suppliers will not be hold accountable for any damages that will arise with the use or 
-            inability to use the materials on Chandan Nilayam Investments' Website, even if Chandan Nilayam Investments or an authorize 
-            representative of this Website has been notified, orally or written, of the possibility of such damage.
+            While red sandalwood has historically shown strong appreciation, all agricultural investments carry inherent risks, including natural calamities, disease, and market price fluctuations. 
+            Financial projections provided on our website are estimates based on current market rates and optimal growth conditions, and do not constitute a legal guarantee of exact returns.
           </p>
 
-          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">5. Governing Law</h2>
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">6. Transfer of Ownership</h2>
           <p className="mb-4 leading-relaxed">
-            Any claim related to Chandan Nilayam Investments' Website shall be governed by the laws of India without regards to its 
-            conflict of law provisions.
+            The Investor may sell or transfer the land to a third party at any time. However, the subsequent buyer must agree to be bound by the existing Plantation Management Agreement with Chandan Nilayam Investments for the remainder of the crop's lifecycle.
+          </p>
+
+          <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">7. Governing Law</h2>
+          <p className="mb-4 leading-relaxed">
+            These Terms and Conditions shall be governed by and construed in accordance with the laws of India. Any disputes arising out of this agreement shall be subject to the exclusive jurisdiction of the courts located in Andhra Pradesh, India.
           </p>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
       toast.success('Admin authentication verified');
       setTimeout(() => {
         router.push('/admin');
-      }, 500);
+      }, 100);
     } catch (err) {
       console.error("Admin Login error:", err);
       toast.error('An unexpected error occurred.');

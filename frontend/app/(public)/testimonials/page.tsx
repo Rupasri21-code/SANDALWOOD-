@@ -67,7 +67,7 @@ const featuredStories = [
     title: "Building Generational Wealth",
     subtitle: "Priya K's Investment Journey",
     desc: "Priya invested in 1.25 acres of land near Dornala in 2019. Over the past 7 years, she has witnessed her 150 sandalwood trees grow into sturdy saplings. Through the portal, she keeps track of height measurements, fertilizer schedules, and soil hydration levels.",
-    quote: "Sandalwood is a 15-year legacy. It grows as my children grow, serving as a solid backing for their educational future.",
+    quote: "Sandalwood is a 12-year legacy. It grows as my children grow, serving as a solid backing for their educational future.",
     src: "https://images.pexels.com/photos/3777567/pexels-photo-3777567.jpeg?auto=compress&cs=tinysrgb&w=800"
   },
   {
@@ -148,7 +148,7 @@ export default function TestimonialsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {[
               { val: '1000+', label: 'Registered Investors' },
-              { val: '50 Acres', label: 'Premium Land Near Dornala' },
+              { val: '100 Acres', label: 'Premium Land Near Dornala' },
               { val: '4.9 / 5', label: 'Average Customer Rating' },
               { val: '100%', label: 'Deed Registrations Completed' }
             ].map((stat, i) => (
