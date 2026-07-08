@@ -7,13 +7,8 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, Shield, Leaf, TrendingUp, Users, Check } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { toast } from 'sonner';
-import { Cormorant_Garamond, Lora, Montserrat } from 'next/font/google';
 import LoginHeroArtwork from '@/components/LoginHeroArtwork';
 import BrandLogo from '@/components/BrandLogo';
-
-const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['700'] });
-const montserrat = Montserrat({ subsets: ['latin'], weight: ['600', '700'] });
-const lora = Lora({ subsets: ['latin'], weight: ['400', '500'] });
 
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState('');
@@ -89,7 +84,7 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className={`min-h-screen md:h-screen w-full overflow-x-hidden md:overflow-hidden bg-[#08261F] ${montserrat.className}`}>
+    <div className="min-h-screen md:h-screen w-full overflow-x-hidden md:overflow-hidden bg-[#08261F] font-['Montserrat',sans-serif]">
       <div className="flex min-h-screen md:h-screen flex-col md:flex-row">
         
         {/* LEFT SIDE - FORM (48%) */}
@@ -111,8 +106,8 @@ export default function LoginPage() {
 
           <div className="mx-auto flex w-full max-w-[460px] flex-1 flex-col justify-center px-8 py-10">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-3">
-              <h1 className={`text-[48px] md:text-[56px] font-semibold leading-tight tracking-tight text-[#F7F0E4] ${cormorant.className}`}>Welcome Back</h1>
-              <p className={`text-[15px] text-[#B8C7BC] ${lora.className}`}>Login to continue to your investor portal</p>
+              <h1 className="text-[48px] md:text-[56px] font-semibold leading-tight tracking-tight text-[#F7F0E4] font-['Cormorant_Garamond',serif]">Welcome Back</h1>
+              <p className="text-[15px] text-[#B8C7BC] font-['Lora',serif]">Login to continue to your investor portal</p>
             </motion.div>
 
             <motion.form onSubmit={handleLogin} className="mt-10 space-y-5" autoComplete="off" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
@@ -232,7 +227,7 @@ export default function LoginPage() {
 
             {/* Heading */}
             <h2 
-              className={`${cormorant.className} text-center text-[#D9B36D] font-semibold md:text-[32px] lg:text-[36px] text-[28px] drop-shadow-lg`}
+              className="font-['Cormorant_Garamond',serif] text-center text-[#D9B36D] font-semibold md:text-[32px] lg:text-[36px] text-[28px] drop-shadow-lg"
               style={{ lineHeight: '1.1' }}
             >
               Grow with Nature. Invest with Confidence.

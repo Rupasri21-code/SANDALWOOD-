@@ -8,10 +8,7 @@ import { Eye, EyeOff, ArrowLeft, Mail, Lock, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Cormorant_Garamond } from 'next/font/google';
 import BrandLogo from '@/components/BrandLogo';
-
-const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['700'] });
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -99,7 +96,7 @@ export default function AdminLoginPage() {
           <span className="block text-[8px] text-[#C49A5A] tracking-[0.25em] uppercase font-bold mt-1.5 font-sans leading-none">Secure Terminal</span>
         </div>
 
-        <h1 className={`text-[26px] md:text-[30px] text-[#F7F0E4] mb-2 leading-none ${cormorant.className}`}>Admin Access</h1>
+        <h1 className="text-[26px] md:text-[30px] text-[#F7F0E4] mb-2 leading-none font-['Cormorant_Garamond',serif]">Admin Access</h1>
         <p className="text-[#E6D3B3] text-xs leading-relaxed mb-6">
           Authenticate to access administrative panels and manage logs.
         </p>
