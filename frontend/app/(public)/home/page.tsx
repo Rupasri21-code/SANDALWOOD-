@@ -700,14 +700,14 @@ export default function HomePage() {
 
         {/* Readability Green Gradient Overlay */}
         <div 
-          className="absolute inset-0 z-20 pointer-events-none" 
+          className="absolute inset-0 z-20 pointer-events-none max-md:bg-black/30" 
           style={{ 
-            background: 'linear-gradient(90deg, rgba(11, 47, 36, 0.50), rgba(11, 47, 36, 0.25), rgba(11, 47, 36, 0.40))' 
+            background: 'linear-gradient(90deg, rgba(11, 47, 36, 0.60), rgba(11, 47, 36, 0.35), rgba(11, 47, 36, 0.50))' 
           }} 
         />
 
         {/* Fixed Hero Content on Top */}
-        <div className="relative z-30 max-w-5xl mx-auto px-6 w-full text-center flex flex-col items-center justify-center pb-12">
+        <div className="relative z-30 max-w-5xl mx-auto px-6 w-full text-center flex flex-col items-center justify-center pb-12 pt-24 sm:pt-0">
           {/* Badge */}
           <div 
             className="inline-flex flex-col sm:flex-row items-center justify-center text-center gap-1 sm:gap-2 rounded-[18px] sm:rounded-full px-4 sm:px-5 py-2 sm:py-2 mb-4 sm:mb-6 border bg-black/35 backdrop-blur-md max-w-[90vw]"

@@ -31,8 +31,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-3">
           <div className="flex flex-col items-center">
-            <BrandLogo height={75} logoClassName="object-contain drop-shadow-sm" />
-            <span className="text-[9px] uppercase tracking-[0.25em] font-extrabold text-[#0B2F24] mt-1.5 whitespace-nowrap">A PROJECT BY GK</span>
+            <div className="lg:hidden"><BrandLogo height={40} logoClassName="object-contain drop-shadow-sm" /></div>
+            <div className="hidden lg:block"><BrandLogo height={75} logoClassName="object-contain drop-shadow-sm" /></div>
+            <span className="hidden lg:block text-[9px] uppercase tracking-[0.25em] font-extrabold text-[#0B2F24] mt-1.5 whitespace-nowrap">A PROJECT BY GK</span>
           </div>
         </Link>
 
