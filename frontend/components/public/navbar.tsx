@@ -31,14 +31,15 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-3">
           <div className="flex flex-col items-center">
-            <BrandLogo height={40} logoClassName="object-contain" />
-            <span className="text-[7px] uppercase tracking-[0.2em] font-bold text-[#0B2F24]/70 mt-1 whitespace-nowrap">A PROJECT BY GK</span>
+            <BrandLogo height={75} logoClassName="object-contain drop-shadow-sm" />
+            <span className="text-[9px] uppercase tracking-[0.25em] font-extrabold text-[#0B2F24] mt-1.5 whitespace-nowrap">A PROJECT BY GK</span>
           </div>
         </Link>
 
         {/* Desktop Links — use same-page anchors for site sections so they don't open separate pages */}
         <div className="hidden lg:flex items-center gap-5">
           <a href="#opportunity" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">The Opportunity</a>
+          <a href="#about-heritage" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">About Us</a>
           <a href="#plantation" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Our Plantation</a>
           <a href="#privileges" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Investor Benefits</a>
           <a href="#calculator" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Plan Your Future</a>
@@ -72,6 +73,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-[#F8F4EB]/98 backdrop-blur-xl border-t border-[#C8851E]/20 px-6 py-4 space-y-2">
           <a href="#opportunity" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">The Opportunity</a>
+          <a href="#about-heritage" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">About Us</a>
           <a href="#plantation" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Our Plantation</a>
           <a href="#privileges" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Investor Benefits</a>
           <a href="#calculator" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Plan Your Future</a>

@@ -8,6 +8,7 @@ import {
   sendWhatsAppInvestmentStatusUpdated,
   getInvestorWhatsAppNumber,
 } from '../services/whatsapp.service';
+import { createNotification } from '../services/notification.service';
 
 const createInvestmentSchema = z.object({
   investorId: z.string().min(1, 'Investor is required'),
@@ -116,6 +117,18 @@ export const createInvestment = async (req: Request, res: Response, next: NextFu
       },
     });
 
+    if (investor.user_id) {
+      await createNotification({
+        recipientId: investor.user_id,
+        investorId: investor.id,
+        title: 'New Investment Recorded',
+        message: `A new investment of ${investment.currency} ${investment.amount} has been recorded for your account.`,
+        type: 'INFO',
+        link: '/portal/investments',
+        sendEmailAlert: true,
+      });
+    }
+
     // WhatsApp: notify investor about their new investment record
     try {
       const waPhone = getInvestorWhatsAppNumber(investor);
@@ -173,6 +186,17 @@ export const updateInvestment = async (req: Request, res: Response, next: NextFu
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
         if (investor) {
+          if (investor.user_id) {
+            await createNotification({
+              recipientId: investor.user_id,
+              investorId: investor.id,
+              title: 'Investment Status Updated',
+              message: `Your investment status has been updated to ${updated.status}.`,
+              type: 'UPDATE',
+              link: '/portal/investments',
+              sendEmailAlert: true,
+            });
+          }
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppInvestmentStatusUpdated(

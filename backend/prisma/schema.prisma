@@ -290,6 +290,7 @@ model Testimonial {
   id         String   @id @default(uuid())
   name       String
   location   String
+  investment String?
   text       String
   rating     Int      @default(5)
   image_url  String?
@@ -301,7 +302,8 @@ model GalleryItem {
   id          String   @id @default(uuid())
   title       String
   category    String
-  image_url   String
+  type        String   @default("image")
+  image_url   String?
   description String?
   created_at  DateTime @default(now())
 }
@@ -314,4 +316,21 @@ model ActivityLog {
   ip_address String?
   created_at DateTime @default(now())
   user       User?    @relation(fields: [user_id], references: [id])
+}
+
+model Faq {
+  id         String   @id @default(uuid())
+  question   String
+  answer     String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+}
+
+model SiteContent {
+  id         String   @id @default(uuid())
+  section    String
+  key        String   @unique
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

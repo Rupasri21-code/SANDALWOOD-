@@ -4,6 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary.service';
 import { sendWhatsAppDocumentUploaded, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
+import { sendDocumentAlert } from '../services/email.service';
 import path from 'path';
 
 export const listMedia = async (req: Request, res: Response, next: NextFunction) => {
@@ -68,8 +69,18 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
         },
       });
 
-      // Broadcast to WhatsApp
+      // Broadcast to WhatsApp and Email
       for (const inv of allInvestors) {
+        if (inv.user_id) {
+          try {
+            const user = await db.user.findUnique({ where: { id: inv.user_id } });
+            if (user) {
+              await sendDocumentAlert(user.email, inv.full_name, title || req.file!.originalname);
+            }
+          } catch (e) {
+            console.error('Failed to send email broadcast:', e);
+          }
+        }
         const waPhone = getInvestorWhatsAppNumber(inv);
         if (waPhone) {
           try {
@@ -99,6 +110,12 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
         if (investor) {
+          if (investor.user_id) {
+            const user = await db.user.findUnique({ where: { id: investor.user_id } });
+            if (user) {
+              await sendDocumentAlert(user.email, investor.full_name, media.title);
+            }
+          }
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppDocumentUploaded(waPhone, media.title, media.category);

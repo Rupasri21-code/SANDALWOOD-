@@ -26,14 +26,14 @@ export default function Loading() {
             />
           </div>
           <div className="mt-8 flex flex-col items-center justify-center opacity-90 animate-in fade-in duration-1000 delay-500">
-            <p className="text-[10px] uppercase tracking-[0.35em] text-[#C49A5A] font-semibold font-sans mb-3">
+            <p className="text-[14px] sm:text-[16px] uppercase tracking-[0.35em] text-[#C49A5A] font-bold font-sans mb-3">
               A Project by GK
             </p>
             <div className="flex items-center gap-3">
               <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#C49A5A]/60"></div>
               <div className="flex flex-col items-center">
                 <span className="text-[7px] uppercase tracking-[0.25em] text-white/50 font-semibold mb-1">Initiated By</span>
-                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-black drop-shadow-sm">
+                <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-semibold drop-shadow-sm">
                   Mahalakshmi Reality Developers
                 </span>
               </div>

@@ -8,6 +8,7 @@ import {
   sendWhatsAppPaymentStatusUpdated,
   getInvestorWhatsAppNumber,
 } from '../services/whatsapp.service';
+import { createNotification } from '../services/notification.service';
 
 const createPaymentSchema = z.object({
   investmentId: z.string().optional(),
@@ -111,6 +112,17 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
     });
 
     try {
+      if (investor.user_id) {
+        await createNotification({
+          recipientId: investor.user_id,
+          investorId: investor.id,
+          title: 'Payment Received',
+          message: `We have received your payment of ${payment.currency} ${payment.amount} (Transaction ID: ${payment.transaction_id}). Status: ${payment.status}.`,
+          type: 'INFO',
+          link: '/portal/payments',
+          sendEmailAlert: true,
+        });
+      }
       const waPhone = getInvestorWhatsAppNumber(investor);
       if (waPhone) {
         await sendWhatsAppPaymentReceived(
@@ -163,6 +175,17 @@ export const updatePayment = async (req: Request, res: Response, next: NextFunct
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
         if (investor) {
+          if (investor.user_id) {
+            await createNotification({
+              recipientId: investor.user_id,
+              investorId: investor.id,
+              title: 'Payment Status Updated',
+              message: `The status of your payment for ${updated.currency} ${updated.amount} (Transaction ID: ${updated.transaction_id}) has been updated to ${updated.status}.`,
+              type: 'INFO',
+              link: '/portal/payments',
+              sendEmailAlert: true,
+            });
+          }
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPaymentStatusUpdated(

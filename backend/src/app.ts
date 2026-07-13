@@ -22,6 +22,9 @@ import dashboardRoutes from './routes/dashboard.routes';
 import uploadRoutes from './routes/upload.routes';
 import testRoutes from './routes/test.routes';
 import testimonialRoutes from './routes/testimonial.routes';
+import faqRoutes from './routes/faq.routes';
+import galleryRoutes from './routes/gallery.routes';
+import contentRoutes from './routes/content.routes';
 
 const app = express();
 
@@ -67,6 +70,9 @@ app.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
 app.use(`${API_PREFIX}/upload`, uploadRoutes);
 app.use(`${API_PREFIX}/test`, testRoutes);
 app.use(`${API_PREFIX}/testimonials`, testimonialRoutes);
+app.use(`${API_PREFIX}/faqs`, faqRoutes);
+app.use(`${API_PREFIX}/gallery`, galleryRoutes);
+app.use(`${API_PREFIX}/content`, contentRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

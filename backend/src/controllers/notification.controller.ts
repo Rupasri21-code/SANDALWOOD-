@@ -5,6 +5,7 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { z } from 'zod';
 import { sendWhatsAppAdminBroadcast, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
+import { sendGeneralNotification } from '../services/email.service';
 
 const createNotificationSchema = z.object({
   recipientId: z.string().min(1, 'Recipient is required'),
@@ -112,8 +113,18 @@ export const createNotification = async (req: AuthRequest, res: Response, next: 
         await db.notification.createMany({ data: inserts });
       }
 
-      // Broadcast to WhatsApp
+      // Broadcast to WhatsApp and Email
       for (const inv of investors) {
+        if (inv.user_id) {
+          try {
+            const user = await db.user.findUnique({ where: { id: inv.user_id } });
+            if (user) {
+               await sendGeneralNotification(user.email, inv.full_name, data.title, data.message);
+            }
+          } catch(e) {
+            console.error('Email broadcast failed:', e);
+          }
+        }
         const waPhone = getInvestorWhatsAppNumber(inv);
         if (waPhone) {
           try {
@@ -144,9 +155,13 @@ export const createNotification = async (req: AuthRequest, res: Response, next: 
     
     if (validated.recipientId) {
       try {
+        const user = await db.user.findUnique({ where: { id: validated.recipientId } });
         const investor = await db.investorProfile.findFirst({
           where: { user_id: validated.recipientId }
         });
+        if (user && investor) {
+          await sendGeneralNotification(user.email, investor.full_name, validated.title, validated.message);
+        }
         if (investor) {
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {

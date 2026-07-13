@@ -116,7 +116,7 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
         message: validated.description,
         type: 'UPDATE',
         link: '/portal/plantation',
-        sendEmailAlert: validated.sendAlert || false,
+        sendEmailAlert: validated.sendAlert !== false,
       });
 
       // WhatsApp Integration

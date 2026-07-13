@@ -3,7 +3,7 @@ import { db } from '../config/database';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { createInquirySchema, updateInquirySchema } from '../validators/inquiry.validator';
-import { sendInquiryConfirmation } from '../services/email.service';
+import { sendInquiryConfirmation, sendAdminInquiryNotification } from '../services/email.service';
 import { sendWhatsAppInquiryConfirmation } from '../services/whatsapp.service';
 
 export const listInquiries = async (req: Request, res: Response, next: NextFunction) => {
@@ -38,6 +38,9 @@ export const createInquiry = async (req: Request, res: Response, next: NextFunct
 
     // Send confirmation email
     await sendInquiryConfirmation(validated.email, validated.fullName).catch(err => console.error('Email sending failed:', err));
+    
+    // Send admin notification
+    await sendAdminInquiryNotification(inquiry).catch(err => console.error('Admin email sending failed:', err));
     
     // Send WhatsApp confirmation
     await sendWhatsAppInquiryConfirmation(validated.phone, validated.fullName).catch(err => console.error('WhatsApp sending failed:', err));

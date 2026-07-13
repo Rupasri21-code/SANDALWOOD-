@@ -4,6 +4,7 @@ import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
 import { z } from 'zod';
 import { sendWhatsAppPlantationUpdate, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
+import { createNotification } from '../services/notification.service';
 
 const createCropSchema = z.object({
   landId: z.string().min(1, 'Land ID is required'),
@@ -120,6 +121,17 @@ export const createCrop = async (req: Request, res: Response, next: NextFunction
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: land.investor_id } });
         if (investor) {
+          if (investor.user_id) {
+            await createNotification({
+              recipientId: investor.user_id,
+              investorId: investor.id,
+              title: 'New Crop Added to Plot',
+              message: `A new crop (${crop.name} - ${crop.variety}) has been added to your plot.`,
+              type: 'INFO',
+              link: '/portal/plantation',
+              sendEmailAlert: true,
+            });
+          }
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPlantationUpdate(
@@ -177,6 +189,17 @@ export const updateCrop = async (req: Request, res: Response, next: NextFunction
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: existing.land.investor_id } });
         if (investor) {
+          if (investor.user_id) {
+            await createNotification({
+              recipientId: investor.user_id,
+              investorId: investor.id,
+              title: 'Crop Status Updated',
+              message: `The status of your crop (${updated.name}) has been updated. Growth stage is now ${updated.growth_stage} with ${updated.health_status} health.`,
+              type: 'INFO',
+              link: '/portal/plantation',
+              sendEmailAlert: true,
+            });
+          }
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPlantationUpdate(

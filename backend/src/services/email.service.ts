@@ -1,12 +1,12 @@
 import { Resend } from 'resend';
 import { env } from '../config/env';
 
-const resend = new Resend(env.RESEND_API_KEY || 're_placeholder');
+const resend = new Resend('re_U3QkF8Rf_2wCxidHPA4vqhyoXNMUGQchR');
 
 export const sendEmail = async (to: string, subject: string, html: string, text?: string) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Chandan Nilayam Investments <onboarding@resend.dev>',
+      from: 'Chandan Investments <info@chandhannilayam.com>',
       to: [to],
       subject,
       html,
@@ -59,6 +59,51 @@ export const sendInquiryConfirmation = async (email: string, fullName: string) =
     </div>
   `;
   return sendEmail(email, subject, html);
+};
+
+export const sendAdminInquiryNotification = async (inquiryData: { full_name: string; email: string; phone: string; investment_interest: string; budget_range: string; plot_size: string; message: string; }) => {
+  const subject = 'New Investment Inquiry Received - Chandan Nilayam';
+  const html = `
+    <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
+      <h2 style="color: #062E1F; border-bottom: 2px solid #C99A3A; padding-bottom: 10px;">New Inquiry Alert</h2>
+      <p>A new prospective investor has submitted an inquiry form on the website.</p>
+      
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold; width: 30%;">Name</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.full_name}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Email</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.email}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Phone</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.phone}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Interest</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.investment_interest}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Budget</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.budget_range}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Plot Size</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.plot_size}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; font-weight: bold;">Message</td>
+          <td style="padding: 10px; border: 1px solid #E7D7BC; background-color: #FFF8ED;">${inquiryData.message || 'N/A'}</td>
+        </tr>
+      </table>
+      
+      <p style="margin-top: 20px;">Log in to the <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin-login" style="color: #9A6A2F;">Admin Dashboard</a> to manage this inquiry.</p>
+    </div>
+  `;
+  const adminEmail = process.env.ADMIN_EMAIL || 'chandhannilayam@gmail.com';
+  return sendEmail(adminEmail, subject, html);
 };
 
 export const sendUpdateNotification = async (email: string, fullName: string, updateTitle: string, updateDescription: string) => {

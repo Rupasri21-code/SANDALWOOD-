@@ -28,6 +28,7 @@ export const createTestimonial = async (req: Request, res: Response, next: NextF
       data: {
         name: validated.name,
         location: validated.location,
+        investment: validated.investment,
         text: validated.text,
         rating: validated.rating || 5,
         image_url: validated.image_url,
@@ -36,6 +37,20 @@ export const createTestimonial = async (req: Request, res: Response, next: NextF
 
     res.status(201).json(
       new ApiResponse(201, testimonial, 'Testimonial submitted successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteTestimonial = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    await db.testimonial.delete({
+      where: { id }
+    });
+    res.status(200).json(
+      new ApiResponse(200, null, 'Testimonial deleted successfully')
     );
   } catch (error) {
     next(error);

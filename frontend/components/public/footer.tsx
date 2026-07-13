@@ -23,9 +23,9 @@ export default function Footer() {
           {/* Column 1: Logo, Brand & Copyright */}
           <div className="flex flex-col items-start">
             <div className="mb-6 flex flex-col items-start gap-4">
-              <BrandLogo height={54} />
+              <BrandLogo height={96} />
               <div className="flex flex-col gap-2 items-start">
-                <p className="text-[10px] uppercase tracking-[0.32em] text-[#C49A5A] font-semibold font-sans">
+                <p className="text-[14px] sm:text-[16px] uppercase tracking-[0.32em] text-[#C49A5A] font-bold font-sans">
                   A Project by GK
                 </p>
                 
@@ -33,7 +33,7 @@ export default function Footer() {
                   <div className="w-8 h-[1px] bg-gradient-to-r from-[#C49A5A] to-transparent"></div>
                   <div className="flex flex-col">
                     <span className="text-[7px] uppercase tracking-[0.25em] text-[#F7F0E4]/50 font-semibold mb-0.5">Initiated By</span>
-                    <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-black drop-shadow-sm">
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-[#C49A5A] to-[#E5C99F] font-semibold drop-shadow-sm">
                       Mahalakshmi Reality Developers
                     </span>
                   </div>
@@ -41,8 +41,8 @@ export default function Footer() {
 
               </div>
             </div>
-            <p className="text-xs leading-relaxed max-w-xs text-[#F7F0E4]/70 mb-4 text-left font-sans">
-              Premium Sandalwood Investments. Building sustainable nature-backed wealth and legacy assets for generations.
+            <p className="text-xs leading-relaxed max-w-sm text-[#F7F0E4]/70 mb-4 text-left font-sans">
+              Discover premium sandalwood estates where nature, long-term value, and generational wealth grow together. Thoughtfully cultivated with a vision for the future, every estate represents enduring value, timeless growth, and lasting prosperity designed to benefit generations to come.
             </p>
             <p className="text-[10px] text-[#F7F0E4]/50 font-sans mt-2">
               &copy; {new Date().getFullYear()} Chandan Nilayam Investments. All rights reserved.
@@ -54,6 +54,7 @@ export default function Footer() {
             <h4 className="text-xs font-black uppercase tracking-wider text-[#C49A5A] mb-6 font-sans">Quick Links</h4>
             <div className="flex flex-col gap-3 text-xs font-sans">
               <Link href="/home#opportunity" className="hover:text-[#C49A5A] transition-colors">The Opportunity</Link>
+              <Link href="/home#about-heritage" className="hover:text-[#C49A5A] transition-colors">About Us</Link>
               <Link href="/home#plantation" className="hover:text-[#C49A5A] transition-colors">Our Plantation</Link>
               <Link href="/home#privileges" className="hover:text-[#C49A5A] transition-colors">Investor Privileges</Link>
               <Link href="/home#amenities" className="hover:text-[#C49A5A] transition-colors">Lifestyle Amenities</Link>

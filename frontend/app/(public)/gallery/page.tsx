@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { X, ZoomIn, Play, FileText, Leaf, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
 
 const categories = ['All', 'Land', 'Plantation', 'Saplings', 'Sandalwood Trees', 'Videos', 'Documents'];
 
-const galleryItems = [
+const initialGalleryItems = [
   { 
     src: 'https://images.pexels.com/photos/17052523/pexels-photo-17052523.jpeg?auto=compress&cs=tinysrgb&w=800', 
     category: 'Land', 
@@ -83,6 +84,35 @@ const galleryItems = [
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [galleryItems, setGalleryItems] = useState<any[]>(initialGalleryItems);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const response = await api.get('/gallery');
+        if (response.data?.data && response.data.data.length > 0) {
+          const validGallery = response.data.data.filter((item: any) => 
+            item.image_url && typeof item.image_url === 'string' && item.image_url.trim().startsWith('http')
+          );
+
+          if (validGallery.length > 0) {
+            // Map backend items to frontend structure
+            const fetched = validGallery.map((item: any) => ({
+              src: item.image_url,
+              category: item.category || 'Land',
+              title: item.title || 'Gallery Image',
+              location: 'Dornala, Andhra Pradesh', // Default location
+              type: item.type === 'video' ? 'video' : 'image'
+            }));
+            setGalleryItems(fetched);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch gallery items", error);
+      }
+    };
+    fetchGallery();
+  }, []);
 
   const filtered = activeCategory === 'All'
     ? galleryItems
@@ -212,6 +242,11 @@ export default function GalleryPage() {
                     <img
                       src={item.src}
                       alt={item.title}
+                      onError={(e) => { 
+                        if (!e.currentTarget.src.includes('gallery_01.png')) {
+                          e.currentTarget.src = '/gallery_01.png'; 
+                        }
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   )}

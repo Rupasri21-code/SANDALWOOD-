@@ -1,124 +1,252 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { Layout, Image as ImageIcon, MessageSquare, HelpCircle, FileText, Plus, Trash2, Edit2, Save } from 'lucide-react';
+import { Layout, Image as ImageIcon, MessageSquare, HelpCircle, FileText, Plus, Trash2, Save, Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import api from '@/lib/api';
 
 export default function ContentManagementPage() {
   const [activeTab, setActiveTab] = useState<'home' | 'gallery' | 'testimonials' | 'faqs' | 'public'>('home');
   const [loading, setLoading] = useState(false);
 
   // 1. Homepage Content State
-  const [homeContent, setHomeContent] = useState({
-    heroTitle: 'ROOTED IN NATURE. GROWING WEALTH.',
-    heroSubtitle: 'Premium Sandalwood Plots Near Dornala. Legacy land. Long-term value.',
-    badgeText: 'PREMIUM SANDALWOOD PLOTS NEAR DORNALA',
-    statsAum: '100 Acres',
-    statsInvestors: '1000+',
-    statsGrowth: '12+ Years',
+  const [homeContent, setHomeContent] = useState<any>({
+    heroTitle: '',
+    heroSubtitle: '',
+    badgeText: '',
+    statsAum: '',
+    statsInvestors: '',
+    statsGrowth: '',
   });
 
   // 2. Gallery Content State
-  const [galleryList, setGalleryList] = useState([
-    { id: 1, title: '50-Acre Dornala Estate Boundary', category: 'Land', type: 'image' },
-    { id: 2, title: 'Developed Plantation Overview', category: 'Plantation', type: 'image' },
-    { id: 3, title: 'Certified Sandalwood Saplings', category: 'Saplings', type: 'image' },
-  ]);
+  const [galleryList, setGalleryList] = useState<any[]>([]);
   const [newGalleryItem, setNewGalleryItem] = useState({ title: '', category: 'Land', type: 'image' });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+        setIsCameraActive(true);
+      }
+    } catch (err) {
+      toast.error('Could not access camera. Please allow permissions.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+      setIsCameraActive(false);
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      if (context) {
+        context.drawImage(videoRef.current, 0, 0, 640, 480);
+        canvasRef.current.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(blob));
+            stopCamera();
+          }
+        }, 'image/jpeg');
+      }
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
 
   // 3. Testimonials State
-  const [testimonialsList, setTestimonialsList] = useState([
-    { id: 1, name: 'Rajesh Patel', rating: 5, text: 'I was highly skeptical about managed farm models, but Chandan Nilayam\'s compliance won me over.', location: 'Ahmedabad', investment: '0.5 Acre Plot' },
-    { id: 2, name: 'Priya Krishnamurthy', rating: 5, text: 'The portal experience is fantastic. I get quarterly soil analyses and sapling growth measurements.', location: 'Bengaluru', investment: '1.25 Acre Plot' },
-  ]);
+  const [testimonialsList, setTestimonialsList] = useState<any[]>([]);
   const [newTestimonial, setNewTestimonial] = useState({ name: '', rating: 5, text: '', location: '', investment: '' });
 
   // 4. FAQs State
-  const [faqList, setFaqList] = useState([
-    { id: 1, q: 'Can I visit the plantation in Dornala?', a: 'Yes, we arrange guided site visits for prospective investors every Saturday. We provide transportation.' },
-    { id: 2, q: 'How is the land ownership registered?', a: 'Each plot is individually surveyed and registered directly under the investor\'s name at the local sub-registrar office.' },
-  ]);
+  const [faqList, setFaqList] = useState<any[]>([]);
   const [newFaq, setNewFaq] = useState({ q: '', a: '' });
 
   // 5. Public Sections State
-  const [publicContent, setPublicContent] = useState({
-    aboutStory: 'Chandan Nilayam Investments owns and manages 50 acres of premium, high-fertility land near Dornala, Andhra Pradesh...',
-    locationAdvantages: 'Dornala soil features perfect drainage, high gravel content, laterite chemistry, and semi-arid conditions ideal for oil deposition.',
-    companyVision: 'To become India\'s most trusted managed farmland platform, connecting investors with high-value organic forestry.',
+  const [publicContent, setPublicContent] = useState<any>({
+    aboutStory: '',
+    locationAdvantages: '',
+    companyVision: '',
   });
 
-  const handleSaveHomeContent = () => {
+  const fetchData = async () => {
+    try {
+      const [homeRes, publicRes, testimonialsRes, faqsRes, galleryRes] = await Promise.all([
+        api.get('/content/home').catch(() => null),
+        api.get('/content/public').catch(() => null),
+        api.get('/testimonials').catch(() => null),
+        api.get('/faqs').catch(() => null),
+        api.get('/gallery').catch(() => null)
+      ]);
+      
+      if (homeRes?.data?.data) setHomeContent(homeRes.data.data);
+      if (publicRes?.data?.data) setPublicContent(publicRes.data.data);
+      if (testimonialsRes?.data?.data) setTestimonialsList(testimonialsRes.data.data);
+      
+      // Map FAQ data to fit existing component keys
+      if (faqsRes?.data?.data) {
+        setFaqList(faqsRes.data.data.map((f: any) => ({ ...f, q: f.question, a: f.answer })));
+      }
+      if (galleryRes?.data?.data) setGalleryList(galleryRes.data.data);
+
+    } catch (error) {
+      console.error('Failed to load content', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleSaveHomeContent = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.post('/content', { section: 'home', content: homeContent });
       toast.success('Homepage settings saved successfully');
-    }, 800);
-  };
-
-  const handleSavePublicContent = () => {
-    setLoading(true);
-    setTimeout(() => {
+    } catch (error) {
+      toast.error('Failed to save settings');
+    } finally {
       setLoading(false);
-      toast.success('Public website sections updated');
-    }, 800);
+    }
   };
 
-  const handleAddGallery = () => {
+  const handleSavePublicContent = async () => {
+    setLoading(true);
+    try {
+      await api.post('/content', { section: 'public', content: publicContent });
+      toast.success('Public website sections updated');
+    } catch (error) {
+      toast.error('Failed to update public sections');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddGallery = async () => {
     if (!newGalleryItem.title) {
       toast.error('Please enter a title for the media');
       return;
     }
-    setGalleryList([
-      ...galleryList,
-      { id: Date.now(), title: newGalleryItem.title, category: newGalleryItem.category, type: newGalleryItem.type }
-    ]);
-    setNewGalleryItem({ title: '', category: 'Land', type: 'image' });
-    toast.success('Media item added to gallery');
+    setUploadingGallery(true);
+    try {
+      let imageUrl = '';
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        
+        const uploadRes = await api.post('/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        
+        imageUrl = uploadRes.data.data.url;
+      }
+
+      const payload = {
+        ...newGalleryItem,
+        image_url: imageUrl || undefined
+      };
+
+      const res = await api.post('/gallery', payload);
+      setGalleryList([res.data.data, ...galleryList]);
+      setNewGalleryItem({ title: '', category: 'Land', type: 'image' });
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      toast.success('Media item added to gallery');
+    } catch (error) {
+      toast.error('Failed to add media item');
+    } finally {
+      setUploadingGallery(false);
+    }
   };
 
-  const handleDeleteGallery = (id: number) => {
-    setGalleryList(galleryList.filter(item => item.id !== id));
-    toast.success('Media item removed');
+  const handleDeleteGallery = async (id: number | string) => {
+    try {
+      await api.delete(`/gallery/${id}`);
+      setGalleryList(galleryList.filter(item => item.id !== id));
+      toast.success('Media item removed');
+    } catch (error) {
+      toast.error('Failed to remove media item');
+    }
   };
 
-  const handleAddTestimonial = () => {
+  const handleAddTestimonial = async () => {
     if (!newTestimonial.name || !newTestimonial.text) {
       toast.error('Please enter both name and testimonial text');
       return;
     }
-    setTestimonialsList([
-      ...testimonialsList,
-      { id: Date.now(), ...newTestimonial }
-    ]);
-    setNewTestimonial({ name: '', rating: 5, text: '', location: '', investment: '' });
-    toast.success('Testimonial added');
+    try {
+      const res = await api.post('/testimonials', newTestimonial);
+      setTestimonialsList([res.data.data, ...testimonialsList]);
+      setNewTestimonial({ name: '', rating: 5, text: '', location: '', investment: '' });
+      toast.success('Testimonial added');
+    } catch (error) {
+      toast.error('Failed to add testimonial');
+    }
   };
 
-  const handleDeleteTestimonial = (id: number) => {
-    setTestimonialsList(testimonialsList.filter(t => t.id !== id));
-    toast.success('Testimonial removed');
+  const handleDeleteTestimonial = async (id: number | string) => {
+    try {
+      await api.delete(`/testimonials/${id}`);
+      setTestimonialsList(testimonialsList.filter(t => t.id !== id));
+      toast.success('Testimonial removed');
+    } catch (error) {
+      toast.error('Failed to remove testimonial');
+    }
   };
 
-  const handleAddFaq = () => {
+  const handleAddFaq = async () => {
     if (!newFaq.q || !newFaq.a) {
       toast.error('Please fill in both Question and Answer');
       return;
     }
-    setFaqList([
-      ...faqList,
-      { id: Date.now(), ...newFaq }
-    ]);
-    setNewFaq({ q: '', a: '' });
-    toast.success('FAQ added');
+    try {
+      const res = await api.post('/faqs', { question: newFaq.q, answer: newFaq.a });
+      const created = { ...res.data.data, q: res.data.data.question, a: res.data.data.answer };
+      setFaqList([created, ...faqList]);
+      setNewFaq({ q: '', a: '' });
+      toast.success('FAQ added');
+    } catch (error) {
+      toast.error('Failed to add FAQ');
+    }
   };
 
-  const handleDeleteFaq = (id: number) => {
-    setFaqList(faqList.filter(f => f.id !== id));
-    toast.success('FAQ removed');
+  const handleDeleteFaq = async (id: number | string) => {
+    try {
+      await api.delete(`/faqs/${id}`);
+      setFaqList(faqList.filter(f => f.id !== id));
+      toast.success('FAQ removed');
+    } catch (error) {
+      toast.error('Failed to remove FAQ');
+    }
   };
 
   return (
@@ -237,7 +365,42 @@ export default function ContentManagementPage() {
             
             {/* New Item Form */}
             <div className="bg-[#0B1510] border border-[#C49A5A]/20 p-5 rounded-2xl space-y-4 mb-6">
-              <h4 className="text-white text-xs font-bold uppercase tracking-wider">Add New Media Link</h4>
+              <h4 className="text-white text-xs font-bold uppercase tracking-wider flex justify-between items-center">
+                <span>Add New Media Link</span>
+                <div className="flex gap-2">
+                  <Button type="button" onClick={() => fileInputRef.current?.click()} className="bg-white/10 hover:bg-white/20 text-white text-[10px] h-7 px-3 rounded-full flex items-center gap-1">
+                    <Upload className="w-3 h-3" /> Upload Device
+                  </Button>
+                  <Button type="button" onClick={isCameraActive ? stopCamera : startCamera} className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-black text-[10px] h-7 px-3 rounded-full flex items-center gap-1">
+                    {isCameraActive ? <X className="w-3 h-3" /> : <Camera className="w-3 h-3" />} {isCameraActive ? 'Cancel' : 'Camera'}
+                  </Button>
+                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*,video/*" onChange={handleFileChange} />
+                </div>
+              </h4>
+              
+              {/* Camera / Preview Area */}
+              {(isCameraActive || previewUrl) && (
+                <div className="w-full bg-black/50 rounded-xl overflow-hidden flex flex-col items-center justify-center p-4 border border-[#C49A5A]/20 relative">
+                  {isCameraActive && !previewUrl && (
+                    <>
+                      <video ref={videoRef} autoPlay playsInline className="w-full max-w-md rounded-lg shadow-lg" />
+                      <Button onClick={capturePhoto} className="absolute bottom-6 bg-[#C49A5A] hover:bg-[#8B5E3C] text-black rounded-full shadow-xl">
+                        Capture Photo
+                      </Button>
+                    </>
+                  )}
+                  {previewUrl && (
+                    <div className="relative inline-block">
+                      <img src={previewUrl} alt="Preview" className="max-h-64 object-contain rounded-lg" />
+                      <button onClick={() => { setPreviewUrl(null); setSelectedFile(null); if(fileInputRef.current) fileInputRef.current.value = ''; }} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-lg hover:bg-red-600 transition-colors">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                  <canvas ref={canvasRef} width="640" height="480" className="hidden" />
+                </div>
+              )}
+
               <div className="grid sm:grid-cols-3 gap-4 items-end">
                 <div>
                   <Label className="text-[#A8B5AA] text-[11px] font-semibold mb-1 block">Title</Label>
@@ -264,8 +427,8 @@ export default function ContentManagementPage() {
                   </select>
                 </div>
                 <div>
-                  <Button onClick={handleAddGallery} className="w-full bg-[#C49A5A] hover:bg-[#8B5E3C] text-[#101A13] hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl h-10 flex items-center justify-center gap-1.5">
-                    <Plus className="w-4 h-4" /> Add Item
+                  <Button onClick={handleAddGallery} disabled={uploadingGallery} className="w-full bg-[#C49A5A] hover:bg-[#8B5E3C] text-[#101A13] hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl h-10 flex items-center justify-center gap-1.5">
+                    {uploadingGallery ? 'Uploading...' : <><Plus className="w-4 h-4" /> Add Item</>}
                   </Button>
                 </div>
               </div>
@@ -284,7 +447,10 @@ export default function ContentManagementPage() {
                 <tbody className="divide-y divide-white/5 text-white/95">
                   {galleryList.map(item => (
                     <tr key={item.id} className="hover:bg-white/[0.02]">
-                      <td className="p-4 font-semibold">{item.title}</td>
+                      <td className="p-4 font-semibold flex items-center gap-3">
+                        {item.image_url && <img src={item.image_url} alt="Thumbnail" className="w-8 h-8 object-cover rounded-md border border-white/20" />}
+                        {item.title}
+                      </td>
                       <td className="p-4"><span className="bg-white/5 border border-white/10 px-3 py-1 rounded-full uppercase tracking-wider text-[9px] font-bold">{item.category}</span></td>
                       <td className="p-4 text-right">
                         <button onClick={() => handleDeleteGallery(item.id)} className="text-red-400 hover:text-red-300 p-2 rounded hover:bg-red-500/10">

@@ -195,7 +195,7 @@ const benefits = [
   },
 ];
 
-const progressionImages = [
+const initialProgressionImages = [
   { url: '/gallery_01.png', title: 'Raw Land' },
   { url: '/gallery_02.jpg', title: 'Fresh Sandalwood Saplings' },
   { url: '/gallery_03.jpg', title: '3-Month Growth Stage' },
@@ -325,26 +325,82 @@ export default function HomePage() {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [activeTestimonials, setActiveTestimonials] = useState<any[]>(initialTestimonials);
+  const [galleryItems, setGalleryItems] = useState<any[]>(initialProgressionImages);
   const [reviewLocation, setReviewLocation] = useState("");
+  const [activeFaqs, setActiveFaqs] = useState<any[]>(faqData);
+  
+  // Dynamic Content State
+  const [homeContent, setHomeContent] = useState<any>({
+    heroTitle: 'Invest in Nature.\nGrow Your Wealth.',
+    heroSubtitle: 'Discover premium sandalwood estates where nature, long-term value, and generational wealth grow together. Thoughtfully cultivated with a vision for the future, every estate represents enduring value, timeless growth, and lasting prosperity designed to benefit generations to come.',
+    badgeText: 'EXCLUSIVE SANDALWOOD ESTATES • DORNALA',
+    statsAum: '100+',
+    statsInvestors: '500+',
+    statsGrowth: '12+',
+  });
+
+  const [publicContent, setPublicContent] = useState<any>({
+    aboutStory: '',
+    locationAdvantages: '',
+    companyVision: '',
+  });
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    const fetchDynamicData = async () => {
       try {
-        const response = await api.get('/testimonials');
-        if (response.data?.data && response.data.data.length > 0) {
-          const fetched = response.data.data.map((t: any) => ({
+        const [testimonialsRes, homeRes, galleryRes, faqsRes, publicRes] = await Promise.all([
+          api.get('/testimonials').catch(() => null),
+          api.get('/content/home').catch(() => null),
+          api.get('/gallery').catch(() => null),
+          api.get('/faqs').catch(() => null),
+          api.get('/content/public').catch(() => null)
+        ]);
+        
+        if (testimonialsRes?.data?.data && testimonialsRes.data.data.length > 0) {
+          const fetched = testimonialsRes.data.data.map((t: any) => ({
             text: t.text,
             name: t.name,
             location: t.location,
+            investment: t.investment,
             stars: t.rating || 5
           }));
           setActiveTestimonials(fetched);
         }
+        
+        if (homeRes?.data?.data) {
+          setHomeContent((prev: any) => ({ ...prev, ...homeRes.data.data }));
+        }
+
+        if (publicRes?.data?.data) {
+          setPublicContent(publicRes.data.data);
+        }
+
+        if (galleryRes?.data?.data && galleryRes.data.data.length > 0) {
+          const validGallery = galleryRes.data.data.filter((item: any) => 
+            item.image_url && typeof item.image_url === 'string' && item.image_url.trim().startsWith('http')
+          );
+
+          if (validGallery.length > 0) {
+            const fetchedGallery = validGallery.map((item: any) => ({
+              url: item.image_url,
+              title: item.title || 'Gallery Image',
+            }));
+            setGalleryItems(fetchedGallery);
+          }
+        }
+
+        if (faqsRes?.data?.data && faqsRes.data.data.length > 0) {
+          const fetchedFaqs = faqsRes.data.data.map((f: any) => ({
+            question: f.question,
+            answer: f.answer
+          }));
+          setActiveFaqs([...faqData, ...fetchedFaqs]);
+        }
       } catch (error) {
-        console.error("Failed to fetch testimonials", error);
+        console.error("Failed to fetch dynamic data", error);
       }
     };
-    fetchTestimonials();
+    fetchDynamicData();
   }, []);
   const [reviewStars, setReviewStars] = useState(5);
   const [reviewName, setReviewName] = useState("");
@@ -398,16 +454,40 @@ export default function HomePage() {
     }
   };
 
+  // Centralized calculations
+  const calculatorMetrics = useMemo(() => {
+    const survivingTrees = Math.round(treeCount * (survivalRate / 100));
+    const yieldTons = (survivingTrees * timberYieldPerTree) / 1000;
+    const totalCost = initialInvestment + (annualMaintenance * plantationAge);
+    const totalRevenue = yieldTons * timberPricePerTon;
+    const totalNetProfit = totalRevenue - totalCost;
+    
+    // Profit Sharing Policy 50:50
+    const investorNetProfit = totalNetProfit > 0 ? totalNetProfit * 0.5 : totalNetProfit;
+    const investorRevenue = totalCost + investorNetProfit;
+    const investorROI = totalCost > 0 ? (investorNetProfit / totalCost) * 100 : 0;
+
+    return {
+      survivingTrees,
+      yieldTons,
+      totalCost,
+      totalRevenue,
+      totalNetProfit,
+      investorNetProfit,
+      investorRevenue,
+      investorROI
+    };
+  }, [treeCount, survivalRate, timberYieldPerTree, timberPricePerTon, initialInvestment, annualMaintenance, plantationAge]);
+
   // Generate real-time chart data
   const chartData = useMemo(() => {
     const data = [];
-    const finalRevenue = ((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon;
     
     for (let year = 0; year <= plantationAge; year++) {
       const investmentAtYear = initialInvestment + (annualMaintenance * year);
       
       // Exponential curve for plantation value
-      const valueAtYear = finalRevenue * Math.pow(year / plantationAge, 3);
+      const valueAtYear = calculatorMetrics.investorRevenue * Math.pow(year / plantationAge, 3);
 
       data.push({
         year: `Year ${year}`,
@@ -416,7 +496,7 @@ export default function HomePage() {
       });
     }
     return data;
-  }, [plantationAge, initialInvestment, annualMaintenance, treeCount, survivalRate, timberYieldPerTree, timberPricePerTon]);
+  }, [plantationAge, initialInvestment, annualMaintenance, calculatorMetrics]);
 
   const heroSequence = [
     '/gallery_01.png',
@@ -643,7 +723,7 @@ export default function HomePage() {
                 fontFamily: "'Montserrat', sans-serif"
               }}
             >
-              EXCLUSIVE SANDALWOOD ESTATES • DORNALA
+              {homeContent.badgeText}
             </span>
           </div>
 
@@ -651,15 +731,14 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-[68px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[68px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6 whitespace-pre-line"
             style={{ 
               color: '#F7F2E8',
               fontFamily: "'Cormorant Garamond', serif", 
               textShadow: '0 4px 24px rgba(0, 0, 0, 0.5)' 
             }}
           >
-            Invest in Nature.<br />
-            Grow Your Wealth.
+            {homeContent.heroTitle}
           </h1>
 
           {/* Gold Leaf Divider */}
@@ -680,7 +759,7 @@ export default function HomePage() {
               textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)' 
             }}
           >
-            Experience premium sandalwood estates crafted to preserve wealth and create a lasting legacy.
+            {homeContent.heroSubtitle}
           </p>
 
           {/* Buttons */}
@@ -728,63 +807,68 @@ export default function HomePage() {
           }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0">
-            {heroStats.map((stat, i) => {
-              const Icon = stat.icon;
-              return (
-                <div 
-                  key={i} 
-                  className={`flex items-center gap-3.5 group/item relative px-2 md:px-6 ${
-                    i % 2 === 0 ? 'border-r border-[#C49A5A]/15 md:border-r-0' : ''
-                  } ${
-                    i < 2 ? 'border-b border-[#C49A5A]/15 pb-4 md:pb-0 md:border-b-0 md:border-r-0' : ''
-                  } ${
-                    i >= 2 ? 'pt-4 md:pt-0' : ''
-                  }`}
-                >
-                  {/* Outlined Icon Circle */}
-                  <div 
-                    className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500"
-                    style={{
-                      background: 'rgba(196, 154, 90, 0.05)',
-                    }}
-                  >
-                    <Icon className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
-                  </div>
+            {/* Stat 1: Acres */}
+            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-r border-[#C49A5A]/15 md:border-r-0 border-b border-[#C49A5A]/15 pb-4 md:pb-0 md:border-b-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
+                <Trees className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                  {homeContent.statsAum || '100+'}
+                </span>
+                <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
+                  ACRES OF PREMIUM LAND
+                </span>
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+            </div>
 
-                  {/* Text Container */}
-                  <div className="flex flex-col text-left">
-                    {/* Number */}
-                    <span 
-                      className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left"
-                      style={{ 
-                        color: '#C49A5A',
-                        fontFamily: "'Cormorant Garamond', serif"
-                      }}
-                    >
-                      {stat.value}
-                    </span>
+            {/* Stat 2: Plots */}
+            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-b border-[#C49A5A]/15 pb-4 md:pb-0 md:border-b-0 md:border-r-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
+                <MapPin className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                  400+
+                </span>
+                <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
+                  PREMIUM PLOTS
+                </span>
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+            </div>
 
-                    {/* Label */}
-                    <span 
-                      className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none"
-                      style={{ 
-                        color: '#F7F2E8',
-                        fontFamily: "'Montserrat', sans-serif"
-                      }}
-                    >
-                      {stat.label}
-                    </span>
-                  </div>
+            {/* Stat 3: Growth Cycle */}
+            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-r border-[#C49A5A]/15 md:border-r-0 pt-4 md:pt-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
+                <Sprout className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                  {homeContent.statsGrowth || '12+'}
+                </span>
+                <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
+                  YEARS OF GROWTH
+                </span>
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+            </div>
 
-                  {/* Very thin and subtle vertical separators for desktop */}
-                  {i < 3 && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block">
-                      <div className="h-full w-full bg-[#C49A5A]/20" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {/* Stat 4: Investors */}
+            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 pt-4 md:pt-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
+                <Users className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                  {homeContent.statsInvestors || '500+'}
+                </span>
+                <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
+                  HAPPY INVESTORS
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -830,6 +914,44 @@ export default function HomePage() {
               </div>
               
 
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 4.5 About Our Heritage / Vision & Mission Section */}
+      <section id="about-heritage" className="py-20 bg-[#0B2F24] text-[#F7F0E4] relative overflow-hidden border-t border-white/5">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(196,154,90,0.05),_transparent_75%)] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12 items-start">
+            
+            {/* Left Column: About Story */}
+            <div className="lg:col-span-7 text-left space-y-6">
+              <span className="text-[#C49A5A] text-xs font-bold tracking-[2.5px] uppercase font-sans">OUR HERITAGE</span>
+              <h2 className="font-serif text-4xl md:text-5xl font-semibold leading-tight text-[#F7F0E4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                The Chandan Nilayam Story
+              </h2>
+              <div className="w-16 h-[1.5px] bg-[#C49A5A]" />
+              <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line">
+                {publicContent.aboutStory || "Chandan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership. Our foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted legacy partner, successfully aligning high-yielding green investments with active ecological preservation."}
+              </p>
+            </div>
+
+            {/* Right Column: Vision & Mission */}
+            <div className="lg:col-span-5 space-y-6 text-left w-full">
+              <div className="bg-[#081C15] border border-[#C49A5A]/35 rounded-[20px] p-8 shadow-lg hover:shadow-[0_10px_30px_rgba(196,154,90,0.15)] transition-all duration-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-[#12372A]/40 p-2 rounded-lg border border-[#C49A5A]/20">
+                    <TrendingUp className="w-5 h-5 text-[#C49A5A]" />
+                  </div>
+                  <h3 className="text-[#D9B36D] text-lg font-serif font-semibold tracking-wide">Vision & Mission</h3>
+                </div>
+                <p className="text-[#B8C7BC] text-sm leading-relaxed font-sans whitespace-pre-line">
+                  {publicContent.companyVision || "Our mission is to empower investors with a low-risk, high-appreciating green asset class by implementing scientific plantation management and securing clear land titles. We are dedicated to delivering tangible, nature-backed returns while fostering ecological restoration. We envision a future where financial growth and environmental stewardship coexist seamlessly, creating a lasting green legacy for generations to come."}
+                </p>
+              </div>
             </div>
 
           </div>
@@ -940,36 +1062,44 @@ export default function HomePage() {
       </section>
 
       {/* 5.5 Strategic Location Image Card */}
-      <section id="location" className="py-12 md:py-16 bg-[#0A120E] relative overflow-hidden z-20 border-t border-white/5 flex flex-col justify-center items-center">
+      <section id="location" className="py-16 md:py-24 bg-[#0A120E] relative overflow-hidden z-20 border-t border-white/5 flex flex-col justify-center items-center">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(196,154,90,0.08),_transparent_70%)] pointer-events-none" />
         
-        <div className="max-w-[1200px] w-full px-4 md:px-6 relative z-10 flex flex-col items-center">
-          
-          {/* Elegant Heading */}
-          <div className="flex flex-col items-center text-center mb-10">
-            <div className="flex items-center gap-1.5 mb-3">
-              <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2.5px] uppercase font-sans">
-                STRATEGIC ADVANTAGE
-              </span>
+        <div className="max-w-7xl w-full px-6 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12 items-center w-full">
+            
+            {/* Left: Text Content */}
+            <div className="lg:col-span-5 text-left space-y-6">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2.5px] uppercase font-sans">
+                  STRATEGIC ADVANTAGE
+                </span>
+              </div>
+              <h2 
+                className="font-serif text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#F7F0E4] leading-tight font-display"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                The Perfect Location
+              </h2>
+              <div className="w-16 h-[1.5px] bg-[#C49A5A]"></div>
+              
+              <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line">
+                {publicContent.locationAdvantages || "Dornala is geographically gifted with nutrient-rich soil, optimal elevation, and a microclimate perfectly suited for premium Sandalwood cultivation. Positioned along the secure Srisailam spiritual highway corridor, this location offers exceptional connectivity for efficient plantation logistics. Investing here means securing a land asset that benefits from natural water security, rapid heartwood growth, and a rising regional development curve."}
+              </p>
             </div>
-            <h2 
-              className="font-serif text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#F7F0E4] leading-tight font-display mb-4"
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            >
-              The Perfect Location
-            </h2>
-            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#C49A5A]/60 to-transparent"></div>
-          </div>
 
-          <div className="relative w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24]">
-            {/* The Image */}
-            <img 
-              src="/heritage-map.png" 
-              alt="Strategic Location Map" 
-              className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-            />
-            {/* Glowing Border effect on hover */}
-            <div className="absolute inset-0 border-[1.5px] border-transparent group-hover:border-[#C49A5A]/40 rounded-[1.5rem] md:rounded-[2.5rem] transition-colors duration-500 pointer-events-none" />
+            {/* Right: Map Image */}
+            <div className="lg:col-span-7 relative w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24]">
+              {/* The Image */}
+              <img 
+                src="/strategic-location-map.jpg" 
+                alt="Strategic Location Map" 
+                className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              />
+              {/* Glowing Border effect on hover */}
+              <div className="absolute inset-0 border-[1.5px] border-transparent group-hover:border-[#C49A5A]/40 rounded-[1.5rem] md:rounded-[2.5rem] transition-colors duration-500 pointer-events-none" />
+            </div>
+
           </div>
         </div>
       </section>
@@ -1009,7 +1139,7 @@ export default function HomePage() {
               },
               {
                 title: "12-Year Club House Membership",
-                desc: "Investors receive complimentary clubhouse membership valid for 12 years with access up to three visits every year.",
+                desc: "Investors receive complimentary clubhouse membership valid for 12 years, including one annual visit with a complimentary three-day stay.",
                 icon: Building2,
                 badge: "FREE"
               },
@@ -1087,15 +1217,15 @@ export default function HomePage() {
             {/* Right Amenities Grid */}
             <div className="w-full lg:w-[55%] grid grid-cols-1 sm:grid-cols-2 gap-5">
               {[
-                { title: "Supplementary Maintenance Agreement", desc: "Transparent agreement ensuring long-term upkeep.", icon: FileSignature },
-                { title: "Secure Plot Resale Assistance", desc: "Professional assistance for future resale support.", icon: Handshake },
-                { title: "Luxury Club House", desc: "Premium clubhouse exclusively for investors.", icon: Building },
-                { title: "Walking Track", desc: "Beautiful landscaped walking trails.", icon: Footprints },
-                { title: "Modern Gym", desc: "Well-equipped fitness center.", icon: Dumbbell },
-                { title: "Swimming Pool", desc: "Premium swimming pool inside the clubhouse.", icon: Waves },
-                { title: "Children's Play Area", desc: "Dedicated recreational play area.", icon: Smile },
-                { title: "Golf Court", desc: "Beautiful golf practice area for leisure.", icon: FlagTriangleRight },
-                { title: "Affordable Food & Beverages", desc: "Clubhouse restaurant offering quality food.", icon: Utensils, badge: "Investor Exclusive" }
+                { title: "Supplementary Maintenance Agreement", desc: "A transparent and legally binding contract that guarantees scientific plantation care and professional, long-term upkeep of your crops.", icon: FileSignature },
+                { title: "Secure Plot Resale Assistance", desc: "Full resale support and marketing assistance to help you seamlessly liquidate your premium sandalwood asset when it matures.", icon: Handshake },
+                { title: "Luxury Club House", desc: "Enjoy exclusive, investor-only access to our premium clubhouse, featuring luxury suites and relaxation spaces for your weekend getaways.", icon: Building },
+                { title: "Walking Track", desc: "Beautifully landscaped walking and jogging trails designed to let you immerse yourself in the natural tranquility of the estate.", icon: Footprints },
+                { title: "Modern Gym", desc: "A fully equipped fitness center with modern machinery, allowing you to prioritize health and wellness during your site visits.", icon: Dumbbell },
+                { title: "Swimming Pool", desc: "An elegant, temperature-controlled swimming pool offering a relaxing oasis for you and your family within the clubhouse premises.", icon: Waves },
+                { title: "Children's Play Area", desc: "A safe, dedicated recreational play zone with outdoor equipment for children to enjoy while you explore your land holdings.", icon: Smile },
+                { title: "Golf Court", desc: "A premium, beautifully maintained putting green allowing you to practice your golf swing and enjoy leisure sports on the estate.", icon: FlagTriangleRight },
+                { title: "Affordable Food & Beverages", desc: "An on-site restaurant serving organic, chef-curated meals made from locally sourced ingredients at highly subsidized rates for investors.", icon: Utensils, badge: "Investor Exclusive" }
               ].map((amenity, i) => (
                 <div 
                   key={i} 
@@ -1192,7 +1322,7 @@ export default function HomePage() {
             
             <div className="flex gap-[24px] w-max animate-marquee hover:[animation-play-state:paused]">
               {/* Render multiple sets for seamless looping */}
-              {[...progressionImages, ...progressionImages, ...progressionImages, ...progressionImages].map((img, i) => (
+              {[...galleryItems, ...galleryItems, ...galleryItems, ...galleryItems].map((img, i) => (
                 <div 
                   key={i} 
                   className="relative w-[280px] sm:w-[320px] lg:w-[360px] aspect-[1.1] rounded-[32px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.08)] border-2 border-[#F7F0E4] bg-white flex-shrink-0 cursor-pointer group"
@@ -1200,6 +1330,11 @@ export default function HomePage() {
                   <img 
                     src={img.url} 
                     alt={img.title} 
+                    onError={(e) => { 
+                      if (!e.currentTarget.src.includes('gallery_01.png')) {
+                        e.currentTarget.src = '/gallery_01.png'; 
+                      }
+                    }}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
                   <div className="absolute inset-0 bg-[#0B2F24]/0 group-hover:bg-[#0B2F24]/10 transition-colors duration-300" />
@@ -1254,7 +1389,15 @@ export default function HomePage() {
                     </div>
                     <div>
                       <h4 className="text-xs font-black uppercase text-[#12372A] font-sans">{test.name}</h4>
-                      <span className="text-[10px] text-[#8B5E3C] font-bold font-sans">{test.location}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-[#8B5E3C] font-bold font-sans">{test.location}</span>
+                        {test.investment && (
+                          <>
+                            <span className="text-[#C49A5A]/50 text-[10px]">•</span>
+                            <span className="text-[10px] text-[#12372A] font-bold uppercase tracking-wider font-sans bg-[#C49A5A]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1501,19 +1644,11 @@ export default function HomePage() {
                 >
                   {[
                     { label: 'Total Trees', value: treeCount, icon: Sprout },
-                    { label: 'Surviving Trees', value: Math.round(treeCount * (survivalRate / 100)), icon: Trees },
-                    { label: 'Yield (Tons)', value: ((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000).toFixed(2), icon: Layers },
-                    { label: 'Revenue', value: formatCurrency(((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon), icon: Landmark },
-                    { label: 'ROI', value: `${(() => {
-                        const revenue = ((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon;
-                        const cost = initialInvestment + (annualMaintenance * plantationAge);
-                        const netProfit = revenue - cost;
-                        return cost > 0 ? Math.round((netProfit / cost) * 100) : 0;
-                      })()}%`, icon: TrendingUp },
-                    { label: 'Net Profit', value: formatCurrency(
-                        (((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon) -
-                        (initialInvestment + (annualMaintenance * plantationAge))
-                      ), icon: Award }
+                    { label: 'Surviving Trees', value: calculatorMetrics.survivingTrees, icon: Trees },
+                    { label: 'Yield (Tons)', value: calculatorMetrics.yieldTons.toFixed(2), icon: Layers },
+                    { label: 'Revenue', value: formatCurrency(calculatorMetrics.investorRevenue), icon: Landmark },
+                    { label: 'ROI', value: `${Math.round(calculatorMetrics.investorROI)}%`, icon: TrendingUp },
+                    { label: 'Net Profit', value: formatCurrency(calculatorMetrics.investorNetProfit), icon: Award }
                   ].map((metric, idx) => (
                     <motion.div 
                       key={idx}
@@ -1553,7 +1688,7 @@ export default function HomePage() {
                   <div className="mb-8">
                     <span className="block text-[10px] md:text-[11px] text-[#B8C7BC] uppercase tracking-widest mb-2 font-sans">Expected Revenue</span>
                     <span className="text-4xl md:text-[54px] font-bold text-[#F7F0E4] font-serif tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                      {formatCurrency(((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon)}
+                      {formatCurrency(calculatorMetrics.investorRevenue)}
                     </span>
                   </div>
 
@@ -1561,21 +1696,13 @@ export default function HomePage() {
                     <div className="flex flex-col items-start">
                       <span className="text-[10px] text-[#B8C7BC] uppercase tracking-widest mb-1.5 font-sans">Net Profit</span>
                       <span className="text-[16px] md:text-[20px] font-bold text-[#22C55E] font-sans tracking-wide">
-                        {formatCurrency(
-                          (((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon) -
-                          (initialInvestment + (annualMaintenance * plantationAge))
-                        )}
+                        {formatCurrency(calculatorMetrics.investorNetProfit)}
                       </span>
                     </div>
                     <div className="flex flex-col items-end">
                       <span className="text-[10px] text-[#B8C7BC] uppercase tracking-widest mb-1.5 font-sans">ROI</span>
                       <span className="text-[16px] md:text-[20px] font-bold text-[#D9B36D] font-sans tracking-wide">
-                        {(() => {
-                          const revenue = ((Math.round(treeCount * (survivalRate / 100)) * timberYieldPerTree) / 1000) * timberPricePerTon;
-                          const cost = initialInvestment + (annualMaintenance * plantationAge);
-                          const netProfit = revenue - cost;
-                          return cost > 0 ? Math.round((netProfit / cost) * 100) : 0;
-                        })()}%
+                        {Math.round(calculatorMetrics.investorROI)}%
                       </span>
                     </div>
                   </div>
@@ -1999,7 +2126,7 @@ export default function HomePage() {
 
           {/* Accordion Layout */}
           <div className="space-y-4">
-            {faqData.map((faq, idx) => {
+            {activeFaqs.map((faq, idx) => {
               const isVisible = idx < 5 || showAllFaqs;
               const isOpen = openFaqIndex === idx;
 

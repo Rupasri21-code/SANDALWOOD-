@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   TreePine, LayoutDashboard, Users, Map, Sprout, TrendingUp, CreditCard,
-  Bell, Image, LogOut, Menu, X, ChevronRight, Settings, FileText
+  Bell, Image, LogOut, Menu, X, ChevronRight, Settings, FileText, MessageSquare
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+  { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
   { href: '/admin/investors', label: 'Investors', icon: Users },
   { href: '/admin/lands', label: 'Land Management', icon: Map },
   { href: '/admin/crops', label: 'Crop & Plantation', icon: Sprout },
@@ -78,14 +79,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }`}
       >
         <div className="p-6 border-b border-[#C49A5A]/20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full border border-[#C49A5A] bg-[#0B1A12] flex items-center justify-center shadow-[0_0_12px_rgba(196,154,90,0.2)]">
-              <BrandLogo height={42} />
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 rounded-full border-[1.5px] border-[#C49A5A] bg-[#0B1A12] flex items-center justify-center shadow-[0_0_20px_rgba(196,154,90,0.4)] shrink-0">
+              <BrandLogo height={72} />
             </div>
-            <div>
-              <span className="font-display text-sm font-bold text-[#F8F5EE] tracking-wide block leading-none">Chandan</span>
-              <span className="font-display text-[10px] font-bold text-[#C49A5A] tracking-wider block mt-1 leading-none uppercase">Nilayam</span>
-              <span className="block text-[8px] text-[#C49A5A]/60 tracking-[0.2em] uppercase mt-1 font-medium">Admin Portal</span>
+            <div className="flex flex-col justify-center">
+              <span className="font-display text-xl font-bold text-[#F8F5EE] tracking-wide block leading-tight">Chandan</span>
+              <span className="font-display text-sm font-extrabold text-[#C49A5A] tracking-widest block leading-tight uppercase">Nilayam</span>
+              <span className="block text-[11px] text-[#C49A5A]/80 tracking-[0.25em] uppercase mt-1.5 font-semibold">Admin Portal</span>
             </div>
           </div>
         </div>
