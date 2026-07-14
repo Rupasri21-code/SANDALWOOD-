@@ -10,7 +10,7 @@ const steps = [
     title: 'Land Acquisition',
     description: 'Securing high-fertility, surveyed land blocks near Dornala with 100% legal compliance and clear, verify-ready deeds.',
     icon: MapPin,
-    image: 'https://images.pexels.com/photos/17052523/pexels-photo-17052523.jpeg?auto=compress&cs=tinysrgb&w=300',
+    image: '/investment-growth.jpg',
   },
   {
     num: '02',

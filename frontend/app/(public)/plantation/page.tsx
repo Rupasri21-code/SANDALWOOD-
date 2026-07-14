@@ -316,7 +316,7 @@ export default function PlantationPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               'https://images.pexels.com/photos/15124451/pexels-photo-15124451.jpeg?auto=compress&cs=tinysrgb&w=400',
-              'https://images.pexels.com/photos/17052523/pexels-photo-17052523.jpeg?auto=compress&cs=tinysrgb&w=400',
+              '/investment-growth.jpg',
               'https://images.pexels.com/photos/1563604/pexels-photo-1563604.jpeg?auto=compress&cs=tinysrgb&w=400',
               'https://images.pexels.com/photos/10316168/pexels-photo-10316168.jpeg?auto=compress&cs=tinysrgb&w=400',
             ].map((src, i) => (

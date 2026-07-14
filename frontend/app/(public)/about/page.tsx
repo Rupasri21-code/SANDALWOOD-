@@ -138,7 +138,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[480px] aspect-[0.9] rounded-[2.5rem] p-3 bg-[#F3E8D2] border border-[#C49A5A]/30 shadow-[0_20px_50px_rgba(139,94,60,0.2)] group hover:scale-[1.02] transition-transform duration-500">
                 <div className="w-full h-full rounded-[2.2rem] overflow-hidden relative">
                   <img 
-                    src="https://images.pexels.com/photos/17052523/pexels-photo-17052523.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                    src="/investment-growth.jpg" 
                     alt="Premium Land" 
                     className="w-full h-full object-cover" 
                   />

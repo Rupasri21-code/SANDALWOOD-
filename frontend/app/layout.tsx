@@ -50,9 +50,9 @@ export const metadata: Metadata = {
     images: [`/sandalwood_hero_bg.png`],
   },
   icons: {
-    icon: '/chandan nilayam logo.png',
-    shortcut: '/chandan nilayam logo.png',
-    apple: '/chandan nilayam logo.png',
+    icon: '/branding/chandhan-tree-mark.png',
+    shortcut: '/branding/chandhan-tree-mark.png',
+    apple: '/branding/chandhan-tree-mark.png',
   },
   alternates: {
     canonical: siteUrl,

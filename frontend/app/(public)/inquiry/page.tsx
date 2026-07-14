@@ -270,10 +270,12 @@ export default function InquiryPage() {
                             className="w-full h-11 px-3 rounded-xl border border-[#C49A5A]/30 bg-white/80 text-xs focus:outline-none text-[#2F3E2F]"
                           >
                             <option value="">Select plot size</option>
-                            <option value="0.25 Acres (30 Trees)">0.25 Acres (30 Trees)</option>
-                            <option value="0.5 Acres (60 Trees)">0.5 Acres (60 Trees)</option>
-                            <option value="1.0 Acres (120 Trees)">1.0 Acres (120 Trees)</option>
-                            <option value="2.0+ Acres">2.0+ Acres</option>
+                            <option value="12.5 Cents (50 Trees)">12.5 Cents (50 Trees)</option>
+                            <option value="25 Cents (100 Trees)">25 Cents (100 Trees)</option>
+                            <option value="50 Cents (200 Trees)">50 Cents (200 Trees)</option>
+                            <option value="1 Acre (400 Trees)">1 Acre (400 Trees)</option>
+                            <option value="2+ Acres (800+ Trees)">2+ Acres (800+ Trees)</option>
+                            <option value="Custom">Custom</option>
                           </select>
                           {errors.plotSize && <p className="text-red-500 text-[10px] mt-1">{errors.plotSize.message}</p>}
                         </div>

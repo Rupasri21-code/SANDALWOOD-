@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Leaf, FileText } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import BrandLogo from '@/components/BrandLogo';
+import { Menu, X, FileText } from 'lucide-react';
+import BrandIdentity from '@/components/BrandIdentity';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -13,81 +12,150 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  const navLinks = [
+    { href: '#opportunity', label: 'THE OPPORTUNITY' },
+    { href: '#about-heritage', label: 'ABOUT US' },
+    { href: '#plantation', label: 'OUR PLANTATION' },
+    { href: '#privileges', label: 'INVESTOR BENEFITS' },
+    { href: '#calculator', label: 'PLAN YOUR FUTURE' },
+    { href: '/Chandan_Nilayam_Brochure.pdf', label: 'BROCHURE', icon: <FileText className="w-[15px] h-[15px] mr-1.5" />, target: '_blank' },
+    { href: '#gallery', label: 'GALLERY' },
+  ];
 
   return (
     <nav
       suppressHydrationWarning={true}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#F7F0E4]/95 backdrop-blur-md border-b border-[#C49A5A]/20 py-3 shadow-md'
-          : 'bg-[#F7F0E4]/80 backdrop-blur-sm border-b border-[#C49A5A]/10 py-4'
+          ? 'shadow-[0_8px_30px_rgba(18,55,42,0.08)] border-b border-[#12372A]/10'
+          : 'shadow-[0_4px_20px_rgba(18,55,42,0.05)] border-b border-[#12372A]/10'
       }`}
+      style={{
+        background: 'linear-gradient(90deg, #F8F3E9 0%, #F4ECDD 100%)'
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/home" className="flex items-center gap-3">
-          <div className="flex flex-col items-center">
-            <div className="lg:hidden"><BrandLogo height={40} logoClassName="object-contain drop-shadow-sm" /></div>
-            <div className="hidden lg:block"><BrandLogo height={75} logoClassName="object-contain drop-shadow-sm" /></div>
-            <span className="hidden lg:block text-[9px] uppercase tracking-[0.25em] font-extrabold text-[#0B2F24] mt-1.5 whitespace-nowrap">A PROJECT BY GK</span>
-          </div>
-        </Link>
-
-        {/* Desktop Links — use same-page anchors for site sections so they don't open separate pages */}
-        <div className="hidden lg:flex items-center gap-5">
-          <a href="#opportunity" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">The Opportunity</a>
-          <a href="#about-heritage" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">About Us</a>
-          <a href="#plantation" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Our Plantation</a>
-          <a href="#privileges" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Investor Benefits</a>
-          <a href="#calculator" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Plan Your Future</a>
-          <a href="#brochure" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Brochure</a>
-          <a href="#gallery" className="text-[#0B2F24]/85 hover:text-[#C49A5A] text-xs font-bold uppercase tracking-wider transition-colors">Gallery</a>
-          <Link href="/login" className="bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 flex items-center justify-center border border-white/10">
-            Login
+      <div className="w-full max-w-[1560px] mx-auto px-[20px] md:px-[42px]">
+        
+        {/* Desktop Layout (104px) / Mobile Layout (72px) */}
+        <div className="hidden lg:grid items-center h-[104px]" style={{ gridTemplateColumns: '250px minmax(0, 1fr) auto', columnGap: '32px' }}>
+          
+          {/* COLUMN 1: Brand */}
+          <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[250px] min-w-[250px] h-[82px]">
+            <img src="/branding/chandhan-navbar-logo.png" alt="Chandan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
+
+          {/* COLUMN 2: Navigation Links */}
+          <div className="flex items-center justify-center gap-[25px] w-full px-4 overflow-hidden">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.target || undefined}
+                rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                className="group relative flex items-center text-[#203029] font-sans font-semibold text-[12px] tracking-[0.035em] whitespace-nowrap py-2 transition-colors duration-250 hover:text-[#A97835]"
+              >
+                {link.icon}
+                {link.label}
+                <span className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-[#A97835] transition-all duration-300 group-hover:w-full group-hover:left-0 rounded-full" />
+              </a>
+            ))}
+          </div>
+
+          {/* COLUMN 3: CTAs */}
+          <div className="flex items-center gap-[14px]">
+            <Link 
+              href="/login" 
+              className="flex items-center justify-center bg-transparent border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[12px] tracking-[0.06em] h-[46px] px-[24px] rounded-full transition-all duration-300 hover:bg-[#12372A] hover:text-[#FFFFFF] hover:border-[#12372A] hover:-translate-y-[2px]"
+            >
+              LOGIN
+            </Link>
+            <a href="#investor-inquiry">
+              <button 
+                suppressHydrationWarning 
+                className="flex items-center justify-center bg-gradient-to-br from-[#C49A5A] to-[#D9B36D] text-white font-sans font-bold text-[12px] tracking-[0.03em] h-[48px] px-[26px] rounded-full whitespace-nowrap transition-all duration-300 shadow-[0_8px_22px_rgba(196,154,90,0.28)] hover:-translate-y-[2px] hover:shadow-[0_12px_28px_rgba(196,154,90,0.4)]"
+                style={{ minWidth: '162px' }}
+              >
+                INVESTOR INQUIRY
+              </button>
+            </a>
+          </div>
         </div>
 
-        {/* Button */}
-        <div className="hidden lg:flex items-center gap-4">
-          <a href="#investor-inquiry">
-            <Button suppressHydrationWarning className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white shadow-md px-5 py-2 font-bold text-xs tracking-wider uppercase transition-all duration-300 rounded-full flex items-center gap-1.5 border border-white/20">
-              Investor Inquiry
-            </Button>
-          </a>
+        <div className="lg:hidden flex justify-between items-center h-[72px] md:h-[82px]">
+          <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[160px] md:w-[180px] h-[55px]" onClick={() => setMobileOpen(false)}>
+            <img src="/branding/chandhan-navbar-logo.png" alt="Chandan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
+          </Link>
+
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-[#12372A] p-2 hover:bg-[#12372A]/5 rounded-full transition-colors ml-4 shrink-0"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          </button>
         </div>
 
-        {/* Mobile menu toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-[#092E1C] p-2"
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Slide-Down Menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-[#F8F4EB]/98 backdrop-blur-xl border-t border-[#C8851E]/20 px-6 py-4 space-y-2">
-          <a href="#opportunity" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">The Opportunity</a>
-          <a href="#about-heritage" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">About Us</a>
-          <a href="#plantation" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Our Plantation</a>
-          <a href="#privileges" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Investor Benefits</a>
-          <a href="#calculator" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Plan Your Future</a>
-          <a href="#brochure" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E] flex items-center gap-1.5"><FileText className="w-4 h-4" /> Brochure</a>
-          <a href="#gallery" onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-bold uppercase tracking-wider text-[#092E1C]/80 hover:text-[#C8851E]">Gallery</a>
-          <Link href="/login" onClick={() => setMobileOpen(false)} className="block w-full text-center bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-md hover:shadow-lg rounded-full py-2.5 font-bold uppercase text-xs tracking-wider transition-all duration-300 transform hover:translate-y-[-2px] hover:scale-105 border border-white/10">
-            Login
-          </Link>
-          <a href="#investor-inquiry" onClick={() => setMobileOpen(false)} className="block pt-2">
-            <Button suppressHydrationWarning className="w-full bg-[#C8851E] text-white py-3 rounded-xl font-bold uppercase text-xs tracking-wider">
-              Investor Inquiry
-            </Button>
-          </a>
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-[#F5F0E6] border-t border-[#12372A]/10 shadow-2xl h-[calc(100vh-72px)] overflow-y-auto">
+          <div className="flex flex-col px-[24px] py-[32px] gap-[16px]">
+            {/* Links */}
+            <div className="flex flex-col gap-[8px] mb-[24px]">
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={link.target || undefined}
+                  rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  onClick={() => {
+                    if (link.target !== '_blank') setMobileOpen(false);
+                  }}
+                  className="flex items-center text-[#1E2B25] font-sans font-semibold text-[14px] tracking-[0.04em] py-[12px] border-b border-[#12372A]/5 hover:text-[#A97835]"
+                >
+                  {link.icon}
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <Link 
+              href="/login" 
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center w-full bg-transparent border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[13px] tracking-[0.06em] h-[48px] rounded-full"
+            >
+              LOGIN
+            </Link>
+            <a 
+              href="#investor-inquiry" 
+              onClick={() => setMobileOpen(false)}
+              className="w-full"
+            >
+              <button className="flex items-center justify-center w-full bg-gradient-to-br from-[#C49A5A] to-[#D9B36D] text-white font-sans font-bold text-[13px] tracking-[0.03em] h-[48px] rounded-full shadow-[0_8px_22px_rgba(196,154,90,0.28)]">
+                INVESTOR INQUIRY
+              </button>
+            </a>
+          </div>
         </div>
       )}
     </nav>

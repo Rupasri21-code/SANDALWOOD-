@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useMemo } from 'react';
+import {
+  X, useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -123,18 +124,18 @@ const stats = [
 
 const features = [
   {
-    title: 'Rising Global Demand',
-    description: 'Used in perfumery, wellness, spirituality and luxury products.',
+    title: 'Established Market Relevance',
+    description: 'Used across fragrance, wellness, traditional, and premium product industries, sandalwood continues to hold recognised commercial significance.',
     icon: Globe,
   },
   {
-    title: 'Scarce & Premium',
-    description: 'Slow-growing and limited availability drives long-term value.',
+    title: 'Specialised Cultivation',
+    description: 'Sandalwood requires time, suitable growing conditions, and structured plantation management throughout its cultivation journey.',
     icon: Award,
   },
   {
-    title: 'Nature-Backed Growth',
-    description: 'A tangible asset that grows stronger with time.',
+    title: 'A Tangible Green Asset',
+    description: 'A plantation represents a physical, nature-based asset whose development can be observed and managed through each stage of growth.',
     icon: Leaf,
   },
 ];
@@ -410,7 +411,7 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Calculator States
-  const [plotSize, setPlotSize] = useState('25 Cents');
+  const [plotSize, setPlotSize] = useState('12.5 Cents');
   const [treeCount, setTreeCount] = useState(50);
   const [plantationAge, setPlantationAge] = useState(12);
   const [survivalRate, setSurvivalRate] = useState(90);
@@ -421,26 +422,30 @@ export default function HomePage() {
 
   // Sync defaults when plot size changes
   useEffect(() => {
-    if (plotSize === '25 Cents') {
+    if (plotSize === '12.5 Cents') {
       setTreeCount(50);
       setInitialInvestment(1500000);
       setAnnualMaintenance(12000);
-    } else if (plotSize === '50 Cents') {
+    } else if (plotSize === '25 Cents') {
       setTreeCount(100);
       setInitialInvestment(3000000);
       setAnnualMaintenance(24000);
-    } else if (plotSize === '1 Acre') {
+    } else if (plotSize === '50 Cents') {
       setTreeCount(200);
       setInitialInvestment(6000000);
       setAnnualMaintenance(48000);
-    } else if (plotSize === '2 Acres') {
+    } else if (plotSize === '1 Acre') {
       setTreeCount(400);
       setInitialInvestment(12000000);
       setAnnualMaintenance(96000);
+    } else if (plotSize === '2 Acres') {
+      setTreeCount(800);
+      setInitialInvestment(24000000);
+      setAnnualMaintenance(192000);
     } else if (plotSize === '5 Acres') {
-      setTreeCount(1000);
-      setInitialInvestment(30000000);
-      setAnnualMaintenance(240000);
+      setTreeCount(2000);
+      setInitialInvestment(60000000);
+      setAnnualMaintenance(480000);
     }
   }, [plotSize]);
 
@@ -619,7 +624,7 @@ export default function HomePage() {
               
               {/* Logo inside */}
               <div className="relative z-10 scale-[1.1] md:scale-[1.2]" style={{ animation: 'pulse 3s ease-in-out infinite' }}>
-                <img src="/chandan nilayam logo.png" alt="Chandan Nilayam Logo" className="w-[180px] md:w-[220px] object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]" />
+                <img src="/logo.png" alt="Chandan Nilayam Logo" className="w-[280px] md:w-[350px] object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]" />
               </div>
             </div>
 
@@ -773,13 +778,13 @@ export default function HomePage() {
                 <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" /> EXPLORE THE OPPORTUNITY
               </Button>
             </a>
-            <a href="#plantation" className="w-full sm:w-auto">
+            <a href="#investor-inquiry" className="w-full sm:w-auto">
               <Button 
                 size="lg" 
                 className="w-full sm:w-auto hover:opacity-90 text-white shadow-xl px-6 sm:px-10 py-6 sm:py-7 text-xs sm:text-sm font-semibold uppercase tracking-wider rounded-full transition-all border border-[#C49A5A]/40 font-sans flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#12372A' }}
               >
-                VIEW PLANTATION <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                SCHEDULE CONSULTATION <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </Button>
             </a>
           </div>
@@ -873,7 +878,133 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. The Sandalwood Opportunity Section */}
+            {/* 4. About Our Heritage / Vision & Mission Section */}
+      <section id="about-heritage" className="py-[80px] lg:py-[100px] bg-[#F7F0E4] relative overflow-hidden">
+        <div className="max-w-[1480px] mx-auto px-6 md:px-12 lg:px-[60px]">
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-20 items-start">
+            
+            {/* Left Column */}
+            <div className="w-full lg:w-[46%] flex flex-col pt-4">
+              
+              {/* Eyebrow */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-10 h-[1px] bg-[#C49A5A]/65" />
+                <span className="text-[#C49A5A] text-[11px] lg:text-xs font-semibold tracking-[0.20em] uppercase font-sans">
+                  OUR HERITAGE
+                </span>
+              </div>
+              
+              {/* Heading */}
+              <h2 className="flex flex-col mb-8">
+                <span className="font-serif text-[42px] sm:text-[52px] lg:text-[72px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  The Chandan Nilayam
+                </span>
+                <span className="font-serif text-[38px] sm:text-[48px] lg:text-[64px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Story
+                </span>
+              </h2>
+              
+              {/* Decorative Divider */}
+              <div className="flex items-center w-full max-w-md mb-8 opacity-70">
+                <div className="h-[1px] flex-1 bg-[rgba(196,154,90,0.4)]" />
+                <div className="px-3 text-[#C49A5A]">
+                  <Leaf className="w-3 h-3 md:w-4 md:h-4 stroke-[1.5]" />
+                </div>
+                <div className="h-[1px] flex-1 bg-[rgba(196,154,90,0.4)]" />
+              </div>
+              
+              {/* Story Content */}
+              <div className="flex flex-col gap-6 mb-12">
+                <p className="text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                  Chandan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership.
+                </p>
+                <p className="text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                  Our foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted legacy partner, successfully aligning high-yielding green investments with active ecological preservation.
+                </p>
+              </div>
+
+              {/* Bottom Left Quote Panel */}
+              <div className="bg-[#F1E9D8] rounded-[20px] p-8 md:p-10 w-full flex flex-col items-center text-center">
+                <span className="text-[#8B5E3C] text-[11px] md:text-xs font-semibold tracking-[0.15em] uppercase font-sans mb-4">
+                  PREMIUM SANDALWOOD PLOTS NEAR DORNALA
+                </span>
+                <div className="w-12 h-[2px] bg-[#C49A5A] mb-6 opacity-60" />
+                <p className="text-[#0B2F24] font-serif text-[22px] md:text-[30px] lg:text-[32px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Building wealth today.<br />
+                  Preserving nature for generations to come.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Right Column */}
+            <div className="w-full lg:w-[54%] relative flex flex-col items-center lg:items-end">
+              
+              {/* Plantation Image */}
+              <div className="relative w-full h-[500px] sm:h-[600px] lg:h-[720px] rounded-[32px] overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&q=80&w=1200"
+                  alt="Premium Sandalwood Sapling in Rich Soil"
+                  className="w-full h-full object-cover object-center"
+                />
+              </div>
+
+              {/* Vision & Mission Panel */}
+              <div 
+                className="relative lg:absolute lg:bottom-12 lg:left-[-10%] w-[95%] lg:w-[105%] mt-[-40px] lg:mt-0 rounded-[28px] p-8 md:p-12 shadow-[0_24px_60px_rgba(11,47,36,0.20)] z-10"
+                style={{
+                  background: 'linear-gradient(135deg, #12372A 0%, #0B2F24 55%, #164B38 100%)'
+                }}
+              >
+                
+                {/* Panel Header */}
+                <div className="flex flex-col items-center text-center mb-10">
+                  <h3 className="text-[#F7F0E4] font-serif text-[32px] md:text-[40px] font-semibold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    Vision & Mission
+                  </h3>
+                  <div className="w-12 h-[2px] bg-[#C49A5A]" />
+                </div>
+
+                {/* Panel Content (Two Columns) */}
+                <div className="flex flex-col md:flex-row gap-8 md:gap-0 relative">
+                  
+                  {/* Left: Our Vision */}
+                  <div className="flex-1 md:pr-10 lg:pr-12 flex flex-col text-left">
+                    <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      Our Vision
+                    </h4>
+                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90">
+                      To be the most trusted name in sustainable sandalwood investments, creating long-term value for investors and a lasting positive impact on the environment.
+                    </p>
+                  </div>
+                  
+                  {/* Vertical Divider (Hidden on mobile) */}
+                  <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-[rgba(196,154,90,0.3)] -translate-x-1/2" />
+                  
+                  {/* Horizontal Divider (Visible only on mobile) */}
+                  <div className="block md:hidden w-full h-[1px] bg-[rgba(196,154,90,0.3)] my-2" />
+
+                  {/* Right: Our Mission */}
+                  <div className="flex-1 md:pl-10 lg:pl-12 flex flex-col text-left">
+                    <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      Our Mission
+                    </h4>
+                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90">
+                      To deliver high-growth green investment opportunities through scientific plantation management, transparent operations, and a commitment to ecological restoration.
+                    </p>
+                  </div>
+                  
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 4.5 The Sandalwood Opportunity Section */}
       <section id="opportunity" className="pt-20 pb-12 md:pt-24 md:pb-16 bg-[#F7F0E4] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
@@ -882,10 +1013,10 @@ export default function HomePage() {
             <div className="lg:col-span-7">
               <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">THE SANDALWOOD OPPORTUNITY</span>
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] mb-6 leading-tight font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                Rare. Valuable.<br />Timeless.
+                Nurtured by Nature.<br />Built for the Future.
               </h2>
               <p className="text-[#2F3E2F] text-base md:text-lg leading-relaxed mb-10 max-w-2xl font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                Sandalwood is one of the world's most valuable natural assets. High in demand, limited in supply, and trusted for centuries for its fragrance, medicine and heritage.
+                Sandalwood is a naturally valued resource recognised for its distinctive fragrance and diverse applications across perfumery, wellness, traditional practices, and premium products. Its long cultivation cycle and specialised growing requirements make professionally managed plantations an important part of its long-term value journey.
               </p>
 
               {/* Stacked columns in left panel */}
@@ -912,269 +1043,127 @@ export default function HomePage() {
                   />
                 </div>
               </div>
-              
-
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* 4.5 About Our Heritage / Vision & Mission Section */}
-      <section id="about-heritage" className="py-20 bg-[#0B2F24] text-[#F7F0E4] relative overflow-hidden border-t border-white/5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(196,154,90,0.05),_transparent_75%)] pointer-events-none" />
-        
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 items-start">
-            
-            {/* Left Column: About Story */}
-            <div className="lg:col-span-7 text-left space-y-6">
-              <span className="text-[#C49A5A] text-xs font-bold tracking-[2.5px] uppercase font-sans">OUR HERITAGE</span>
-              <h2 className="font-serif text-4xl md:text-5xl font-semibold leading-tight text-[#F7F0E4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                The Chandan Nilayam Story
-              </h2>
-              <div className="w-16 h-[1.5px] bg-[#C49A5A]" />
-              <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line">
-                {publicContent.aboutStory || "Chandan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership. Our foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted legacy partner, successfully aligning high-yielding green investments with active ecological preservation."}
-              </p>
-            </div>
-
-            {/* Right Column: Vision & Mission */}
-            <div className="lg:col-span-5 space-y-6 text-left w-full">
-              <div className="bg-[#081C15] border border-[#C49A5A]/35 rounded-[20px] p-8 shadow-lg hover:shadow-[0_10px_30px_rgba(196,154,90,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-[#12372A]/40 p-2 rounded-lg border border-[#C49A5A]/20">
-                    <TrendingUp className="w-5 h-5 text-[#C49A5A]" />
-                  </div>
-                  <h3 className="text-[#D9B36D] text-lg font-serif font-semibold tracking-wide">Vision & Mission</h3>
-                </div>
-                <p className="text-[#B8C7BC] text-sm leading-relaxed font-sans whitespace-pre-line">
-                  {publicContent.companyVision || "Our mission is to empower investors with a low-risk, high-appreciating green asset class by implementing scientific plantation management and securing clear land titles. We are dedicated to delivering tangible, nature-backed returns while fostering ecological restoration. We envision a future where financial growth and environmental stewardship coexist seamlessly, creating a lasting green legacy for generations to come."}
-                </p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Our Plantation Journey Section (REDESIGNED TO EXACT REFERENCE STYLE) */}
-      <section id="plantation" className="relative min-h-[500px] flex items-center overflow-hidden bg-cover bg-center py-16 md:py-20" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1920')` }}>
-        {/* Dark Forest Green Background Overlay */}
-        <div className="absolute inset-0 bg-[#0B2F24]/75 z-0" />
-        
-        {/* Top organic wave curve */}
-        <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
-          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[55px] rotate-180">
-            <path d="M0,0 C300,110 600,0 900,110 L1200,60 L1200,120 L0,120 Z" />
-          </svg>
-        </div>
-
-        {/* Bottom organic wave curve */}
-        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
-          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[55px]">
-            <path d="M0,0 C300,110 600,0 900,110 L1200,60 L1200,120 L0,120 Z" />
-          </svg>
-        </div>
-
-        <div className="relative z-20 max-w-7xl mx-auto px-6 w-full py-10">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            
-            {/* LEFT CONTENT (30% width / lg:col-span-4) */}
-            <div className="lg:col-span-4 flex flex-col items-start text-left">
-              {/* Small Label */}
-              <div className="flex items-center gap-1.5 mb-4">
-                <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2px] uppercase font-sans">
-                  OUR PLANTATION JOURNEY
-                </span>
-              </div>
-
-              {/* Heading */}
-              <h2 
-                className="font-serif text-4xl md:text-5xl font-semibold text-[#F7F0E4] leading-[1.1] mb-6 font-display" 
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
-              >
-                From Land to Legacy
-              </h2>
-
-              {/* Description */}
-              <p className="text-[#E6D3B3] text-sm md:text-[15px] leading-[1.6] mb-8 font-sans max-w-md">
-                We own and nurture 100 acres of premium land near Dornala. Every step is managed with care, transparency and expertise.
-              </p>
-
-              {/* Button */}
-              <a href="#investor-inquiry">
-                <button className="bg-transparent hover:bg-[#F7F0E4]/5 border border-[#E6D3B3] text-[#F7F0E4] rounded-[6px] px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider flex items-center justify-center transition-all font-sans">
-                  EXPLORE OUR JOURNEY
-                </button>
-              </a>
-            </div>
-
-            {/* RIGHT TIMELINE (70% width / lg:col-span-8) */}
-            <div className="lg:col-span-8 relative w-full">
-              {/* Horizontal Connecting Line for Desktop */}
-              <div className="absolute top-[20px] left-[10%] right-[10%] h-[1.5px] bg-[rgba(230,211,179,0.3)] z-0 hidden lg:block" />
-              
-              {/* Vertical Connecting Line for Mobile/Tablet */}
-              <div className="absolute left-[20px] top-[20px] bottom-[20px] w-[1.5px] bg-[rgba(230,211,179,0.3)] z-0 lg:hidden" />
-              
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-y-10 lg:gap-x-6 relative z-10">
-                {journeySteps.map((step, i) => {
-                  const icons = [MapPin, Layers, Sprout, Activity, TrendingUp];
-                  const StepIcon = icons[i] || Sprout;
-                  
-                  return (
-                    <div 
-                      key={i} 
-                      className={`relative flex flex-col items-start pl-14 lg:pl-0 z-10 ${
-                        i < 4 ? 'lg:border-r border-[rgba(230,211,179,0.15)] lg:pr-4' : ''
-                      }`}
-                    >
-                      {/* 1. Circle Number Badge */}
-                      <div 
-                        className="absolute left-0 lg:left-auto lg:relative top-0 lg:top-auto w-10 h-10 rounded-full bg-[#F7F0E4] text-[#12372A] border border-[#C49A5A] flex items-center justify-center font-bold text-xs shadow-md mb-6 z-10 font-sans"
-                      >
-                        {step.num}
-                      </div>
-
-                      {/* 2. Gold Line Icon */}
-                      <div className="text-[#C49A5A] mb-3 mt-0.5 lg:mt-0">
-                        <StepIcon className="w-7 h-7 stroke-[1.25] text-[#C49A5A]" />
-                      </div>
-
-                      {/* 3. Step Title */}
-                      <h3 className="text-xs font-bold text-[#F7F0E4] tracking-wider mb-2 uppercase font-sans">
-                        {step.title}
-                      </h3>
-
-                      {/* 4. Step Description */}
-                      <p className="text-[#E6D3B3] text-[11px] leading-[1.5] font-sans">
-                        {step.description}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 5.5 Strategic Location Image Card */}
-      <section id="location" className="py-16 md:py-24 bg-[#0A120E] relative overflow-hidden z-20 border-t border-white/5 flex flex-col justify-center items-center">
+      {/* 5.5 Strategic Location Image Card (MOVED UP) */}
+      <section id="location" className="py-16 md:py-24 bg-[#0A120E] relative overflow-hidden z-20 flex flex-col justify-center items-center">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(196,154,90,0.08),_transparent_70%)] pointer-events-none" />
         
-        <div className="max-w-7xl w-full px-6 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 items-center w-full">
-            
-            {/* Left: Text Content */}
-            <div className="lg:col-span-5 text-left space-y-6">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2.5px] uppercase font-sans">
-                  STRATEGIC ADVANTAGE
-                </span>
-              </div>
-              <h2 
-                className="font-serif text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#F7F0E4] leading-tight font-display"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
-              >
-                The Perfect Location
-              </h2>
-              <div className="w-16 h-[1.5px] bg-[#C49A5A]"></div>
-              
-              <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line">
-                {publicContent.locationAdvantages || "Dornala is geographically gifted with nutrient-rich soil, optimal elevation, and a microclimate perfectly suited for premium Sandalwood cultivation. Positioned along the secure Srisailam spiritual highway corridor, this location offers exceptional connectivity for efficient plantation logistics. Investing here means securing a land asset that benefits from natural water security, rapid heartwood growth, and a rising regional development curve."}
-              </p>
-            </div>
-
-            {/* Right: Map Image */}
-            <div className="lg:col-span-7 relative w-full rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24]">
-              {/* The Image */}
-              <img 
-                src="/strategic-location-map.jpg" 
-                alt="Strategic Location Map" 
-                className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-              />
-              {/* Glowing Border effect on hover */}
-              <div className="absolute inset-0 border-[1.5px] border-transparent group-hover:border-[#C49A5A]/40 rounded-[1.5rem] md:rounded-[2.5rem] transition-colors duration-500 pointer-events-none" />
-            </div>
-
+        <div className="max-w-6xl w-full px-6 relative z-10 flex flex-col items-center">
+          
+          {/* Top: Map Image */}
+          <div className="w-full relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24] mb-12">
+            <img 
+              src="/strategic-location-map.jpg" 
+              alt="Strategic Location Map" 
+              className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+            />
+            <div className="absolute inset-0 border-[1.5px] border-transparent group-hover:border-[#C49A5A]/40 rounded-[1.5rem] md:rounded-[2.5rem] transition-colors duration-500 pointer-events-none" />
           </div>
-        </div>
-      </section>
 
-      {/* 6. Exclusive Investor Privileges (NEW SECTION 1) */}
-      <section id="privileges" className="py-12 md:py-16 bg-[#F7F0E4] relative overflow-hidden z-20 border-t border-[#8B5E3C]/10">
-        {/* Subtle Background Glows */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C49A5A]/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#12372A]/5 rounded-full blur-[100px] pointer-events-none" />
-        
-        <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-1.5 mb-4">
-              <span className="text-[#8B5E3C] text-[10px] font-bold tracking-[2.5px] uppercase font-sans">
-                INVESTOR PRIVILEGES
+          {/* Bottom: Text Content */}
+          <div className="w-full text-center flex flex-col items-center space-y-6 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center gap-1.5">
+              <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2.5px] uppercase font-sans">
+                STRATEGIC ADVANTAGE
               </span>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] leading-tight mb-4 font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Exclusive Investor Privileges
+            <h2 
+              className="font-serif text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#F7F0E4] leading-tight font-display"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              The Perfect Location
             </h2>
-            <p className="text-[#3B2416] text-sm md:text-base max-w-2xl mx-auto font-sans">
-              Every investment includes premium benefits designed to maximize comfort, legal security, and long-term value.
+            <div className="w-16 h-[1.5px] bg-[#C49A5A]"></div>
+            
+            <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line text-center">
+              {publicContent.locationAdvantages || "Dornala is geographically gifted with nutrient-rich soil, optimal elevation, and a microclimate perfectly suited for premium Sandalwood cultivation. Positioned along the secure Srisailam spiritual highway corridor, this location offers exceptional connectivity for efficient plantation logistics. Investing here means securing a land asset that benefits from natural water security, rapid heartwood growth, and a rising regional development curve."}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+        </div>
+      </section>
+
+                  {/* 5.6 Exclusive Investor Privileges & Amenities (COMBINED - PREMIUM REDESIGN) */}
+      <section id="privileges-amenities" className="py-20 md:py-32 bg-[#0A120E] relative overflow-hidden z-20">
+        {/* Subtle Background Glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(196,154,90,0.05),_transparent_80%)] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C49A5A]/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-[#12372A]/20 rounded-full blur-[150px] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
+          <div className="text-center mb-20">
+            <div className="flex items-center justify-center gap-1.5 mb-4">
+              <span className="text-[#C49A5A] text-[10px] font-bold tracking-[3px] uppercase font-sans">
+                THE ULTIMATE LIFESTYLE
+              </span>
+            </div>
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-[#F7F0E4] leading-tight mb-6 font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Exclusive Privileges & Amenities
+            </h2>
+            <div className="w-20 h-[1.5px] bg-[#C49A5A] mx-auto mb-6"></div>
+            <p className="text-[#B8C7BC] text-sm md:text-base max-w-2xl mx-auto font-sans leading-relaxed">
+              Beyond land ownership, we offer a complete ecosystem of luxury, security, and tranquility. Experience premium benefits designed exclusively for our esteemed investors.
+            </p>
+          </div>
+
+          {/* Core Privileges (4 Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-24">
             {[
               {
                 title: "Dedicated Plot Allocation",
-                desc: "Every investor receives a clearly demarcated premium plot with complete ownership allocation and transparent records.",
+                desc: "Receive a clearly demarcated premium plot with transparent records and complete ownership.",
                 icon: Map
               },
               {
-                title: "100% Genuine Legal Documentation",
-                desc: "All plots include verified legal documentation, title verification, registration support, and government-compliant paperwork.",
+                title: "Genuine Legal Security",
+                desc: "Verified legal documentation, title verification, and absolute government-compliant paperwork.",
                 icon: ShieldCheck
               },
               {
-                title: "12-Year Club House Membership",
-                desc: "Investors receive complimentary clubhouse membership valid for 12 years, including one annual visit with a complimentary three-day stay.",
+                title: "12-Year Club House Access",
+                desc: "Complimentary luxury clubhouse membership valid for 12 years, including an annual 3-day stay.",
                 icon: Building2,
                 badge: "FREE"
               },
               {
-                title: "Yearly VIP Srisailam Darshan Pass",
-                desc: "Every investor receives one complimentary VIP Srisailam Darshan pass each year. Applicable for 3–4 family members.",
+                title: "VIP Srisailam Darshan",
+                desc: "Complimentary yearly VIP Srisailam Darshan passes applicable for 3–4 family members.",
                 icon: Landmark,
-                badge: "Annual Benefit",
-                goldBadge: true
-              }
+                badge: "Annual Benefit"
+              },
+              { title: "Supplementary Maintenance", desc: "Scientific plantation care and professional long-term crop upkeep.", icon: FileSignature },
+              { title: "Plot Resale Assistance", desc: "Full marketing support to seamlessly liquidate your mature asset.", icon: Handshake },
+              { title: "Luxury Suites", desc: "Exclusive access to premium relaxation spaces for weekend getaways.", icon: Building }
             ].map((privilege, i) => (
               <div 
                 key={i} 
-                className="group relative bg-white/60 backdrop-blur-md border border-[#8B5E3C]/15 rounded-2xl p-8 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-[0_15px_40px_rgba(196,154,90,0.15)] overflow-hidden"
+                className="group relative bg-[#0B241C]/40 backdrop-blur-md border border-[#C49A5A]/20 hover:border-[#C49A5A]/60 rounded-3xl p-8 lg:p-10 transition-all duration-500 overflow-hidden"
               >
-                {/* Border Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#C49A5A]/0 via-transparent to-[#C49A5A]/0 group-hover:from-[#C49A5A]/10 group-hover:to-transparent transition-colors duration-500 pointer-events-none" />
+                {/* Hover Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C49A5A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
-                <div className="relative z-10 flex flex-col md:flex-row items-start gap-6">
-                  <div className="flex-shrink-0 w-14 h-14 bg-[#12372A] rounded-xl flex items-center justify-center border border-[#C49A5A]/30 group-hover:border-[#C49A5A] transition-colors duration-300">
-                    <privilege.icon className="w-7 h-7 text-[#C49A5A] group-hover:rotate-6 transition-transform duration-300 stroke-[1.5]" />
+                <div className="relative z-10 flex flex-col sm:flex-row items-start gap-6">
+                  <div className="w-16 h-16 rounded-2xl bg-[#0A120E] border border-[#C49A5A]/30 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A5A]/10 transition-colors duration-500 shadow-[0_0_20px_rgba(196,154,90,0.1)]">
+                    <privilege.icon className="w-8 h-8 text-[#C49A5A] group-hover:scale-110 transition-transform duration-500 stroke-[1.5]" />
                   </div>
                   
-                  <div className="flex flex-col flex-1 text-left">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-[#12372A] font-sans leading-tight">
+                  <div className="flex flex-col flex-1">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <h3 className="text-xl font-serif text-[#F7F0E4] leading-tight tracking-wide">
                         {privilege.title}
                       </h3>
                       {privilege.badge && (
-                        <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap ${privilege.goldBadge ? 'bg-[#C49A5A] text-white' : 'bg-[#12372A]/10 text-[#12372A]'}`}>
+                        <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm bg-[#C49A5A]/20 text-[#C49A5A] border border-[#C49A5A]/30">
                           {privilege.badge}
                         </span>
                       )}
                     </div>
-                    <p className="text-[#3B2416]/80 text-xs leading-relaxed font-sans">
+                    <p className="text-[#A3B8B0] text-sm leading-relaxed font-sans">
                       {privilege.desc}
                     </p>
                   </div>
@@ -1182,245 +1171,64 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* 6.5 World Class Amenities (NEW SECTION 2) */}
-      <section id="amenities" className="py-12 md:py-16 bg-[#0A120E] relative overflow-hidden z-20 border-t border-white/5">
-        {/* Luxury Background Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(196,154,90,0.05),_transparent_70%)] pointer-events-none" />
-        
-        <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
+          {/* Panoramic Clubhouse Banner */}
+          <div className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden mb-16 shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-[#C49A5A]/20 group">
+            <img 
+              src="/clubhouse-collage.jpg"
+              alt="Luxury Club House"
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A120E] via-[#0A120E]/60 to-transparent" />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
             
-            {/* Left Image Side */}
-            <div className="w-full lg:w-[45%] flex items-center justify-center">
-              <div className="relative w-full max-w-[600px] mx-auto lg:mx-0 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 group">
-                <img 
-                  src="/clubhouse-collage.jpg"
-                  alt="Luxury Club House"
-                  className="w-full h-auto block transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                {/* Protective Gradient for Text */}
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0A120E] via-[#0A120E]/50 to-transparent pointer-events-none" />
-                
-                {/* Subtle Text Overlay at Bottom */}
-                <div className="absolute bottom-6 left-6 right-6 text-left pointer-events-none">
-                  <h3 className="text-[#F7F0E4] font-serif text-2xl font-bold mb-1.5 drop-shadow-lg">Premium Lifestyle Amenities</h3>
-                  <p className="text-[#E6D3B3] text-[11px] font-sans leading-relaxed drop-shadow-md max-w-[90%]">
-                    Designed to deliver a complete lifestyle experience beyond land ownership.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Amenities Grid */}
-            <div className="w-full lg:w-[55%] grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {[
-                { title: "Supplementary Maintenance Agreement", desc: "A transparent and legally binding contract that guarantees scientific plantation care and professional, long-term upkeep of your crops.", icon: FileSignature },
-                { title: "Secure Plot Resale Assistance", desc: "Full resale support and marketing assistance to help you seamlessly liquidate your premium sandalwood asset when it matures.", icon: Handshake },
-                { title: "Luxury Club House", desc: "Enjoy exclusive, investor-only access to our premium clubhouse, featuring luxury suites and relaxation spaces for your weekend getaways.", icon: Building },
-                { title: "Walking Track", desc: "Beautifully landscaped walking and jogging trails designed to let you immerse yourself in the natural tranquility of the estate.", icon: Footprints },
-                { title: "Modern Gym", desc: "A fully equipped fitness center with modern machinery, allowing you to prioritize health and wellness during your site visits.", icon: Dumbbell },
-                { title: "Swimming Pool", desc: "An elegant, temperature-controlled swimming pool offering a relaxing oasis for you and your family within the clubhouse premises.", icon: Waves },
-                { title: "Children's Play Area", desc: "A safe, dedicated recreational play zone with outdoor equipment for children to enjoy while you explore your land holdings.", icon: Smile },
-                { title: "Golf Court", desc: "A premium, beautifully maintained putting green allowing you to practice your golf swing and enjoy leisure sports on the estate.", icon: FlagTriangleRight },
-                { title: "Affordable Food & Beverages", desc: "An on-site restaurant serving organic, chef-curated meals made from locally sourced ingredients at highly subsidized rates for investors.", icon: Utensils, badge: "Investor Exclusive" }
-              ].map((amenity, i) => (
-                <div 
-                  key={i} 
-                  className="group bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-[#C49A5A]/30 rounded-2xl p-5 flex items-start gap-4 transition-all duration-300"
-                >
-                  <div className="w-10 h-10 rounded-full bg-[#12372A] border border-[#C49A5A]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A5A] transition-colors duration-300">
-                    <amenity.icon className="w-5 h-5 text-[#C49A5A] group-hover:text-[#12372A] transition-colors duration-300 stroke-[1.5]" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-bold text-[#F7F0E4] font-sans">{amenity.title}</h4>
-                      {amenity.badge && (
-                        <span className="text-[7px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-[#C49A5A]/20 text-[#C49A5A] whitespace-nowrap border border-[#C49A5A]/30">
-                          {amenity.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[#A3B8B0] text-[10px] leading-relaxed font-sans">{amenity.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-          </div>
-        </div>
-      </section>
-
-      {/* 6.75 Bottom Highlight Banner */}
-      <section id="brochure" className="py-10 md:py-12 bg-[#F7F0E4] relative overflow-hidden z-20">
-        <div className="max-w-6xl mx-auto px-6 w-full">
-          <div className="relative w-full bg-[#12372A] rounded-3xl p-10 md:p-14 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-[#8B5E3C]/20">
-            {/* Parallax / Pattern Overlay */}
-            <div className="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }} />
-            
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-              <div className="flex-1 text-center md:text-left">
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#F7F0E4] mb-4 font-display">
-                  More Than an Investment
-                </h2>
-                <p className="text-[#A3B8B0] text-sm max-w-xl mx-auto md:mx-0 font-sans leading-relaxed">
-                  Own premium red sandalwood land while enjoying exclusive investor privileges, luxury amenities, legal security, and long-term value creation.
+            <div className="absolute bottom-0 left-0 w-full p-8 md:p-12">
+              <div className="max-w-3xl">
+                <h3 className="text-[#C49A5A] text-sm font-bold tracking-[3px] uppercase font-sans mb-3">World Class Facilities</h3>
+                <h4 className="text-[#F7F0E4] font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 drop-shadow-xl">Premium Clubhouse</h4>
+                <p className="text-[#E6D3B3] text-sm md:text-base font-sans leading-relaxed drop-shadow-md">
+                  A sanctuary of relaxation and leisure, designed exclusively for our investors. Experience state-of-the-art facilities nestled within the tranquility of nature.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-center">
-                <a 
-                  href="/Chandan_Nilayam_Brochure.pdf" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-transparent border-2 border-[#C49A5A] hover:bg-[#C49A5A]/10 text-[#C49A5A] font-bold uppercase text-xs tracking-wider px-8 py-4 rounded-full transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  <Download className="w-4 h-4" /> View Brochure
-                </a>
-                <Link 
-                  href="/inquiry"
-                  className="bg-[#C49A5A] hover:bg-[#B38541] text-[#12372A] shadow-[0_8px_20px_rgba(196,154,90,0.3)] font-bold uppercase text-xs tracking-wider px-8 py-4 rounded-full transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-1"
-                >
-                  <Calendar className="w-4 h-4" /> Schedule Consultation
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Progression of Our Sandalwood Plantation (FINAL UPLOADED GALLERY IMPLEMENTATION) */}
-      <section id="gallery" className="py-12 md:py-16 bg-[#F7F0E4] z-20 relative">
-        <div className="max-w-7xl mx-auto px-6 w-full flex flex-col items-center">
-          
-          {/* Section Label */}
-          <div className="flex items-center gap-1.5 mb-4 self-center lg:self-start">
-            <span className="text-[#8B5E3C] text-xs font-semibold tracking-[2px] uppercase font-sans">
-              A GLIMPSE OF OUR LAND
-            </span>
-          </div>
-
-          {/* Section Heading */}
-          <h2 
-            className="font-serif text-4xl md:text-5xl lg:text-[52px] font-semibold text-[#12372A] leading-tight mb-4 text-center font-display"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
-            Our Sandalwood Growth Journey
-          </h2>
-
-          {/* Section Description */}
-          <p className="text-[#3B2416] text-base leading-relaxed font-sans text-center max-w-3xl mb-12">
-            From premium land acquisition to mature sandalwood cultivation, every stage is carefully managed to create long-term value for investors.
-          </p>
-
-          {/* Infinite Marquee Scrolling Gallery */}
-          <div className="w-full py-4 overflow-hidden relative">
-            {/* Fade edges for professional look */}
-            <div className="absolute top-0 bottom-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#F7F0E4] to-transparent z-10 pointer-events-none" />
-            <div className="absolute top-0 bottom-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#F7F0E4] to-transparent z-10 pointer-events-none" />
-            
-            <div className="flex gap-[24px] w-max animate-marquee hover:[animation-play-state:paused]">
-              {/* Render multiple sets for seamless looping */}
-              {[...galleryItems, ...galleryItems, ...galleryItems, ...galleryItems].map((img, i) => (
-                <div 
-                  key={i} 
-                  className="relative w-[280px] sm:w-[320px] lg:w-[360px] aspect-[1.1] rounded-[32px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.08)] border-2 border-[#F7F0E4] bg-white flex-shrink-0 cursor-pointer group"
-                >
-                  <img 
-                    src={img.url} 
-                    alt={img.title} 
-                    onError={(e) => { 
-                      if (!e.currentTarget.src.includes('gallery_01.png')) {
-                        e.currentTarget.src = '/gallery_01.png'; 
-                      }
-                    }}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                  />
-                  <div className="absolute inset-0 bg-[#0B2F24]/0 group-hover:bg-[#0B2F24]/10 transition-colors duration-300" />
-                </div>
-              ))}
             </div>
           </div>
 
-        </div>
-      </section>
-
-      {/* 8. Testimonials Section */}
-      <section className="py-12 md:py-16 bg-[#F7F0E4]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left side text and reviews */}
-            <div className="lg:col-span-8">
-              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">TRUSTED BY VISIONARY INVESTORS</span>
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
-                <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  Their Words,<br />Our Pride.
-                </h2>
-                <div className="flex gap-4 flex-wrap mb-2">
-                  <button 
-                    onClick={() => setIsReviewModalOpen(true)}
-                    className="bg-transparent border-2 border-[#C49A5A] hover:bg-[#C49A5A]/10 text-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
-                  >
-                    <Star className="w-3.5 h-3.5" /> Write a Review
-                  </button>
-                  <Link 
-                    href="/testimonials"
-                    className="bg-[#C49A5A] hover:bg-[#B38747] text-white border-2 border-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
-                  >
-                    Show more reviews
-                  </Link>
+          {/* Lifestyle Amenities Grid (9 Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { title: "Walking Track", desc: "Beautifully landscaped trails designed for natural tranquility.", icon: Footprints },
+              { title: "Modern Gym", desc: "Fully equipped fitness center to prioritize your health and wellness.", icon: Dumbbell },
+              { title: "Swimming Pool", desc: "Elegant, temperature-controlled pool offering a relaxing oasis.", icon: Waves },
+              { title: "Children's Play Area", desc: "Safe, dedicated recreational zones with premium outdoor equipment.", icon: Smile },
+              { title: "Putting Green", desc: "Beautifully maintained golf court to practice your swing.", icon: FlagTriangleRight },
+              { title: "Organic Dining", desc: "On-site restaurant serving chef-curated meals at subsidized rates.", icon: Utensils, badge: "Exclusive" }
+            ].map((amenity, i) => (
+              <div 
+                key={i} 
+                className="group bg-white/[0.02] hover:bg-[#C49A5A]/5 border border-white/5 hover:border-[#C49A5A]/30 rounded-2xl p-6 flex items-start gap-4 transition-all duration-300"
+              >
+                <div className="w-12 h-12 rounded-full bg-[#0A120E] border border-[#C49A5A]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A5A] transition-colors duration-500">
+                  <amenity.icon className="w-5 h-5 text-[#C49A5A] group-hover:text-[#0A120E] transition-colors duration-500 stroke-[1.5]" />
                 </div>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                {activeTestimonials.slice(0, 6).map((test, i) => (
-                  <div key={i} className="bg-white border border-[#8B5E3C]/15 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-                    <div>
-                      <div className="flex gap-0.5 text-[#C49A5A] mb-4">
-                        {[...Array(test.stars)].map((_, idx) => (
-                          <Star key={idx} className="w-3.5 h-3.5 fill-[#C49A5A]" />
-                        ))}
-                      </div>
-                      <p className="text-[#2F3E2F] text-xs italic leading-relaxed mb-6 font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                        "{test.text}"
-                      </p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-[#12372A] font-sans">{test.name}</h4>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[10px] text-[#8B5E3C] font-bold font-sans">{test.location}</span>
-                        {test.investment && (
-                          <>
-                            <span className="text-[#C49A5A]/50 text-[10px]">•</span>
-                            <span className="text-[10px] text-[#12372A] font-bold uppercase tracking-wider font-sans bg-[#C49A5A]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                <div className="flex flex-col text-left">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-sm md:text-base font-bold text-[#F7F0E4] font-sans tracking-wide">{amenity.title}</h4>
+                    {amenity.badge && (
+                      <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-[#C49A5A]/20 text-[#C49A5A] border border-[#C49A5A]/30">
+                        {amenity.badge}
+                      </span>
+                    )}
                   </div>
-                ))}
+                  <p className="text-[#A3B8B0] text-xs leading-relaxed font-sans">{amenity.desc}</p>
+                </div>
               </div>
-            </div>
-
-            {/* Right side visual */}
-            <div className="lg:col-span-4 flex justify-center">
-              <div className="group relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 hover:shadow-[0_0_30px_rgba(196,154,90,0.35)] transition-shadow duration-300">
-                <img 
-                  src="/investment-growth.jpg" 
-                  alt="Investment Growth and Wealth Creation" 
-                  className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300 ease-in-out" 
-                />
-                {/* Subtle dark overlay to blend naturally */}
-                <div className="absolute inset-0 bg-[#12372A]/10 pointer-events-none transition-opacity duration-300 group-hover:opacity-0" />
-              </div>
-            </div>
+            ))}
           </div>
+          
         </div>
       </section>
 
-      {/* 8.5 Estimate Your Red Sandalwood Wealth Section */}
+{/* 8.5 Estimate Your Red Sandalwood Wealth Section */}
       <section id="calculator" className="py-12 md:py-16 bg-gradient-to-br from-[#061F18] to-[#031A14] text-[#F7F0E4] relative z-20">
         <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
           {/* Top Header */}
@@ -1471,18 +1279,50 @@ export default function HomePage() {
                   <div className="flex flex-col gap-2">
                     <label className="text-[11px] md:text-[13px] text-[#B8C7BC] uppercase font-sans tracking-wide">Plot Size</label>
                     <div className="relative">
-                      <select
-                        value={plotSize}
-                        onChange={(e) => setPlotSize(e.target.value)}
-                        className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 appearance-none cursor-pointer transition-all font-sans font-medium"
-                      >
-                        <option value="25 Cents">25 Cents</option>
-                        <option value="50 Cents">50 Cents</option>
-                        <option value="1 Acre">1 Acre</option>
-                        <option value="2 Acres">2 Acres</option>
-                        <option value="5 Acres">5 Acres</option>
-                      </select>
-                      <ChevronDown className="absolute right-4 top-[14px] w-5 h-5 text-[#C49A5A] pointer-events-none" />
+                      {plotSize === 'Custom' ? (
+                        <div className="flex items-center gap-2">
+                          <div className="relative flex-1">
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.1"
+                              placeholder="Acres"
+                              onChange={(e) => {
+                                const acres = parseFloat(e.target.value) || 0;
+                                setTreeCount(Math.round(acres * 400));
+                                setInitialInvestment(acres * 12000000);
+                                setAnnualMaintenance(acres * 96000);
+                              }}
+                              className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 pr-16 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 transition-all font-sans font-medium"
+                            />
+                            <span className="absolute right-4 top-[14px] text-sm text-[#B8C7BC]">Acres</span>
+                          </div>
+                          <button 
+                            onClick={() => setPlotSize('1 Acre')}
+                            className="w-12 h-[48px] rounded-[14px] border border-[#C49A5A]/35 bg-[#0B241C] hover:bg-[#C49A5A]/20 text-[#C49A5A] flex items-center justify-center transition-colors shrink-0"
+                            title="Back to predefined sizes"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <select
+                            value={plotSize}
+                            onChange={(e) => setPlotSize(e.target.value)}
+                            className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 appearance-none cursor-pointer transition-all font-sans font-medium"
+                          >
+                            <option value="12.5 Cents">12.5 Cents</option>
+                            <option value="25 Cents">25 Cents</option>
+                            <option value="50 Cents">50 Cents</option>
+                            <option value="1 Acre">1 Acre</option>
+                            <option value="2 Acres">2 Acres</option>
+                            <option value="5 Acres">5 Acres</option>
+                            <option value="Custom">Custom</option>
+                          </select>
+                          <ChevronDown className="absolute right-4 top-[14px] w-5 h-5 text-[#C49A5A] pointer-events-none" />
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -1850,6 +1690,301 @@ export default function HomePage() {
         </div>
       </section>
 
+            {/* --- MASTER PLANTATION SECTION (COMBINED JOURNEY + GALLERY) --- */}
+      <div id="plantation" className="w-full flex flex-col relative z-20">
+{/* 5. Our Plantation Journey Section (REDESIGNED TO EXACT REFERENCE STYLE) */}
+      <section id="plantation-inner" className="relative min-h-[500px] flex items-center overflow-hidden bg-cover bg-center py-16 md:py-20" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1920')` }}>
+        {/* Dark Forest Green Background Overlay */}
+        <div className="absolute inset-0 bg-[#0B2F24]/75 z-0" />
+        
+        {/* Top organic wave curve */}
+        <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[55px] rotate-180">
+            <path d="M0,0 C300,110 600,0 900,110 L1200,60 L1200,120 L0,120 Z" />
+          </svg>
+        </div>
+
+        {/* Bottom organic wave curve */}
+        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-[0] fill-[#F7F0E4] z-10">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[55px]">
+            <path d="M0,0 C300,110 600,0 900,110 L1200,60 L1200,120 L0,120 Z" />
+          </svg>
+        </div>
+
+        <div className="relative z-20 max-w-7xl mx-auto px-6 w-full py-10">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            {/* LEFT CONTENT (30% width / lg:col-span-4) */}
+            <div className="lg:col-span-4 flex flex-col items-start text-left">
+              {/* Small Label */}
+              <div className="flex items-center gap-1.5 mb-4">
+                <span className="text-[#C49A5A] text-[10px] font-bold tracking-[2px] uppercase font-sans">
+                  OUR PLANTATION JOURNEY
+                </span>
+              </div>
+
+              {/* Heading */}
+              <h2 
+                className="font-serif text-4xl md:text-5xl font-semibold text-[#F7F0E4] leading-[1.1] mb-6 font-display" 
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                From Land to Legacy
+              </h2>
+
+              {/* Description */}
+              <p className="text-[#E6D3B3] text-sm md:text-[15px] leading-[1.6] mb-8 font-sans max-w-md">
+                We own and nurture 100 acres of premium land near Dornala. Every step is managed with care, transparency and expertise.
+              </p>
+
+              {/* Button */}
+              <a href="#investor-inquiry">
+                <button className="bg-transparent hover:bg-[#F7F0E4]/5 border border-[#E6D3B3] text-[#F7F0E4] rounded-[6px] px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider flex items-center justify-center transition-all font-sans">
+                  EXPLORE OUR JOURNEY
+                </button>
+              </a>
+            </div>
+
+            {/* RIGHT TIMELINE (70% width / lg:col-span-8) */}
+            <div className="lg:col-span-8 relative w-full">
+              {/* Horizontal Connecting Line for Desktop */}
+              <div className="absolute top-[20px] left-[10%] right-[10%] h-[1.5px] bg-[rgba(230,211,179,0.3)] z-0 hidden lg:block" />
+              
+              {/* Vertical Connecting Line for Mobile/Tablet */}
+              <div className="absolute left-[20px] top-[20px] bottom-[20px] w-[1.5px] bg-[rgba(230,211,179,0.3)] z-0 lg:hidden" />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-y-10 lg:gap-x-6 relative z-10">
+                {journeySteps.map((step, i) => {
+                  const icons = [MapPin, Layers, Sprout, Activity, TrendingUp];
+                  const StepIcon = icons[i] || Sprout;
+                  
+                  return (
+                    <div 
+                      key={i} 
+                      className={`relative flex flex-col items-start pl-14 lg:pl-0 z-10 ${
+                        i < 4 ? 'lg:border-r border-[rgba(230,211,179,0.15)] lg:pr-4' : ''
+                      }`}
+                    >
+                      {/* 1. Circle Number Badge */}
+                      <div 
+                        className="absolute left-0 lg:left-auto lg:relative top-0 lg:top-auto w-10 h-10 rounded-full bg-[#F7F0E4] text-[#12372A] border border-[#C49A5A] flex items-center justify-center font-bold text-xs shadow-md mb-6 z-10 font-sans"
+                      >
+                        {step.num}
+                      </div>
+
+                      {/* 2. Gold Line Icon */}
+                      <div className="text-[#C49A5A] mb-3 mt-0.5 lg:mt-0">
+                        <StepIcon className="w-7 h-7 stroke-[1.25] text-[#C49A5A]" />
+                      </div>
+
+                      {/* 3. Step Title */}
+                      <h3 className="text-xs font-bold text-[#F7F0E4] tracking-wider mb-2 uppercase font-sans">
+                        {step.title}
+                      </h3>
+
+                      {/* 4. Step Description */}
+                      <p className="text-[#E6D3B3] text-[11px] leading-[1.5] font-sans">
+                        {step.description}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+            
+
+{/* 7. Progression of Our Sandalwood Plantation (FINAL UPLOADED GALLERY IMPLEMENTATION) */}
+      <section id="gallery-inner" className="py-12 md:py-16 bg-[#F7F0E4] z-20 relative">
+        <div className="max-w-7xl mx-auto px-6 w-full flex flex-col items-center">
+          
+          {/* Section Label */}
+          <div className="flex items-center gap-1.5 mb-4 self-center lg:self-start">
+            <span className="text-[#8B5E3C] text-xs font-semibold tracking-[2px] uppercase font-sans">
+              A GLIMPSE OF OUR LAND
+            </span>
+          </div>
+
+          {/* Section Heading */}
+          <h2 
+            className="font-serif text-4xl md:text-5xl lg:text-[52px] font-semibold text-[#12372A] leading-tight mb-4 text-center font-display"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Our Sandalwood Growth Journey
+          </h2>
+
+          {/* Section Description */}
+          <p className="text-[#3B2416] text-base leading-relaxed font-sans text-center max-w-3xl mb-12">
+            From premium land acquisition to mature sandalwood cultivation, every stage is carefully managed to create long-term value for investors.
+          </p>
+
+          {/* Infinite Marquee Scrolling Gallery */}
+          <div className="w-full py-4 overflow-hidden relative">
+            {/* Fade edges for professional look */}
+            <div className="absolute top-0 bottom-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#F7F0E4] to-transparent z-10 pointer-events-none" />
+            <div className="absolute top-0 bottom-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#F7F0E4] to-transparent z-10 pointer-events-none" />
+            
+            <div className="flex gap-[24px] w-max animate-marquee hover:[animation-play-state:paused]">
+              {/* Render multiple sets for seamless looping */}
+              {[...galleryItems, ...galleryItems, ...galleryItems, ...galleryItems].map((img, i) => (
+                <div 
+                  key={i} 
+                  className="relative w-[280px] sm:w-[320px] lg:w-[360px] aspect-[1.1] rounded-[32px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.08)] border-2 border-[#F7F0E4] bg-white flex-shrink-0 cursor-pointer group"
+                >
+                  <img 
+                    src={img.url} 
+                    alt={img.title} 
+                    onError={(e) => { 
+                      if (!e.currentTarget.src.includes('gallery_01.png')) {
+                        e.currentTarget.src = '/gallery_01.png'; 
+                      }
+                    }}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  />
+                  <div className="absolute inset-0 bg-[#0B2F24]/0 group-hover:bg-[#0B2F24]/10 transition-colors duration-300" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      
+      </div>
+      {/* --- END MASTER PLANTATION SECTION --- */}
+      {/* --- 5.75 More Than An Investment Banner (REDESIGNED PARALLAX) --- */}
+      <section className="relative py-24 md:py-32 overflow-hidden flex items-center justify-center z-20">
+        {/* Parallax Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed transform scale-105"
+          style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2913&auto=format&fit=crop")' }}
+        />
+        
+        {/* Dark Forest Green Gradient Overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A120E]/90 via-[#12372A]/70 to-[#0A120E]/90" />
+        <div className="absolute inset-0 bg-black/30" />
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 w-full text-center">
+          
+          {/* Glassmorphic Container */}
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.5)] p-10 md:p-16 lg:p-20">
+            {/* Subtle glow inside the glass box */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[#C49A5A]/20 blur-[80px] pointer-events-none" />
+            
+            <div className="flex flex-col items-center gap-6">
+              <div className="flex items-center justify-center gap-1.5 mb-2">
+                <span className="text-[#C49A5A] text-xs font-bold tracking-[4px] uppercase font-sans">
+                  A Legacy of Prestige
+                </span>
+              </div>
+              
+              <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-[#F7F0E4] leading-tight font-display drop-shadow-lg" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                More Than an Investment
+              </h2>
+              
+              <div className="w-24 h-[1.5px] bg-gradient-to-r from-transparent via-[#C49A5A] to-transparent my-2" />
+              
+              <h3 className="text-[#E7DBC7] text-lg md:text-xl font-serif leading-relaxed max-w-3xl drop-shadow-md" style={{ fontFamily: "'Lora', serif" }}>
+                Own premium red sandalwood land while enjoying exclusive investor privileges, luxury amenities, legal security, and long-term value creation.
+              </h3>
+              
+              <p className="text-[#A3B8B0] text-sm md:text-base font-sans leading-relaxed max-w-4xl mt-2 drop-shadow-sm">
+                Beyond securing a high-yielding natural asset, your investment with Chandan Nilayam grants you entry into an elite community. Experience the perfect harmony of robust financial growth and elevated lifestyle benefits—from 100% genuine legal documentation to luxury clubhouse access and spiritual retreats. We manage the land while you enjoy the prestige and peace of mind.
+              </p>
+
+              <button 
+                onClick={() => {
+                  const el = document.getElementById('privileges-amenities');
+                  if(el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="mt-8 px-8 py-4 bg-transparent border border-[#C49A5A] text-[#C49A5A] hover:bg-[#C49A5A] hover:text-[#0A120E] rounded-full font-bold text-sm tracking-widest uppercase transition-all duration-300 shadow-[0_0_20px_rgba(196,154,90,0.15)] hover:shadow-[0_0_30px_rgba(196,154,90,0.4)]"
+              >
+                Discover The Lifestyle
+              </button>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+{/* 8. Testimonials Section */}
+      <section className="py-12 md:py-16 bg-[#F7F0E4]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left side text and reviews */}
+            <div className="lg:col-span-8">
+              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">TRUSTED BY VISIONARY INVESTORS</span>
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+                <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Their Words,<br />Our Pride.
+                </h2>
+                <div className="flex gap-4 flex-wrap mb-2">
+                  <button 
+                    onClick={() => setIsReviewModalOpen(true)}
+                    className="bg-transparent border-2 border-[#C49A5A] hover:bg-[#C49A5A]/10 text-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
+                  >
+                    <Star className="w-3.5 h-3.5" /> Write a Review
+                  </button>
+                  <Link 
+                    href="/testimonials"
+                    className="bg-[#C49A5A] hover:bg-[#B38747] text-white border-2 border-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
+                  >
+                    Show more reviews
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {activeTestimonials.slice(0, 6).map((test, i) => (
+                  <div key={i} className="bg-white border border-[#8B5E3C]/15 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div>
+                      <div className="flex gap-0.5 text-[#C49A5A] mb-4">
+                        {[...Array(test.stars)].map((_, idx) => (
+                          <Star key={idx} className="w-3.5 h-3.5 fill-[#C49A5A]" />
+                        ))}
+                      </div>
+                      <p className="text-[#2F3E2F] text-xs italic leading-relaxed mb-6 font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                        "{test.text}"
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black uppercase text-[#12372A] font-sans">{test.name}</h4>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-[#8B5E3C] font-bold font-sans">{test.location}</span>
+                        {test.investment && (
+                          <>
+                            <span className="text-[#C49A5A]/50 text-[10px]">•</span>
+                            <span className="text-[10px] text-[#12372A] font-bold uppercase tracking-wider font-sans bg-[#C49A5A]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right side visual */}
+            <div className="lg:col-span-4 flex justify-center">
+              <div className="group relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 hover:shadow-[0_0_30px_rgba(196,154,90,0.35)] transition-shadow duration-300">
+                <img 
+                  src="/investment-growth.jpg" 
+                  alt="Investment Growth and Wealth Creation" 
+                  className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300 ease-in-out" 
+                />
+                {/* Subtle dark overlay to blend naturally */}
+                <div className="absolute inset-0 bg-[#12372A]/10 pointer-events-none transition-opacity duration-300 group-hover:opacity-0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 9. Investor Inquiry Section (REDESIGNED TO EXACT REFERENCE STYLE) */}
       <section id="investor-inquiry" className="py-12 md:py-16 bg-[#F7F0E4] relative z-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 w-full">
@@ -2006,10 +2141,12 @@ export default function HomePage() {
                     }`}
                   >
                     <option value="">Preferred Plot Size</option>
-                    <option value="0.25 Acres">0.25 Acres</option>
-                    <option value="0.50 Acres">0.50 Acres</option>
-                    <option value="1.00 Acres">1.00 Acres</option>
-                    <option value="2.00+ Acres">2.00+ Acres</option>
+                    <option value="12.5 Cents">12.5 Cents</option>
+                    <option value="25 Cents">25 Cents</option>
+                    <option value="50 Cents">50 Cents</option>
+                    <option value="1 Acre">1 Acre</option>
+                    <option value="2+ Acres">2+ Acres</option>
+                    <option value="Custom">Custom</option>
                   </select>
                   <ChevronDown className="absolute right-3.5 top-3.5 w-4 h-4 text-[#8B5E3C]/60 pointer-events-none stroke-[1.25]" />
                   {errors.plotSize && <p className="text-red-500 text-[9px] mt-1 text-left font-sans">{errors.plotSize.message}</p>}
