@@ -95,6 +95,7 @@ export default function ContentManagementPage() {
     aboutStory: '',
     locationAdvantages: '',
     companyVision: '',
+    companyMission: '',
   });
 
   const fetchData = async () => {
@@ -635,10 +636,20 @@ export default function ContentManagementPage() {
               </div>
 
               <div>
-                <Label className="text-[#A8B5AA] text-xs font-semibold mb-1 block">Company Vision & Mission Statement</Label>
+                <Label className="text-[#A8B5AA] text-xs font-semibold mb-1 block">Our Vision</Label>
                 <Textarea 
                   value={publicContent.companyVision} 
                   onChange={(e) => setPublicContent({ ...publicContent, companyVision: e.target.value })}
+                  className="bg-white/5 border-white/10 text-white focus-visible:ring-[#C49A5A] rounded-xl"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <Label className="text-[#A8B5AA] text-xs font-semibold mb-1 block">Our Mission</Label>
+                <Textarea 
+                  value={publicContent.companyMission || ''} 
+                  onChange={(e) => setPublicContent({ ...publicContent, companyMission: e.target.value })}
                   className="bg-white/5 border-white/10 text-white focus-visible:ring-[#C49A5A] rounded-xl"
                   rows={3}
                 />

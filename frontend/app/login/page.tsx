@@ -166,7 +166,7 @@ export default function LoginPage() {
 
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="text-center mt-8 text-sm text-[#B8C7BC]">
               <span>Don't have an account?</span>{' '}
-              <Link href="/inquiry" className="font-semibold text-[#D9B36D] hover:text-[#C49A5A]">Sign Up</Link>
+              <Link href="/home#investor-inquiry" className="font-semibold text-[#D9B36D] hover:text-[#C49A5A]">Sign Up</Link>
             </motion.div>
           </div>
 

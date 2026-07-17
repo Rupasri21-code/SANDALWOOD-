@@ -128,7 +128,8 @@ export const forgotPassword = async (req: AuthRequest, res: Response, next: Next
       },
     });
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const baseUrl = process.env.FRONTEND_URL || process.env.ALLOWED_ORIGINS?.split(',')[0] || 'http://localhost:3000';
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
 
     const message = `
       <h1>Password Reset Requested</h1>

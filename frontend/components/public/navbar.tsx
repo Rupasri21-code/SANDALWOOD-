@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, FileText } from 'lucide-react';
+import { Menu, X, FileText, ChevronRight } from 'lucide-react';
 import BrandIdentity from '@/components/BrandIdentity';
 
 export default function Navbar() {
@@ -33,7 +33,7 @@ export default function Navbar() {
     { href: '#opportunity', label: 'THE OPPORTUNITY' },
     { href: '#about-heritage', label: 'ABOUT US' },
     { href: '#plantation', label: 'OUR PLANTATION' },
-    { href: '#privileges', label: 'INVESTOR BENEFITS' },
+    { href: '#privileges-amenities', label: 'INVESTOR BENEFITS' },
     { href: '#calculator', label: 'PLAN YOUR FUTURE' },
     { href: '/Chandan_Nilayam_Brochure.pdf', label: 'BROCHURE', icon: <FileText className="w-[15px] h-[15px] mr-1.5" />, target: '_blank' },
     { href: '#gallery', label: 'GALLERY' },
@@ -115,34 +115,45 @@ export default function Navbar() {
 
       </div>
 
-      {/* Mobile Slide-Down Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-[#F5F0E6] border-t border-[#12372A]/10 shadow-2xl h-[calc(100vh-72px)] overflow-y-auto">
-          <div className="flex flex-col px-[24px] py-[32px] gap-[16px]">
-            {/* Links */}
-            <div className="flex flex-col gap-[8px] mb-[24px]">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target={link.target || undefined}
-                  rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                  onClick={() => {
-                    if (link.target !== '_blank') setMobileOpen(false);
-                  }}
-                  className="flex items-center text-[#1E2B25] font-sans font-semibold text-[14px] tracking-[0.04em] py-[12px] border-b border-[#12372A]/5 hover:text-[#A97835]"
-                >
+      {/* Mobile Slide-Down Menu Overlay */}
+      <div 
+        className={`lg:hidden fixed inset-0 top-[72px] md:top-[82px] bg-[#0A120E]/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      {/* Mobile Menu Panel */}
+      <div 
+        className={`lg:hidden fixed top-[72px] md:top-[82px] left-0 right-0 bg-gradient-to-b from-[#F8F3E9] to-[#F4ECDD] border-t border-[#12372A]/10 shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-50 overflow-hidden ${mobileOpen ? 'max-h-[calc(100vh-72px)] opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="flex flex-col px-[28px] py-[36px] gap-[24px] max-h-[calc(100vh-72px)] overflow-y-auto pb-32">
+          {/* Links */}
+          <div className="flex flex-col gap-[4px]">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.target || undefined}
+                rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                onClick={() => {
+                  if (link.target !== '_blank') setMobileOpen(false);
+                }}
+                className="group flex items-center justify-between text-[#12372A] font-sans font-bold text-[14px] tracking-[0.05em] py-[16px] px-[20px] -mx-[20px] rounded-[18px] hover:bg-[#C49A5A]/10 active:bg-[#C49A5A]/20 transition-all duration-300"
+              >
+                <div className="flex items-center">
                   {link.icon}
                   {link.label}
-                </a>
-              ))}
-            </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-[#C49A5A] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-active:opacity-100 group-active:translate-x-0 transition-all duration-300" />
+              </a>
+            ))}
+          </div>
 
-            {/* CTAs */}
+          {/* CTAs */}
+          <div className="flex flex-col gap-[14px] mt-[12px] pt-[28px] border-t border-[#12372A]/10">
             <Link 
               href="/login" 
               onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center w-full bg-transparent border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[13px] tracking-[0.06em] h-[48px] rounded-full"
+              className="flex items-center justify-center w-full bg-white/60 backdrop-blur-md border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[13px] tracking-[0.06em] h-[54px] rounded-full shadow-sm hover:bg-[#C49A5A] hover:text-white transition-colors duration-300"
             >
               LOGIN
             </Link>
@@ -151,13 +162,13 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="w-full"
             >
-              <button className="flex items-center justify-center w-full bg-gradient-to-br from-[#C49A5A] to-[#D9B36D] text-white font-sans font-bold text-[13px] tracking-[0.03em] h-[48px] rounded-full shadow-[0_8px_22px_rgba(196,154,90,0.28)]">
+              <button className="flex items-center justify-center w-full bg-gradient-to-r from-[#12372A] to-[#1A4F3C] text-white font-sans font-bold text-[13px] tracking-[0.06em] h-[54px] rounded-full shadow-[0_12px_24px_rgba(18,55,42,0.25)] hover:shadow-[0_16px_32px_rgba(18,55,42,0.35)] hover:-translate-y-1 transition-all duration-300">
                 INVESTOR INQUIRY
               </button>
             </a>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

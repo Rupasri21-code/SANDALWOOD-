@@ -23,21 +23,21 @@ export default function Footer() {
           <div className="lg:col-span-4 flex flex-col items-start pr-0 lg:pr-10">
             {/* FULL-COLOR LOGO IN CREAM BRAND PANEL */}
             <div 
-              className="mb-8 flex items-center justify-center lg:justify-start w-full lg:w-auto"
+              className="mb-6 flex items-center justify-center lg:justify-start w-full lg:w-auto"
             >
               <div 
                 className="inline-block"
                 style={{
                   background: '#F7F0E4',
-                  borderRadius: '18px',
-                  padding: '18px 22px',
+                  borderRadius: '12px',
+                  padding: '12px 16px',
                   border: '1px solid rgba(196, 154, 90, 0.20)'
                 }}
               >
                 <img 
                   src="/branding/footer-logo-final.png" 
                   alt="Chandhan Nilayam Logo" 
-                  className="w-full max-w-[330px] md:max-w-[360px] md:w-[320px] lg:max-w-none lg:w-[420px] h-auto object-contain object-left" 
+                  className="w-full max-w-[220px] md:max-w-[240px] md:w-[220px] lg:max-w-none lg:w-[260px] h-auto object-contain object-left" 
                 />
               </div>
             </div>
@@ -54,8 +54,8 @@ export default function Footer() {
               <Link href="/home#opportunity" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">The Opportunity</Link>
               <Link href="/home#about-heritage" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">About Us</Link>
               <Link href="/home#plantation" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">Our Plantation</Link>
-              <Link href="/home#privileges" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">Investor Privileges</Link>
-              <Link href="/home#amenities" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">Lifestyle Amenities</Link>
+              <Link href="/home#privileges-amenities" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">Investor Privileges</Link>
+              <Link href="/home#privileges-amenities" className="text-[#F7F0E4]/70 hover:text-[#C49A5A] hover:translate-x-1 transition-all duration-300">Lifestyle Amenities</Link>
             </div>
           </div>
 
@@ -72,7 +72,7 @@ export default function Footer() {
 
           {/* Column 4: Contact & Social (Takes 4 columns) */}
           <div className="lg:col-span-4 flex flex-col items-start text-left pt-2">
-            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#C49A5A] mb-8 font-sans border-b border-[#C49A5A]/20 pb-4 w-full">Get In Touch</h4>
+            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#C49A5A] mb-8 font-sans border-b border-[#C49A5A]/20 pb-4 w-full">Contact Us</h4>
             
             <div className="flex flex-col gap-6 text-[15px] font-sans w-full">
               <div className="flex items-start gap-4 p-4 rounded-xl bg-[#F7F0E4]/5 border border-[#F7F0E4]/10 hover:border-[#C49A5A]/30 transition-colors">

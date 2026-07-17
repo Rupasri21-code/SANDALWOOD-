@@ -11,15 +11,21 @@ import { api } from '@/lib/api';
 const SITE_ADDRESS = "Dornala, Andhra Pradesh, India";
 
 const siteVisitSchema = z.object({
-  fullName: z.string().min(3, "Full Name must be at least 3 characters"),
+  fullName: z.string()
+    .min(3, "Full Name must be at least 3 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Full Name can only contain letters"),
   phone: z.string()
-    .min(10, "Phone must be at least 10 digits")
-    .max(15, "Phone number is too long")
-    .regex(/^\+?[0-9\s\-]+$/, "Invalid phone number format"),
+    .length(10, "Phone number must be exactly 10 digits")
+    .regex(/^[0-9]+$/, "Phone number must contain only numbers"),
   location: z.string().min(3, "Location is required for directions"),
-  visitDate: z.string().optional(),
-  visitTime: z.string().optional(),
-  visitors: z.string().optional(),
+  visitDate: z.string().min(1, "Preferred visit date is required").refine(date => {
+    const selected = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selected >= today;
+  }, "Visit date cannot be in the past"),
+  visitTime: z.string().min(1, "Preferred visit time is required"),
+  visitors: z.string().min(1, "Number of visitors is required").refine(val => parseInt(val) > 0, "Must be at least 1 visitor"),
   notes: z.string().optional(),
 });
 
@@ -28,6 +34,7 @@ type SiteVisitFormData = z.infer<typeof siteVisitSchema>;
 export default function SiteVisitSection() {
   const { register, handleSubmit, watch, formState: { errors }, trigger, getValues } = useForm<SiteVisitFormData>({
     resolver: zodResolver(siteVisitSchema),
+    mode: 'onChange',
   });
 
   const [loading, setLoading] = useState(false);
@@ -152,6 +159,7 @@ export default function SiteVisitSection() {
                     className="w-full bg-[#F9F6F0] border border-[#C49A5A]/30 rounded-xl px-4 py-3.5 text-sm text-[#12372A] placeholder-[#8B5E3C]/60 focus:outline-none focus:border-[#C49A5A] focus:ring-1 focus:ring-[#C49A5A] transition-all pr-10 font-sans font-medium appearance-none"
                   />
                   <Calendar className="absolute right-4 top-3.5 w-4.5 h-4.5 text-[#C49A5A] stroke-[1.5] pointer-events-none" />
+                  {errors.visitDate && <p className="text-red-500 text-[10px] mt-1 text-left font-sans">{errors.visitDate.message}</p>}
                 </div>
 
                 {/* Visit Time */}
@@ -162,6 +170,7 @@ export default function SiteVisitSection() {
                     className="w-full bg-[#F9F6F0] border border-[#C49A5A]/30 rounded-xl px-4 py-3.5 text-sm text-[#12372A] placeholder-[#8B5E3C]/60 focus:outline-none focus:border-[#C49A5A] focus:ring-1 focus:ring-[#C49A5A] transition-all pr-10 font-sans font-medium appearance-none"
                   />
                   <Clock className="absolute right-4 top-3.5 w-4.5 h-4.5 text-[#C49A5A] stroke-[1.5] pointer-events-none" />
+                  {errors.visitTime && <p className="text-red-500 text-[10px] mt-1 text-left font-sans">{errors.visitTime.message}</p>}
                 </div>
 
                 {/* Visitors */}
@@ -174,6 +183,7 @@ export default function SiteVisitSection() {
                     placeholder="Number of Visitors"
                   />
                   <Users className="absolute right-4 top-3.5 w-4.5 h-4.5 text-[#C49A5A] stroke-[1.5]" />
+                  {errors.visitors && <p className="text-red-500 text-[10px] mt-1 text-left font-sans">{errors.visitors.message}</p>}
                 </div>
 
                 {/* Notes */}

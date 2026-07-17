@@ -59,6 +59,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import SiteVisitSection from '@/components/public/site-visit-section';
+import InvestmentCalculator from '@/components/public/investment-calculator';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import {
@@ -67,15 +68,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ClubhouseAmenities from '@/components/public/clubhouse-amenities';
 
 // Form validation schema
 const inquirySchema = z.object({
-  fullName: z.string().min(3, 'Full name must be at least 3 characters'),
+  fullName: z.string()
+    .min(3, 'Full name must be at least 3 characters')
+    .regex(/^[a-zA-Z\s]+$/, 'Full Name can only contain letters'),
   email: z.string().email('Invalid email address'),
   phone: z.string()
-    .min(10, 'Phone must be at least 10 digits')
-    .max(15, 'Phone number is too long')
-    .regex(/^\+?[0-9\s\-]+$/, 'Invalid phone number format'),
+    .length(10, 'Phone number must be exactly 10 digits')
+    .regex(/^[0-9]+$/, 'Phone number must contain only numbers'),
   investmentInterest: z.string().min(1, 'Please select your interest'),
   budgetRange: z.string().min(1, 'Please select your budget'),
   plotSize: z.string().min(1, 'Please select your preferred plot size'),
@@ -326,6 +329,7 @@ export default function HomePage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const [activeTestimonials, setActiveTestimonials] = useState<any[]>(initialTestimonials);
   const [galleryItems, setGalleryItems] = useState<any[]>(initialProgressionImages);
   const [reviewLocation, setReviewLocation] = useState("");
@@ -345,6 +349,7 @@ export default function HomePage() {
     aboutStory: '',
     locationAdvantages: '',
     companyVision: '',
+    companyMission: '',
   });
 
   useEffect(() => {
@@ -411,99 +416,6 @@ export default function HomePage() {
   const [showAllFaqs, setShowAllFaqs] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-  // Calculator States
-  const [plotSize, setPlotSize] = useState('12.5 Cents');
-  const [treeCount, setTreeCount] = useState(50);
-  const [plantationAge, setPlantationAge] = useState(12);
-  const [survivalRate, setSurvivalRate] = useState(90);
-  const [timberYieldPerTree, setTimberYieldPerTree] = useState(20); // in kg
-  const [timberPricePerTon, setTimberPricePerTon] = useState(15000000); // 1.5 Cr in Rupees
-  const [initialInvestment, setInitialInvestment] = useState(1500000);
-  const [annualMaintenance, setAnnualMaintenance] = useState(12000);
-
-  // Sync defaults when plot size changes
-  useEffect(() => {
-    if (plotSize === '12.5 Cents') {
-      setTreeCount(50);
-      setInitialInvestment(1500000);
-      setAnnualMaintenance(12000);
-    } else if (plotSize === '25 Cents') {
-      setTreeCount(100);
-      setInitialInvestment(3000000);
-      setAnnualMaintenance(24000);
-    } else if (plotSize === '50 Cents') {
-      setTreeCount(200);
-      setInitialInvestment(6000000);
-      setAnnualMaintenance(48000);
-    } else if (plotSize === '1 Acre') {
-      setTreeCount(400);
-      setInitialInvestment(12000000);
-      setAnnualMaintenance(96000);
-    } else if (plotSize === '2 Acres') {
-      setTreeCount(800);
-      setInitialInvestment(24000000);
-      setAnnualMaintenance(192000);
-    } else if (plotSize === '5 Acres') {
-      setTreeCount(2000);
-      setInitialInvestment(60000000);
-      setAnnualMaintenance(480000);
-    }
-  }, [plotSize]);
-
-  const formatCurrency = (val: number) => {
-    if (val >= 10000000) {
-      return `₹${(val / 10000000).toFixed(2)} Cr`;
-    } else if (val >= 100000) {
-      return `₹${(val / 100000).toFixed(2)} Lakhs`;
-    } else {
-      return `₹${val.toLocaleString('en-IN')}`;
-    }
-  };
-
-  // Centralized calculations
-  const calculatorMetrics = useMemo(() => {
-    const survivingTrees = Math.round(treeCount * (survivalRate / 100));
-    const yieldTons = (survivingTrees * timberYieldPerTree) / 1000;
-    const totalCost = initialInvestment + (annualMaintenance * plantationAge);
-    const totalRevenue = yieldTons * timberPricePerTon;
-    const totalNetProfit = totalRevenue - totalCost;
-    
-    // Profit Sharing Policy 50:50
-    const investorNetProfit = totalNetProfit > 0 ? totalNetProfit * 0.5 : totalNetProfit;
-    const investorRevenue = totalCost + investorNetProfit;
-    const investorROI = totalCost > 0 ? (investorNetProfit / totalCost) * 100 : 0;
-
-    return {
-      survivingTrees,
-      yieldTons,
-      totalCost,
-      totalRevenue,
-      totalNetProfit,
-      investorNetProfit,
-      investorRevenue,
-      investorROI
-    };
-  }, [treeCount, survivalRate, timberYieldPerTree, timberPricePerTon, initialInvestment, annualMaintenance, plantationAge]);
-
-  // Generate real-time chart data
-  const chartData = useMemo(() => {
-    const data = [];
-    
-    for (let year = 0; year <= plantationAge; year++) {
-      const investmentAtYear = initialInvestment + (annualMaintenance * year);
-      
-      // Exponential curve for plantation value
-      const valueAtYear = calculatorMetrics.investorRevenue * Math.pow(year / plantationAge, 3);
-
-      data.push({
-        year: `Year ${year}`,
-        investment: investmentAtYear,
-        value: valueAtYear
-      });
-    }
-    return data;
-  }, [plantationAge, initialInvestment, annualMaintenance, calculatorMetrics]);
-
   const heroSequence = [
     '/gallery_01.png',
     '/gallery_02.jpg',
@@ -543,7 +455,7 @@ export default function HomePage() {
     formState: { errors },
   } = useForm<InquiryFormValues>({
     resolver: zodResolver(inquirySchema),
-    mode: 'onTouched',
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: InquiryFormValues) => {
@@ -944,8 +856,8 @@ export default function HomePage() {
               {/* Plantation Image */}
               <div className="relative w-full h-[500px] sm:h-[600px] lg:h-[720px] rounded-[32px] overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?auto=format&fit=crop&q=80&w=1200"
-                  alt="Premium Sandalwood Sapling in Rich Soil"
+                  src="/our_heritage_image.png"
+                  alt="Our Heritage Image"
                   className="w-full h-full object-cover object-center"
                 />
               </div>
@@ -974,8 +886,8 @@ export default function HomePage() {
                     <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Vision
                     </h4>
-                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90">
-                      To be the most trusted name in sustainable sandalwood investments, creating long-term value for investors and a lasting positive impact on the environment.
+                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
+                      {publicContent.companyVision || "To be the most trusted name in sustainable sandalwood investments, creating long-term value for investors and a lasting positive impact on the environment."}
                     </p>
                   </div>
                   
@@ -990,8 +902,8 @@ export default function HomePage() {
                     <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Mission
                     </h4>
-                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90">
-                      To deliver high-growth green investment opportunities through scientific plantation management, transparent operations, and a commitment to ecological restoration.
+                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
+                      {publicContent.companyMission || "To deliver high-growth green investment opportunities through scientific plantation management, transparent operations, and a commitment to ecological restoration."}
                     </p>
                   </div>
                   
@@ -1059,7 +971,7 @@ export default function HomePage() {
           {/* Top: Map Image */}
           <div className="w-full relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24] mb-12">
             <img 
-              src="/strategic-location-map.jpg" 
+              src="/map-image-3.png" 
               alt="Strategic Location Map" 
               className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
             />
@@ -1174,61 +1086,32 @@ export default function HomePage() {
           </div>
 
           {/* Panoramic Clubhouse Banner */}
-          <div className="relative w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden mb-16 shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-[#C49A5A]/20 group">
+          <div className="relative w-full rounded-[2rem] overflow-hidden mb-12 shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-[#C49A5A]/20 group bg-[#0A120E] flex flex-col md:block">
             <img 
               src="/clubhouse-collage.jpg"
               alt="Luxury Club House"
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"
+              className="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-1000 ease-out opacity-90"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A120E] via-[#0A120E]/60 to-transparent" />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
             
-            <div className="absolute bottom-0 left-0 w-full p-8 md:p-12">
-              <div className="max-w-3xl">
-                <h3 className="text-[#C49A5A] text-sm font-bold tracking-[3px] uppercase font-sans mb-3">World Class Facilities</h3>
-                <h4 className="text-[#F7F0E4] font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4 drop-shadow-xl">Premium Clubhouse</h4>
-                <p className="text-[#E6D3B3] text-sm md:text-base font-sans leading-relaxed drop-shadow-md">
+            {/* Soft gradient only at the very bottom for text readability */}
+            <div className="relative md:absolute inset-x-0 bottom-0 p-6 md:p-12 bg-[#0A120E] md:bg-transparent md:bg-gradient-to-t md:from-[#0A120E]/90 md:via-[#0A120E]/40 md:to-transparent pt-6 md:pt-40 pointer-events-none">
+              <div className="max-w-2xl">
+                <h3 className="text-[#C49A5A] text-[10px] md:text-xs font-bold tracking-[3px] uppercase font-sans mb-1 md:mb-2 drop-shadow-md">World Class Facilities</h3>
+                <h4 className="text-[#F7F0E4] font-serif text-xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 drop-shadow-xl">Premium Clubhouse</h4>
+                <p className="text-[#E6D3B3] text-xs md:text-sm font-sans leading-relaxed drop-shadow-md max-w-xl">
                   A sanctuary of relaxation and leisure, designed exclusively for our investors. Experience state-of-the-art facilities nestled within the tranquility of nature.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Lifestyle Amenities Grid (9 Cards) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { title: "Walking Track", desc: "Beautifully landscaped trails designed for natural tranquility.", icon: Footprints },
-              { title: "Modern Gym", desc: "Fully equipped fitness center to prioritize your health and wellness.", icon: Dumbbell },
-              { title: "Swimming Pool", desc: "Elegant, temperature-controlled pool offering a relaxing oasis.", icon: Waves },
-              { title: "Children's Play Area", desc: "Safe, dedicated recreational zones with premium outdoor equipment.", icon: Smile },
-              { title: "Putting Green", desc: "Beautifully maintained golf court to practice your swing.", icon: FlagTriangleRight },
-              { title: "Organic Dining", desc: "On-site restaurant serving chef-curated meals at subsidized rates.", icon: Utensils, badge: "Exclusive" }
-            ].map((amenity, i) => (
-              <div 
-                key={i} 
-                className="group bg-white/[0.02] hover:bg-[#C49A5A]/5 border border-white/5 hover:border-[#C49A5A]/30 rounded-2xl p-6 flex items-start gap-4 transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-full bg-[#0A120E] border border-[#C49A5A]/20 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A5A] transition-colors duration-500">
-                  <amenity.icon className="w-5 h-5 text-[#C49A5A] group-hover:text-[#0A120E] transition-colors duration-500 stroke-[1.5]" />
-                </div>
-                <div className="flex flex-col text-left">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-sm md:text-base font-bold text-[#F7F0E4] font-sans tracking-wide">{amenity.title}</h4>
-                    {amenity.badge && (
-                      <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-[#C49A5A]/20 text-[#C49A5A] border border-[#C49A5A]/30">
-                        {amenity.badge}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[#A3B8B0] text-xs leading-relaxed font-sans">{amenity.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
+          {/* LIFESTYLE CLUBHOUSE AMENITIES SECTION (Merged) */}
+          <ClubhouseAmenities />
+
         </div>
       </section>
 
+      {/* --- END MASTER PLANTATION SECTION --- */}
 {/* 8.5 Estimate Your Red Sandalwood Wealth Section */}
       <section id="calculator" className="py-12 md:py-16 bg-gradient-to-br from-[#061F18] to-[#031A14] text-[#F7F0E4] relative z-20">
         <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
@@ -1264,397 +1147,8 @@ export default function HomePage() {
             className="rounded-[28px] p-6 md:p-8 lg:p-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.45)] border border-[#C49A5A]/35 mb-8"
             style={{ background: 'linear-gradient(145deg, rgba(6,31,24,0.95), rgba(3,12,10,0.98))' }}
           >
-            <div className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12">
-              
-              {/* LEFT CARD — Investment Calculator */}
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-[#12372A]/40 p-2 rounded-lg border border-[#C49A5A]/20">
-                    <Building2 className="w-5 h-5 text-[#C49A5A]" />
-                  </div>
-                  <h3 className="text-[#D9B36D] text-[18px] font-serif font-semibold tracking-wide">Investment Calculator</h3>
-                </div>
-
-                {/* Plot Size & Number of Trees */}
-                <div className="grid grid-cols-2 gap-5">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] uppercase font-sans tracking-wide">Plot Size</label>
-                    <div className="relative">
-                      {plotSize === 'Custom' ? (
-                        <div className="flex items-center gap-2">
-                          <div className="relative flex-1">
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.1"
-                              placeholder="Acres"
-                              onChange={(e) => {
-                                const acres = parseFloat(e.target.value) || 0;
-                                setTreeCount(Math.round(acres * 400));
-                                setInitialInvestment(acres * 12000000);
-                                setAnnualMaintenance(acres * 96000);
-                              }}
-                              className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 pr-16 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 transition-all font-sans font-medium"
-                            />
-                            <span className="absolute right-4 top-[14px] text-sm text-[#B8C7BC]">Acres</span>
-                          </div>
-                          <button 
-                            onClick={() => setPlotSize('1 Acre')}
-                            className="w-12 h-[48px] rounded-[14px] border border-[#C49A5A]/35 bg-[#0B241C] hover:bg-[#C49A5A]/20 text-[#C49A5A] flex items-center justify-center transition-colors shrink-0"
-                            title="Back to predefined sizes"
-                          >
-                            <X className="w-5 h-5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <select
-                            value={plotSize}
-                            onChange={(e) => setPlotSize(e.target.value)}
-                            className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 appearance-none cursor-pointer transition-all font-sans font-medium"
-                          >
-                            <option value="12.5 Cents">12.5 Cents</option>
-                            <option value="25 Cents">25 Cents</option>
-                            <option value="50 Cents">50 Cents</option>
-                            <option value="1 Acre">1 Acre</option>
-                            <option value="2 Acres">2 Acres</option>
-                            <option value="5 Acres">5 Acres</option>
-                            <option value="Custom">Custom</option>
-                          </select>
-                          <ChevronDown className="absolute right-4 top-[14px] w-5 h-5 text-[#C49A5A] pointer-events-none" />
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] uppercase font-sans tracking-wide">Number of Trees</label>
-                    <input
-                      type="number"
-                      value={treeCount}
-                      onChange={(e) => setTreeCount(Math.max(0, parseInt(e.target.value) || 0))}
-                      onBlur={() => {
-                        if (treeCount < 50) {
-                          toast.error("Minimum Number of Trees is 50");
-                          setTreeCount(50);
-                        }
-                      }}
-                      className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 transition-all font-sans font-medium"
-                    />
-                  </div>
-                </div>
-
-                {/* Sliders */}
-                <div className="flex flex-col gap-5 mt-2">
-                  {/* Plantation Age */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Plantation Age (Years)</label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="1"
-                        max="12"
-                        value={plantationAge}
-                        onChange={(e) => setPlantationAge(parseInt(e.target.value))}
-                        className="flex-1 h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D] hover:shadow-[0_0_10px_rgba(217,179,109,0.3)] transition-shadow"
-                      />
-                      <div className="w-[72px] h-[40px] bg-[#0B241C] border border-[#C49A5A]/35 rounded-[14px] flex items-center justify-center text-sm font-bold text-[#F7F0E4] font-sans">
-                        {plantationAge}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Survival Rate */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Survival Rate (%)</label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="70"
-                        max="100"
-                        value={survivalRate}
-                        onChange={(e) => setSurvivalRate(parseInt(e.target.value))}
-                        className="flex-1 h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D] hover:shadow-[0_0_10px_rgba(217,179,109,0.3)] transition-shadow"
-                      />
-                      <div className="w-[72px] h-[40px] bg-[#0B241C] border border-[#C49A5A]/35 rounded-[14px] flex items-center justify-center text-sm font-bold text-[#F7F0E4] font-sans">
-                        {survivalRate}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Yield */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Timber Yield Per Tree (kg)</label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="10"
-                        max="150"
-                        value={timberYieldPerTree}
-                        onChange={(e) => setTimberYieldPerTree(parseFloat(e.target.value))}
-                        className="flex-1 h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D] hover:shadow-[0_0_10px_rgba(217,179,109,0.3)] transition-shadow"
-                      />
-                      <div className="w-[72px] h-[40px] bg-[#0B241C] border border-[#C49A5A]/35 rounded-[14px] flex items-center justify-center text-sm font-bold text-[#F7F0E4] font-sans">
-                        {timberYieldPerTree}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Timber Price Per Ton (₹)</label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="1000000"
-                        max="25000000"
-                        step="100000"
-                        value={timberPricePerTon}
-                        onChange={(e) => setTimberPricePerTon(parseInt(e.target.value))}
-                        className="flex-1 h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D] hover:shadow-[0_0_10px_rgba(217,179,109,0.3)] transition-shadow"
-                      />
-                      <div className="w-[110px] h-[40px] bg-[#0B241C] border border-[#C49A5A]/35 rounded-[14px] flex items-center justify-center text-sm font-bold text-[#F7F0E4] font-sans">
-                        {timberPricePerTon.toLocaleString('en-IN')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Investment / Maintenance */}
-                <div className="grid grid-cols-2 gap-5 mt-2">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Initial Investment (₹)</label>
-                    <input
-                      type="text"
-                      value={initialInvestment.toLocaleString('en-IN')}
-                      onChange={(e) => setInitialInvestment(Math.max(0, parseInt(e.target.value.replace(/,/g, '')) || 0))}
-                      onBlur={() => {
-                        if (initialInvestment < 1500000) {
-                          toast.error("Minimum Initial Investment is ₹15,00,000");
-                          setInitialInvestment(1500000);
-                        }
-                      }}
-                      className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 transition-all font-sans font-medium"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[11px] md:text-[13px] text-[#B8C7BC] font-sans">Annual Maintenance (₹)</label>
-                    <input
-                      type="text"
-                      value={annualMaintenance.toLocaleString('en-IN')}
-                      onChange={(e) => setAnnualMaintenance(Math.max(0, parseInt(e.target.value.replace(/,/g, '')) || 0))}
-                      onBlur={() => {
-                        if (annualMaintenance < 12000) {
-                          toast.error("Minimum Annual Maintenance is ₹12,000");
-                          setAnnualMaintenance(12000);
-                        }
-                      }}
-                      className="w-full h-[48px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-[14px] px-4 text-sm focus:outline-none focus:border-[#C49A5A] focus:ring-[3px] focus:ring-[#C49A5A]/15 transition-all font-sans font-medium"
-                    />
-                  </div>
-                </div>
-
-                {/* Profit Sharing Policy Box */}
-                <div className="mt-4 border border-[#7F1D1D]/50 bg-gradient-to-r from-[rgba(127,29,29,0.15)] to-[rgba(127,29,29,0.05)] rounded-[16px] p-5 flex gap-4 items-start backdrop-blur-sm">
-                  <div className="mt-0.5">
-                    <ShieldCheck className="w-5 h-5 text-[#D9B36D]" />
-                  </div>
-                  <div>
-                    <h4 className="text-[#D9B36D] text-[11px] md:text-[12px] font-bold tracking-wide uppercase mb-1.5 font-sans">
-                      Profit Sharing Policy
-                    </h4>
-                    <p className="text-[#B8C7BC] text-[11px] md:text-[12px] leading-relaxed font-sans">
-                      Upon completion of the crop cycle, the harvest is sold. The net profits generated are distributed on a 50:50 basis between the investor and the admin/management.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT CARD — Results Summary */}
-              <div className="flex flex-col gap-5 pt-2">
-                
-                {/* 2x3 Metric Grid */}
-                <motion.div 
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={{
-                    visible: { transition: { staggerChildren: 0.1 } },
-                    hidden: {}
-                  }}
-                  className="grid grid-cols-2 gap-4"
-                >
-                  {[
-                    { label: 'Total Trees', value: treeCount, icon: Sprout },
-                    { label: 'Surviving Trees', value: calculatorMetrics.survivingTrees, icon: Trees },
-                    { label: 'Yield (Tons)', value: calculatorMetrics.yieldTons.toFixed(2), icon: Layers },
-                    { label: 'Revenue', value: formatCurrency(calculatorMetrics.investorRevenue), icon: Landmark },
-                    { label: 'ROI', value: `${Math.round(calculatorMetrics.investorROI)}%`, icon: TrendingUp },
-                    { label: 'Net Profit', value: formatCurrency(calculatorMetrics.investorNetProfit), icon: Award }
-                  ].map((metric, idx) => (
-                    <motion.div 
-                      key={idx}
-                      variants={{
-                        hidden: { opacity: 0, y: 15 },
-                        visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
-                      }}
-                      whileHover={{ y: -4, boxShadow: '0 0 15px rgba(196,154,90,0.15)' }}
-                      className="bg-[rgba(8,35,27,0.85)] border border-[#C49A5A]/25 rounded-[18px] p-5 flex flex-col items-center justify-center text-center transition-all duration-300"
-                    >
-                      <metric.icon className="w-6 h-6 text-[#D9B36D] mb-3" />
-                      <span className="text-[10px] md:text-[11px] text-[#B8C7BC] font-sans uppercase tracking-[0.1em] mb-1.5 font-medium">
-                        {metric.label}
-                      </span>
-                      <span className="text-[18px] md:text-[22px] font-bold text-[#F7F0E4] font-sans">
-                        {metric.value}
-                      </span>
-                    </motion.div>
-                  ))}
-                </motion.div>
-
-                {/* PROJECTED WEALTH CARD */}
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  whileHover={{ boxShadow: '0 0 30px rgba(196,154,90,0.15)' }}
-                  className="mt-2 rounded-[20px] border border-[#C49A5A] bg-gradient-to-br from-[rgba(6,31,24,0.9)] to-[rgba(3,15,12,0.95)] p-6 md:p-8 text-center shadow-[inset_0_0_40px_rgba(196,154,90,0.08)] relative overflow-hidden transition-shadow duration-300"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D9B36D] to-transparent opacity-50" />
-                  
-                  <h4 className="text-[11px] md:text-[13px] text-[#D9B36D] font-bold tracking-[0.2em] uppercase mb-5 font-sans">
-                    PROJECTED WEALTH AT MATURITY
-                  </h4>
-                  
-                  <div className="mb-8">
-                    <span className="block text-[10px] md:text-[11px] text-[#B8C7BC] uppercase tracking-widest mb-2 font-sans">Expected Revenue</span>
-                    <span className="text-4xl md:text-[54px] font-bold text-[#F7F0E4] font-serif tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                      {formatCurrency(calculatorMetrics.investorRevenue)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center border-t border-[#C49A5A]/20 pt-6 px-4 md:px-8">
-                    <div className="flex flex-col items-start">
-                      <span className="text-[10px] text-[#B8C7BC] uppercase tracking-widest mb-1.5 font-sans">Net Profit</span>
-                      <span className="text-[16px] md:text-[20px] font-bold text-[#22C55E] font-sans tracking-wide">
-                        {formatCurrency(calculatorMetrics.investorNetProfit)}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-[10px] text-[#B8C7BC] uppercase tracking-widest mb-1.5 font-sans">ROI</span>
-                      <span className="text-[16px] md:text-[20px] font-bold text-[#D9B36D] font-sans tracking-wide">
-                        {Math.round(calculatorMetrics.investorROI)}%
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-            </div>
-          </motion.div>
-
-          {/* CHART SECTION */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="rounded-[24px] border border-[#C49A5A]/35 bg-[rgba(8,35,27,0.75)] p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-center backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.3)] mb-8"
-          >
-            <div className="w-full lg:w-[30%] flex flex-col">
-              <div className="flex items-center gap-3 mb-3">
-                <TrendingUp className="w-5 h-5 text-[#D9B36D]" />
-                <h3 className="text-[#D9B36D] text-[20px] font-serif font-bold tracking-wide">Wealth Growth Projection</h3>
-              </div>
-              <p className="text-[#B8C7BC] text-sm leading-relaxed mb-8 font-sans">
-                Your investment today can grow into a legacy for generations.
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-[3px] bg-[#D9B36D] rounded-full"></div>
-                  <span className="text-[12px] text-[#F7F0E4] font-sans uppercase tracking-widest">Estimated Plantation Value (₹)</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-[2px] border-t-2 border-dashed border-[#F7F0E4] opacity-80"></div>
-                  <span className="text-[12px] text-[#B8C7BC] font-sans uppercase tracking-widest">Total Investment (₹)</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full lg:w-[70%] h-[280px] md:h-[350px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={chartData}
-                  margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.08)" vertical={false} />
-                  <XAxis 
-                    dataKey="year" 
-                    stroke="#B8C7BC" 
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-                    dy={12}
-                    tickFormatter={(val) => val.replace('Year ', 'Yr ')}
-                  />
-                  <YAxis 
-                    stroke="#B8C7BC"
-                    fontSize={11}
-                    tickFormatter={(value) => {
-                      if (value >= 10000000) return `${(value / 10000000).toFixed(1)}Cr`;
-                      if (value >= 100000) return `${(value / 100000).toFixed(0)}L`;
-                      return value.toString();
-                    }}
-                    tickLine={false}
-                    axisLine={false}
-                    dx={-8}
-                  />
-                  <Tooltip 
-                    cursor={{ fill: 'rgba(196,154,90,0.05)' }}
-                    content={({ active, payload, label }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <div className="bg-[rgba(10,38,30,0.95)] border border-[#C49A5A]/50 rounded-[12px] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-50">
-                            <div className="text-[#D9B36D] font-bold mb-2 text-[13px]">{label.replace('Year ', 'Yr ')}</div>
-                            <div className="flex flex-col gap-1 text-[12px]">
-                              {payload.map((entry, index) => (
-                                <div key={index} className="flex justify-between gap-4 text-[#F7F0E4]">
-                                  <span style={{ color: entry.color }}>{entry.name === 'value' ? 'Plantation Value' : 'Total Investment'}</span>
-                                  <span className="font-bold">{formatCurrency(entry.value as number)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  {/* Dashed Investment Line */}
-                  <Line 
-                    type="monotone" 
-                    dataKey="investment" 
-                    name="Total Investment" 
-                    stroke="#F7F0E4" 
-                    strokeWidth={2} 
-                    strokeDasharray="6 6"
-                    strokeOpacity={0.7}
-                    dot={false}
-                    activeDot={{ r: 4, fill: '#F7F0E4' }}
-                  />
-                  {/* Gold Growth Curve */}
-                  <Line 
-                    type="monotone" 
-                    dataKey="value" 
-                    name="Estimated Plantation Value" 
-                    stroke="#D9B36D" 
-                    strokeWidth={3} 
-                    dot={false}
-                    activeDot={{ r: 6, fill: '#D9B36D', stroke: '#0B241C', strokeWidth: 2 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="w-full">
+              <InvestmentCalculator />
             </div>
           </motion.div>
 
@@ -1799,7 +1293,7 @@ export default function HomePage() {
             
 
 {/* 7. Progression of Our Sandalwood Plantation (FINAL UPLOADED GALLERY IMPLEMENTATION) */}
-      <section id="gallery-inner" className="py-12 md:py-16 bg-[#F7F0E4] z-20 relative">
+      <section id="gallery" className="py-12 md:py-16 bg-[#F7F0E4] z-20 relative">
         <div className="max-w-7xl mx-auto px-6 w-full flex flex-col items-center">
           
           {/* Section Label */}
@@ -1879,7 +1373,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-6">
               <div className="flex items-center justify-center gap-1.5 mb-2">
                 <span className="text-[#C49A5A] text-xs font-bold tracking-[4px] uppercase font-sans">
-                  A Legacy of Prestige
+                  A Lifestyle of Prestige
                 </span>
               </div>
               
@@ -1931,17 +1425,19 @@ export default function HomePage() {
                   >
                     <Star className="w-3.5 h-3.5" /> Write a Review
                   </button>
-                  <Link 
-                    href="/testimonials"
-                    className="bg-[#C49A5A] hover:bg-[#B38747] text-white border-2 border-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
-                  >
-                    Show more reviews
-                  </Link>
+                  {activeTestimonials.length > 6 && (
+                    <button 
+                      onClick={() => setShowAllReviews(!showAllReviews)}
+                      className="bg-[#C49A5A] hover:bg-[#B38747] text-white border-2 border-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
+                    >
+                      {showAllReviews ? 'Show Less Reviews' : 'Show More Reviews'}
+                    </button>
+                  )}
                 </div>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
-                {activeTestimonials.slice(0, 6).map((test, i) => (
+                {activeTestimonials.slice(0, showAllReviews ? activeTestimonials.length : 6).map((test, i) => (
                   <div key={i} className="bg-white border border-[#8B5E3C]/15 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
                       <div className="flex gap-0.5 text-[#C49A5A] mb-4">

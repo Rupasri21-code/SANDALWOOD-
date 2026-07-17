@@ -362,7 +362,7 @@ export default function AboutPage() {
           <p className="text-[#E6D3B3] text-sm md:text-base leading-relaxed max-w-xl mb-10 font-sans">
             Plots are allocated on a first-come, first-served basis. Nurture an appreciating asset and create a heritage legacy.
           </p>
-          <Link href="/inquiry">
+          <Link href="/home#investor-inquiry">
             <Button 
               size="lg"
               className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white hover:opacity-90 px-10 py-6 text-sm font-semibold uppercase tracking-wider rounded-full transition-all flex items-center justify-center gap-2 border border-white/10 shadow-lg"

@@ -1,12 +1,12 @@
 import { Resend } from 'resend';
 import { env } from '../config/env';
 
-const resend = new Resend('re_U3QkF8Rf_2wCxidHPA4vqhyoXNMUGQchR');
+const resend = new Resend(env.RESEND_API_KEY || 're_U3QkF8Rf_2wCxidHPA4vqhyoXNMUGQchR');
 
 export const sendEmail = async (to: string, subject: string, html: string, text?: string) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Chandan Investments <info@chandhannilayam.com>',
+      from: process.env.SMTP_FROM || env.SMTP_FROM || 'onboarding@resend.dev',
       to: [to],
       subject,
       html,

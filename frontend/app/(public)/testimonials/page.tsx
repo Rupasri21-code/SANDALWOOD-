@@ -295,7 +295,7 @@ export default function TestimonialsPage() {
           <p className="text-[#E6D3B3] text-sm md:text-base leading-relaxed max-w-xl mb-10 font-sans">
             Ready to secure a physical asset registered in your name? Enter your investment preferences today and let our support team guide you.
           </p>
-          <Link href="/inquiry">
+          <Link href="/home#investor-inquiry">
             <Button 
               size="lg"
               className="bg-[#C49A5A] hover:bg-[#8B5E3C] text-white hover:opacity-90 px-10 py-6 text-sm font-semibold uppercase tracking-wider rounded-full transition-all flex items-center justify-center gap-2 border border-white/10 shadow-lg"
