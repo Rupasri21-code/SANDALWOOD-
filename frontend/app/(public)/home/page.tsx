@@ -52,7 +52,8 @@ import {
   Download,
   Calendar,
   Building,
-  AlertTriangle
+  AlertTriangle,
+  Castle
 } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
 import { Button } from '@/components/ui/button';
@@ -210,13 +211,13 @@ const initialProgressionImages = [
 
 const initialTestimonials = [
   {
-    text: "Investing in Chandan Nilayam was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
+    text: "Investing in Chandhan Nilayam was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
     name: "Ramesh B.",
     location: "Hyderabad",
     stars: 5,
   },
   {
-    text: "The team is professional, the land is beautiful, and the vision is truly long-term. I'm proud to be part of this green legacy.",
+    text: "The team is professional, the land is beautiful, and the vision is truly long-term. I'm proud to be part of this green heritage.",
     name: "Anitha K.",
     location: "Bengaluru",
     stars: 5,
@@ -254,8 +255,8 @@ const heroStats = [
 
 const faqData = [
   {
-    question: "What are the long-term benefits of investing in Chandan Nilayam?",
-    answer: "Investing in Chandan Nilayam offers high capital appreciation through premium land ownership coupled with high-yield sandalwood cultivation. As sandalwood is a globally scarce and highly valued commodity, investors stand to gain substantial returns at harvest, alongside stable land value growth and tax-free agricultural income."
+    question: "What are the long-term benefits of investing in Chandhan Nilayam?",
+    answer: "Investing in Chandhan Nilayam offers high capital appreciation through premium land ownership coupled with high-yield sandalwood cultivation. As sandalwood is a globally scarce and highly valued commodity, investors stand to gain substantial returns at harvest, alongside stable land value growth and tax-free agricultural income."
   },
   {
     question: "Why is sandalwood considered a valuable long-term investment?",
@@ -263,7 +264,7 @@ const faqData = [
   },
   {
     question: "Are there any future developments planned around the project?",
-    answer: "Yes, Chandan Nilayam is located in a high-growth corridor. Future developments include security enhancements, drip-irrigation infrastructure, premium resort facilities, and eco-tourism initiatives that will further elevate the land value and provide lifestyle benefits for investors."
+    answer: "Yes, Chandhan Nilayam is located in a high-growth corridor. Future developments include security enhancements, drip-irrigation infrastructure, premium resort facilities, and eco-tourism initiatives that will further elevate the land value and provide lifestyle benefits for investors."
   },
   {
     question: "How does the surrounding hill station environment add value to the investment?",
@@ -271,27 +272,27 @@ const faqData = [
   },
   {
     question: "Will investors receive complimentary Srisailam Darshan tickets?",
-    answer: "Yes, as a token of appreciation and to welcome our investors into the Chandan Nilayam family, we provide complimentary VIP Darshan tickets to the sacred Srisailam temple during their visits to the plantation site."
+    answer: "Yes, as a token of appreciation and to welcome our investors into the Chandhan Nilayam family, we provide complimentary VIP Darshan tickets to the sacred Srisailam temple during their visits to the plantation site."
   },
   {
     question: "How can investors monitor their plantation and investment progress?",
     answer: "Investors receive access to a secure digital portal providing 24/7 transparency. You can view regular high-resolution photographs, growth status reports, soil health analysis, video updates, and legal documentation of your specific plot, ensuring full peace of mind."
   },
   {
-    question: "Is Chandan Nilayam located near major spiritual destinations?",
+    question: "Is Chandhan Nilayam located near major spiritual destinations?",
     answer: "Yes, the estate is strategically positioned near major spiritual hubs, including the historic Srisailam Temple corridor. This location benefits from excellent highway connectivity, high tourism footfall, and spiritual significance, driving rapid regional development and land appreciation."
   },
   {
     question: "Can investors visit the plantation and experience the location?",
-    answer: "Absolutely. We encourage our investors to visit Chandan Nilayam. We organize guided site visits where you can inspect your plot, experience the tranquil environment, meet our plantation experts, and witness the advanced agricultural techniques being employed."
+    answer: "Absolutely. We encourage our investors to visit Chandhan Nilayam. We organize guided site visits where you can inspect your plot, experience the tranquil environment, meet our plantation experts, and witness the advanced agricultural techniques being employed."
   },
   {
     question: "Is the investment suitable for future generations?",
-    answer: "Yes, this is an ideal legacy asset. The combination of secure, registered land ownership and the long-term compounding value of sandalwood makes it a perfect generational gift, ensuring wealth preservation and a green legacy for your children and grandchildren."
+    answer: "Yes, this is an ideal heritage asset. The combination of secure, registered land ownership and the long-term compounding value of sandalwood makes it a perfect generational gift, ensuring wealth preservation and a green heritage for your children and grandchildren."
   },
   {
-    question: "Why choose Chandan Nilayam over traditional investment options?",
-    answer: "Traditional assets like bank deposits or equities are susceptible to inflation and market volatility. Chandan Nilayam provides a tangible, real-estate backed asset that grows biologically, yielding far higher returns than gold or index funds while offering absolute security and transparent management."
+    question: "Why choose Chandhan Nilayam over traditional investment options?",
+    answer: "Traditional assets like bank deposits or equities are susceptible to inflation and market volatility. Chandhan Nilayam provides a tangible, real-estate backed asset that grows biologically, yielding far higher returns than gold or index funds while offering absolute security and transparent management."
   },
   {
     question: "What lifestyle and tourism developments are planned around the project?",
@@ -484,7 +485,7 @@ export default function HomePage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: 'Chandan Nilayam Investments',
+    name: 'Chandhan Nilayam Investments',
     image: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chandhannilayam.com'}/sandalwood_hero_bg.png`,
     description: 'Premium sandalwood land investment and plantation management platform near Dornala, Andhra Pradesh.',
     address: {
@@ -537,7 +538,7 @@ export default function HomePage() {
               
               {/* Logo inside */}
               <div className="relative z-10 scale-[1.1] md:scale-[1.2]" style={{ animation: 'pulse 3s ease-in-out infinite' }}>
-                <img src="/logo.png" alt="Chandan Nilayam Logo" className="w-[280px] md:w-[350px] object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]" />
+                <img src="/logo.png" alt="Chandhan Nilayam Logo" className="w-[280px] md:w-[350px] object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)]" />
               </div>
             </div>
 
@@ -550,7 +551,7 @@ export default function HomePage() {
                 Loading Chandhan Nilayam...
               </h2>
               <p className="font-sans text-[#E5C99F] text-sm md:text-base font-semibold tracking-[0.05em] uppercase" style={{ animation: 'pulse 3s ease-in-out infinite 0.5s' }}>
-                Preparing Your Legacy
+                Preparing Your Heritage
               </p>
             </div>
 
@@ -724,9 +725,9 @@ export default function HomePage() {
             WebkitBackdropFilter: 'blur(12px)',
           }}
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 lg:gap-y-0">
             {/* Stat 1: Acres */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-r border-[#C49A5A]/15 md:border-r-0 border-b border-[#C49A5A]/15 pb-4 md:pb-0 md:border-b-0">
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#C49A5A]/15 lg:border-r-0 border-b border-[#C49A5A]/15 pb-4 lg:pb-0 lg:border-b-0">
               <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
                 <Trees className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
@@ -738,11 +739,11 @@ export default function HomePage() {
                   ACRES OF PREMIUM LAND
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
             </div>
 
             {/* Stat 2: Plots */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-b border-[#C49A5A]/15 pb-4 md:pb-0 md:border-b-0 md:border-r-0">
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-b border-[#C49A5A]/15 pb-4 lg:pb-0 lg:border-b-0 lg:border-r-0">
               <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
                 <MapPin className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
@@ -754,11 +755,11 @@ export default function HomePage() {
                   PREMIUM PLOTS
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
             </div>
 
             {/* Stat 3: Growth Cycle */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 border-r border-[#C49A5A]/15 md:border-r-0 pt-4 md:pt-0">
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#C49A5A]/15 lg:border-r-0 pt-4 lg:pt-0">
               <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
                 <Sprout className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
@@ -770,11 +771,11 @@ export default function HomePage() {
                   YEARS OF GROWTH
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden md:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
             </div>
 
             {/* Stat 4: Investors */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 md:px-6 pt-4 md:pt-0">
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 pt-4 lg:pt-0">
               <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
                 <Users className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
@@ -810,7 +811,7 @@ export default function HomePage() {
               {/* Heading */}
               <h2 className="flex flex-col mb-8">
                 <span className="font-serif text-[42px] sm:text-[52px] lg:text-[72px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  The Chandan Nilayam
+                  The Chandhan Nilayam
                 </span>
                 <span className="font-serif text-[38px] sm:text-[48px] lg:text-[64px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Story
@@ -827,13 +828,15 @@ export default function HomePage() {
               </div>
               
               {/* Story Content */}
-              <div className="flex flex-col gap-6 mb-12">
-                <p className="text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                  Chandan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership.
-                </p>
-                <p className="text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                  Our foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted legacy partner, successfully aligning high-yielding green investments with active ecological preservation.
-                </p>
+              <div className="flex flex-col gap-6 mb-12 text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership.\n\nOur foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted heritage partner, successfully aligning high-yielding green investments with active ecological preservation.`)
+                  .split('\n')
+                  .filter((p: string) => p.trim() !== '')
+                  .map((paragraph: string, idx: number) => (
+                    <p key={idx} className="text-justify">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
               </div>
 
               {/* Bottom Left Quote Panel */}
@@ -844,7 +847,8 @@ export default function HomePage() {
                 <div className="w-12 h-[2px] bg-[#C49A5A] mb-6 opacity-60" />
                 <p className="text-[#0B2F24] font-serif text-[22px] md:text-[30px] lg:text-[32px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Building wealth today.<br />
-                  Preserving nature for generations to come.
+                  Preserving nature for generations to come.<br />
+                  Enjoying exclusive clubhouse and premium resort amenities.
                 </p>
               </div>
 
@@ -864,7 +868,7 @@ export default function HomePage() {
 
               {/* Vision & Mission Panel */}
               <div 
-                className="relative lg:absolute lg:bottom-12 lg:left-[-10%] w-[95%] lg:w-[105%] mt-[-40px] lg:mt-0 rounded-[28px] p-8 md:p-12 shadow-[0_24px_60px_rgba(11,47,36,0.20)] z-10"
+                className="relative lg:absolute lg:bottom-12 lg:left-[-10%] w-full lg:w-[105%] mt-[-40px] lg:mt-0 rounded-[28px] p-8 md:p-12 shadow-[0_24px_60px_rgba(11,47,36,0.20)] z-10"
                 style={{
                   background: 'linear-gradient(135deg, #12372A 0%, #0B2F24 55%, #164B38 100%)'
                 }}
@@ -933,7 +937,7 @@ export default function HomePage() {
               </p>
 
               {/* Stacked columns in left panel */}
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {features.map((feat, i) => (
                   <div key={i} className="flex flex-col group">
                     <div className="w-10 h-10 rounded-full bg-[#8B5E3C]/10 flex items-center justify-center text-[#8B5E3C] mb-4 group-hover:scale-105 transition-transform">
@@ -971,7 +975,7 @@ export default function HomePage() {
           {/* Top: Map Image */}
           <div className="w-full relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#C49A5A]/30 group bg-[#0B2F24] mb-12">
             <img 
-              src="/map-image-3.png" 
+              src="/location-mapping.png" 
               alt="Strategic Location Map" 
               className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
             />
@@ -992,121 +996,160 @@ export default function HomePage() {
               The Perfect Location
             </h2>
             <div className="w-16 h-[1.5px] bg-[#C49A5A]"></div>
-            
-            <p className="text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans whitespace-pre-line text-center">
-              {publicContent.locationAdvantages || "Dornala is geographically gifted with nutrient-rich soil, optimal elevation, and a microclimate perfectly suited for premium Sandalwood cultivation. Positioned along the secure Srisailam spiritual highway corridor, this location offers exceptional connectivity for efficient plantation logistics. Investing here means securing a land asset that benefits from natural water security, rapid heartwood growth, and a rising regional development curve."}
-            </p>
+            <div className="flex flex-col gap-4 text-[#B8C7BC] text-sm md:text-base leading-relaxed font-sans">
+              {(publicContent.locationAdvantages || "Our plantation in Dornala is strategically positioned for optimal agricultural success. Featuring favorable soil quality, reliable water availability, and ideal climatic conditions, this location supports healthy sandalwood growth and accelerates heartwood development.\n\nSurrounded by breathtaking hill-station views and enhanced with premium lifestyle amenities including an exclusive clubhouse, luxury resort facilities, an international-standard golf course, and excellent road connectivity, Chandhan Nilayam offers the perfect balance of sustainable cultivation, modern comfort, and long-term investment value.\n\nThe seamless transportation network ensures efficient plantation management, easy accessibility, and strong potential for long-term asset appreciation.")
+                .split('\n')
+                .filter((p: string) => p.trim() !== '')
+                .map((paragraph: string, idx: number) => (
+                  <p key={idx} className="text-justify">
+                    {paragraph.trim()}
+                  </p>
+                ))}
+            </div>
           </div>
-
         </div>
       </section>
 
-                  {/* 5.6 Exclusive Investor Privileges & Amenities (COMBINED - PREMIUM REDESIGN) */}
-      <section id="privileges-amenities" className="py-20 md:py-32 bg-[#0A120E] relative overflow-hidden z-20">
-        {/* Subtle Background Glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(196,154,90,0.05),_transparent_80%)] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C49A5A]/5 rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-[#12372A]/20 rounded-full blur-[150px] pointer-events-none" />
-        
-        <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
-          <div className="text-center mb-20">
-            <div className="flex items-center justify-center gap-1.5 mb-4">
-              <span className="text-[#C49A5A] text-[10px] font-bold tracking-[3px] uppercase font-sans">
+      {/* 5.6 Exclusive Investor Privileges & Amenities */}
+      <section id="privileges-amenities" className="py-24 md:py-32 bg-[#06120D] relative z-20">
+        <div className="max-w-[1400px] w-full mx-auto px-6 lg:px-[80px]">
+          
+          {/* HEADER */}
+          <div className="text-center mb-16 flex flex-col items-center">
+            <div className="inline-flex items-center gap-4 mb-4">
+              <span className="text-[#C49A5A] text-[9px] font-bold tracking-[3px] uppercase font-sans">
                 THE ULTIMATE LIFESTYLE
               </span>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-[#F7F0E4] leading-tight mb-6 font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            
+            <h2 className="font-serif text-[42px] md:text-[56px] font-bold text-[#F8F4EC] leading-[1.1] mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
               Exclusive Privileges & Amenities
             </h2>
-            <div className="w-20 h-[1.5px] bg-[#C49A5A] mx-auto mb-6"></div>
-            <p className="text-[#B8C7BC] text-sm md:text-base max-w-2xl mx-auto font-sans leading-relaxed">
-              Beyond land ownership, we offer a complete ecosystem of luxury, security, and tranquility. Experience premium benefits designed exclusively for our esteemed investors.
+            
+            <div className="w-16 h-[2px] bg-[#C49A5A] mb-8"></div>
+            
+            <p className="text-[#F8F4EC]/70 text-sm md:text-[15px] max-w-[700px] mx-auto font-sans leading-[1.8] font-light">
+              Beyond land ownership, we offer a complete ecosystem of luxury, security, and tranquility. 
+              Experience premium benefits designed exclusively for our esteemed investors.
             </p>
           </div>
 
-          {/* Core Privileges (4 Cards) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-24">
+          {/* 3-COLUMN PRIVILEGES GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {[
-              {
-                title: "Dedicated Plot Allocation",
-                desc: "Receive a clearly demarcated premium plot with transparent records and complete ownership.",
-                icon: Map
+              { 
+                icon: Map, 
+                title: 'Dedicated Plot Allocation', 
+                desc: 'Receive a clearly demarcated premium plot with transparent land records, precise geo-coordinates, and absolute ownership rights.'
               },
-              {
-                title: "Genuine Legal Security",
-                desc: "Verified legal documentation, title verification, and absolute government-compliant paperwork.",
-                icon: ShieldCheck
+              { 
+                icon: ShieldCheck, 
+                title: 'Genuine Legal Security', 
+                desc: 'Experience complete peace of mind with 100% verified legal documentation, rigorous title scrutiny, and government-compliant registration.'
               },
-              {
-                title: "12-Year Club House Access",
-                desc: "Complimentary luxury clubhouse membership valid for 12 years, including an annual 3-day stay.",
-                icon: Building2,
-                badge: "FREE"
+              { 
+                icon: FileSignature, 
+                title: 'Supplementary Maintenance', 
+                desc: 'Benefit from expert agronomical care, continuous soil nourishment, and professional long-term upkeep of your sandalwood crop.'
               },
-              {
-                title: "VIP Srisailam Darshan",
-                desc: "Complimentary yearly VIP Srisailam Darshan passes applicable for 3–4 family members.",
-                icon: Landmark,
-                badge: "Annual Benefit"
+              { 
+                icon: Trees, 
+                title: 'Organized Plantation', 
+                desc: 'Our estates feature scientifically spaced, methodically planned cultivation techniques designed to maximize robust heartwood growth.'
               },
-              { title: "Supplementary Maintenance", desc: "Scientific plantation care and professional long-term crop upkeep.", icon: FileSignature },
-              { title: "Plot Resale Assistance", desc: "Full marketing support to seamlessly liquidate your mature asset.", icon: Handshake },
-              { title: "Luxury Suites", desc: "Exclusive access to premium relaxation spaces for weekend getaways.", icon: Building }
-            ].map((privilege, i) => (
-              <div 
-                key={i} 
-                className="group relative bg-[#0B241C]/40 backdrop-blur-md border border-[#C49A5A]/20 hover:border-[#C49A5A]/60 rounded-3xl p-8 lg:p-10 transition-all duration-500 overflow-hidden"
-              >
-                {/* Hover Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#C49A5A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <div className="relative z-10 flex flex-col sm:flex-row items-start gap-6">
-                  <div className="w-16 h-16 rounded-2xl bg-[#0A120E] border border-[#C49A5A]/30 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A5A]/10 transition-colors duration-500 shadow-[0_0_20px_rgba(196,154,90,0.1)]">
-                    <privilege.icon className="w-8 h-8 text-[#C49A5A] group-hover:scale-110 transition-transform duration-500 stroke-[1.5]" />
+              { 
+                icon: Waves, 
+                title: 'Drip Irrigation', 
+                desc: 'State-of-the-art automated water management systems ensure optimal hydration for every sapling while maintaining ecological balance.'
+              },
+              { 
+                icon: Handshake, 
+                title: 'Plot Resale Assistance', 
+                desc: 'Comprehensive marketing and administrative support to help you seamlessly liquidate your mature asset at optimal market value.'
+              },
+              { 
+                icon: Building2, 
+                title: 'Luxury Club House', 
+                desc: 'A world-class architectural marvel equipped with premium recreational amenities, designed for ultimate relaxation and social gatherings.'
+              },
+              { 
+                icon: Award, 
+                title: 'Club House Membership', 
+                badge: 'PREMIUM',
+                desc: 'Enjoy a complimentary 12-year exclusive membership, featuring an annual 3-day luxurious free stay to unwind amidst nature.'
+              },
+              { 
+                icon: Landmark, 
+                title: 'VIP Srisailam Darshan', 
+                badge: 'ANNUAL BENEFIT',
+                desc: 'Receive an annual complimentary VIP Darshan pass for 3-4 family members, valid for 12 years, to seek blessings with ease.'
+              },
+              { 
+                icon: Building2, 
+                title: 'Ultra Premium Resorts', 
+                desc: 'Exclusive access to our meticulously designed luxury resort suites, offering unparalleled hospitality for your weekend getaways.'
+              },
+              { 
+                icon: Activity, 
+                title: '24/7 High Visual HD Captured CCTVs', 
+                desc: 'Round-the-clock monitoring through high-definition visual capture systems, ensuring absolute safety and security for your asset.'
+              },
+              { 
+                icon: Shield, 
+                title: 'Secure Fencing', 
+                desc: 'The entire estate is fortified with robust perimeter fencing and controlled access points to protect against unauthorized entry.'
+              },
+              { 
+                icon: FlagTriangleRight, 
+                title: 'International Golf Course', 
+                desc: 'Enjoy access to an international-standard golf course, perfectly landscaped for premium sporting and networking.'
+              },
+              { 
+                icon: Compass, 
+                title: 'Grand Arch', 
+                desc: 'A magnificent entrance arch that sets a majestic tone, welcoming you into a world of unparalleled luxury and prestige.'
+              }
+            ].map((item, i) => (
+              <div key={i} className="rounded-[20px] bg-[#0A1A14] border border-[#163324] p-6 hover:border-[#C49A5A]/40 transition-all duration-300 flex items-start gap-5">
+                <div className="w-12 h-12 rounded-[12px] border border-[#C49A5A]/30 flex items-center justify-center shrink-0 bg-[#06120D]">
+                  <item.icon className="w-5 h-5 text-[#C49A5A] stroke-[1.5]" />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <div className="flex flex-col items-start gap-2 mb-3">
+                    <h4 className="text-[#F8F4EC] font-serif text-[18px] md:text-[20px] font-bold leading-tight">{item.title}</h4>
+                    {item.badge && (
+                      <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-[4px] border border-[#C49A5A]/40 text-[#C49A5A] uppercase bg-[#C49A5A]/5">
+                        {item.badge}
+                      </span>
+                    )}
                   </div>
-                  
-                  <div className="flex flex-col flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <h3 className="text-xl font-serif text-[#F7F0E4] leading-tight tracking-wide">
-                        {privilege.title}
-                      </h3>
-                      {privilege.badge && (
-                        <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm bg-[#C49A5A]/20 text-[#C49A5A] border border-[#C49A5A]/30">
-                          {privilege.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[#A3B8B0] text-sm leading-relaxed font-sans">
-                      {privilege.desc}
-                    </p>
-                  </div>
+                  <p className="text-[#F8F4EC]/60 font-sans text-[12px] leading-[1.6]">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Panoramic Clubhouse Banner */}
-          <div className="relative w-full rounded-[2rem] overflow-hidden mb-12 shadow-[0_30px_60px_rgba(0,0,0,0.6)] border border-[#C49A5A]/20 group bg-[#0A120E] flex flex-col md:block">
-            <img 
-              src="/clubhouse-collage.jpg"
-              alt="Luxury Club House"
-              className="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-1000 ease-out opacity-90"
-            />
+          {/* PANORAMIC CLUBHOUSE BANNER */}
+          <div className="w-full rounded-[24px] md:rounded-[32px] overflow-hidden relative border border-[#163324] group hover:border-[#C49A5A]/40 transition-all duration-500 shadow-2xl">
+            <img src="/clubhouse-collage.jpg" alt="Premium Clubhouse" className="w-full h-auto block transform group-hover:scale-[1.02] transition-transform duration-1000" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#06120D] via-[#06120D]/30 to-transparent opacity-90" />
             
-            {/* Soft gradient only at the very bottom for text readability */}
-            <div className="relative md:absolute inset-x-0 bottom-0 p-6 md:p-12 bg-[#0A120E] md:bg-transparent md:bg-gradient-to-t md:from-[#0A120E]/90 md:via-[#0A120E]/40 md:to-transparent pt-6 md:pt-40 pointer-events-none">
-              <div className="max-w-2xl">
-                <h3 className="text-[#C49A5A] text-[10px] md:text-xs font-bold tracking-[3px] uppercase font-sans mb-1 md:mb-2 drop-shadow-md">World Class Facilities</h3>
-                <h4 className="text-[#F7F0E4] font-serif text-xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3 drop-shadow-xl">Premium Clubhouse</h4>
-                <p className="text-[#E6D3B3] text-xs md:text-sm font-sans leading-relaxed drop-shadow-md max-w-xl">
-                  A sanctuary of relaxation and leisure, designed exclusively for our investors. Experience state-of-the-art facilities nestled within the tranquility of nature.
-                </p>
-              </div>
+            <div className="absolute bottom-0 left-0 p-5 md:p-10 flex flex-col w-full">
+              <span className="text-[#C49A5A] text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase font-sans mb-1 md:mb-2">
+                WORLD CLASS FACILITIES
+              </span>
+              <h3 className="text-[#F8F4EC] font-serif text-[24px] md:text-[36px] font-bold leading-none mb-2 md:mb-3">
+                Premium Clubhouse
+              </h3>
+              <p className="text-[#F8F4EC]/80 font-sans text-[11px] md:text-[13px] leading-[1.6] max-w-[500px]">
+                A sanctuary of relaxation and leisure, designed exclusively for our investors. Experience state-of-the-art facilities nestled within the tranquility of nature.
+              </p>
             </div>
           </div>
 
-          {/* LIFESTYLE CLUBHOUSE AMENITIES SECTION (Merged) */}
-          <ClubhouseAmenities />
+          <div className="mt-12">
+            <ClubhouseAmenities />
+          </div>
 
         </div>
       </section>
@@ -1158,7 +1201,7 @@ export default function HomePage() {
               { icon: ShieldCheck, title: "Secure Investment", desc: "100% transparent & secure plantation investment." },
               { icon: Leaf, title: "Sustainable Returns", desc: "High returns with eco-friendly impact." },
               { icon: TrendingUp, title: "Long-Term Growth", desc: "Red sandalwood is a premium & high-value asset." },
-              { icon: Users, title: "Legacy for Generations", desc: "Build wealth that grows with nature." },
+              { icon: Users, title: "Heritage for Generations", desc: "Build wealth that grows with nature." },
             ].map((item, idx) => (
               <motion.div 
                 key={idx} 
@@ -1223,7 +1266,7 @@ export default function HomePage() {
                 className="font-serif text-4xl md:text-5xl font-semibold text-[#F7F0E4] leading-[1.1] mb-6 font-display" 
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
               >
-                From Land to Legacy
+                From Land to Heritage
               </h2>
 
               {/* Description */}
@@ -1388,7 +1431,7 @@ export default function HomePage() {
               </h3>
               
               <p className="text-[#A3B8B0] text-sm md:text-base font-sans leading-relaxed max-w-4xl mt-2 drop-shadow-sm">
-                Beyond securing a high-yielding natural asset, your investment with Chandan Nilayam grants you entry into an elite community. Experience the perfect harmony of robust financial growth and elevated lifestyle benefits—from 100% genuine legal documentation to luxury clubhouse access and spiritual retreats. We manage the land while you enjoy the prestige and peace of mind.
+                Beyond securing a high-yielding natural asset, your investment with Chandhan Nilayam grants you entry into an elite community. Experience the perfect harmony of robust financial growth and elevated lifestyle benefits—from 100% genuine legal documentation to luxury clubhouse access and spiritual retreats. We manage the land while you enjoy the prestige and peace of mind.
               </p>
 
               <button 
@@ -1436,7 +1479,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeTestimonials.slice(0, showAllReviews ? activeTestimonials.length : 6).map((test, i) => (
                   <div key={i} className="bg-white border border-[#8B5E3C]/15 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                     <div>
@@ -1847,7 +1890,7 @@ export default function HomePage() {
             <DialogTitle className="text-[#12372A] font-serif text-2xl">Privacy Policy</DialogTitle>
           </DialogHeader>
           <div className="text-sm text-[#3B2416] max-h-[60vh] overflow-y-auto pr-4 mb-4 font-sans">
-            <p className="mb-2">We value your privacy. By proceeding, you agree that your data will be securely processed and stored by Chandan Nilayam Investments.</p>
+            <p className="mb-2">We value your privacy. By proceeding, you agree that your data will be securely processed and stored by Chandhan Nilayam Investments.</p>
             <p className="mb-2">We will not share your personal information with any third-party marketers without your explicit consent.</p>
             <p>You can find our full privacy policy details at our office.</p>
           </div>

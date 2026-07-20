@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const initialTestimonials = [
   {
-    text: "Investing in Chandan Nilayam was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
+    text: "Investing in Chandhan Nilayam was one of the best decisions I've made. The transparency and regular updates give me complete peace of mind.",
     name: "Ramesh B.",
     location: "Hyderabad",
     rating: 5,

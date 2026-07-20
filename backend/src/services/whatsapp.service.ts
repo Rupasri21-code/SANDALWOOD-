@@ -74,7 +74,7 @@ export const sendWhatsAppMessage = async (toPhone: string, messageBody: string) 
  * Existing login credential message (MUST NOT BE DELETED OR BROKEN)
  */
 export const sendWhatsAppCredentials = async (phone: string, fullName: string, email: string, passwordPlain: string) => {
-  const messageBody = `*Welcome to Chandan Nilayam Sandalwood Investments!* 🌿\n\nDear ${fullName},\n\nYour secure investor portal account has been created by the Administration.\n\nYou can access your portal to monitor plot details, crop growth, investments, and documents.\n\n*Portal URL:* http://localhost:3000/login\n*Username:* ${email}\n*Temporary Password:* ${passwordPlain}\n\n⚠️ _Please change your password immediately after logging in for the first time._\n\nFor support, please reply to this message.\n\nRegards,\nChandan Nilayam Team`;
+  const messageBody = `*Welcome to Chandhan Nilayam Sandalwood Investments!* 🌿\n\nDear ${fullName},\n\nYour secure investor portal account has been created by the Administration.\n\nYou can access your portal to monitor plot details, crop growth, investments, and documents.\n\n*Portal URL:* http://localhost:3000/login\n*Username:* ${email}\n*Temporary Password:* ${passwordPlain}\n\n⚠️ _Please change your password immediately after logging in for the first time._\n\nFor support, please reply to this message.\n\nRegards,\nChandhan Nilayam Team`;
 
   return sendWhatsAppMessage(phone, messageBody);
 };
@@ -83,7 +83,7 @@ export const sendWhatsAppCredentials = async (phone: string, fullName: string, e
  * 1. Investor Account Created (New template specified by prompt)
  */
 export const sendWhatsAppAccountCreated = async (phone: string, email: string, passwordPlain: string) => {
-  const messageBody = `Welcome to Chandan Nilayam 🌱\nYour investor account has been created.\n\nEmail: ${email}\nPassword: ${passwordPlain}\n\nLogin: http://localhost:3000/login`;
+  const messageBody = `Welcome to Chandhan Nilayam 🌱\nYour investor account has been created.\n\nEmail: ${email}\nPassword: ${passwordPlain}\n\nLogin: http://localhost:3000/login`;
 
   return sendWhatsAppMessage(phone, messageBody);
 };
@@ -144,7 +144,7 @@ export const sendWhatsAppKYCStatusUpdate = async (phone: string, status: string)
  * 7. Admin Notification / Broadcast
  */
 export const sendWhatsAppAdminBroadcast = async (phone: string, title: string, message: string) => {
-  const messageBody = `📢 ${title}\n${message}\n\n- Chandan Nilayam Team`;
+  const messageBody = `📢 ${title}\n${message}\n\n- Chandhan Nilayam Team`;
 
   return sendWhatsAppMessage(phone, messageBody);
 };
@@ -162,7 +162,7 @@ export const sendWhatsAppInvestmentCreated = async (
 ) => {
   const formattedAmount = new Intl.NumberFormat('en-IN').format(amount);
   const messageBody = [
-    `💼 *Investment Confirmed - Chandan Nilayam*`,
+    `💼 *Investment Confirmed - Chandhan Nilayam*`,
     ``,
     `Dear ${investorName},`,
     `Your investment has been successfully recorded.`,
@@ -175,7 +175,7 @@ export const sendWhatsAppInvestmentCreated = async (
     `Login to your portal to view full details.`,
     `http://localhost:3000/login`,
     ``,
-    `- Chandan Nilayam Team`,
+    `- Chandhan Nilayam Team`,
   ].join('\n');
 
   return sendWhatsAppMessage(phone, messageBody);
@@ -199,7 +199,7 @@ export const sendWhatsAppInvestmentStatusUpdated = async (
   };
   const emoji = statusEmoji[newStatus] || '📊';
   const messageBody = [
-    `${emoji} *Investment Status Update - Chandan Nilayam*`,
+    `${emoji} *Investment Status Update - Chandhan Nilayam*`,
     ``,
     `Dear ${investorName},`,
     `Your investment status has been updated.`,
@@ -211,7 +211,7 @@ export const sendWhatsAppInvestmentStatusUpdated = async (
     `Login to your portal to view full details.`,
     `http://localhost:3000/login`,
     ``,
-    `- Chandan Nilayam Team`,
+    `- Chandhan Nilayam Team`,
   ].join('\n');
 
   return sendWhatsAppMessage(phone, messageBody);
@@ -237,7 +237,7 @@ export const sendWhatsAppPaymentStatusUpdated = async (
   };
   const emoji = statusEmoji[newStatus] || '💰';
   const messageBody = [
-    `${emoji} *Payment Status Update - Chandan Nilayam*`,
+    `${emoji} *Payment Status Update - Chandhan Nilayam*`,
     ``,
     `Dear ${investorName},`,
     `Your payment status has been updated.`,
@@ -250,7 +250,7 @@ export const sendWhatsAppPaymentStatusUpdated = async (
     `Login to your portal to view payment history.`,
     `http://localhost:3000/login`,
     ``,
-    `- Chandan Nilayam Team`,
+    `- Chandhan Nilayam Team`,
   ].join('\n');
 
   return sendWhatsAppMessage(phone, messageBody);
@@ -267,11 +267,11 @@ export const sendWhatsAppInquiryConfirmation = async (
     `👋 *Thank you for your interest!*`,
     ``,
     `Dear ${fullName},`,
-    `We have received your inquiry for Chandan Nilayam Investments.`,
+    `We have received your inquiry for Chandhan Nilayam Investments.`,
     ``,
     `Our investment advisor will contact you within 24 hours to guide you through our sandalwood plots and long-term growth opportunities.`,
     ``,
-    `- Chandan Nilayam Team`
+    `- Chandhan Nilayam Team`
   ].join('\n');
 
   return sendWhatsAppMessage(phone, messageBody);

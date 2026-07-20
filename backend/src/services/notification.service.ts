@@ -39,7 +39,7 @@ export const createNotification = async (params: {
         } else if (type === 'ALERT' && link?.includes('documents')) {
           await sendDocumentAlert(user.email, user.profile.full_name, title);
         } else {
-          const emailSubject = `Chandan Nilayam Notification: ${title}`;
+          const emailSubject = `Chandhan Nilayam Notification: ${title}`;
           const emailHtml = `
             <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
               <h2 style="color: #062E1F;">${title}</h2>
@@ -47,7 +47,7 @@ export const createNotification = async (params: {
               <p>${message}</p>
               ${link ? `<p><a href="http://localhost:3000${link}" style="color: #9A6A2F; font-weight: bold;">Click here to view details</a></p>` : ''}
               <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
+              <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandhan Nilayam Sandalwood Investments</p>
             </div>
           `;
           await sendEmail(user.email, emailSubject, emailHtml);

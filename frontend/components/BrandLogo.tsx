@@ -27,7 +27,7 @@ export default function BrandLogo({
       {!imageFailed ? (
         <img
           src="/logo.png"
-          alt="Chandan Nilayam Logo"
+          alt="Chandhan Nilayam Logo"
           className={`block object-contain object-left ${logoClassName}`.trim()}
           style={{ height: logoHeight, width: width || 'auto' }}
           onError={() => setImageFailed(true)}
@@ -37,7 +37,7 @@ export default function BrandLogo({
           className="flex items-center justify-center rounded border border-current opacity-20 px-4"
           style={{ height: logoHeight }}
         >
-          <span className="text-[10px] font-bold uppercase tracking-wider">CHANDAN NILAYAM</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">CHANDHAN NILAYAM</span>
         </div>
       )}
     </div>

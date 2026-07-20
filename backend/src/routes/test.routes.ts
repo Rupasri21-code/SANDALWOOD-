@@ -72,7 +72,7 @@ router.post('/whatsapp', protect, authorize('ADMIN'), async (req: AuthRequest, r
         break;
       case 'broadcast':
       default:
-        result = await sendWhatsAppAdminBroadcast(phone, 'Test Notification', message || 'Test message from Chandan Nilayam');
+        result = await sendWhatsAppAdminBroadcast(phone, 'Test Notification', message || 'Test message from Chandhan Nilayam');
         break;
     }
 

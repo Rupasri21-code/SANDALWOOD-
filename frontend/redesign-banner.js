@@ -51,7 +51,7 @@ const newBanner = `      {/* --- 5.75 More Than An Investment Banner (REDESIGNED
               </h3>
               
               <p className="text-[#A3B8B0] text-sm md:text-base font-sans leading-relaxed max-w-4xl mt-2 drop-shadow-sm">
-                Beyond securing a high-yielding natural asset, your investment with Chandan Nilayam grants you entry into an elite community. Experience the perfect harmony of robust financial growth and elevated lifestyle benefits—from 100% genuine legal documentation to luxury clubhouse access and spiritual retreats. We manage the land while you enjoy the prestige and peace of mind.
+                Beyond securing a high-yielding natural asset, your investment with Chandhan Nilayam grants you entry into an elite community. Experience the perfect harmony of robust financial growth and elevated lifestyle benefits—from 100% genuine legal documentation to luxury clubhouse access and spiritual retreats. We manage the land while you enjoy the prestige and peace of mind.
               </p>
 
               <button 

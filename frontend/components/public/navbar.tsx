@@ -35,7 +35,7 @@ export default function Navbar() {
     { href: '#plantation', label: 'OUR PLANTATION' },
     { href: '#privileges-amenities', label: 'INVESTOR BENEFITS' },
     { href: '#calculator', label: 'PLAN YOUR FUTURE' },
-    { href: '/Chandan_Nilayam_Brochure.pdf', label: 'BROCHURE', icon: <FileText className="w-[15px] h-[15px] mr-1.5" />, target: '_blank' },
+    { href: '/Chandhan_Nilayam_Brochure.pdf', label: 'BROCHURE', icon: <FileText className="w-[15px] h-[15px] mr-1.5" />, target: '_blank' },
     { href: '#gallery', label: 'GALLERY' },
   ];
 
@@ -58,7 +58,7 @@ export default function Navbar() {
           
           {/* COLUMN 1: Brand */}
           <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[250px] min-w-[250px] h-[82px]">
-            <img src="/branding/chandhan-navbar-logo.png" alt="Chandan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
+            <img src="/branding/chandhan-navbar-logo.png" alt="Chandhan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
 
           {/* COLUMN 2: Navigation Links */}
@@ -100,7 +100,7 @@ export default function Navbar() {
 
         <div className="lg:hidden flex justify-between items-center h-[72px] md:h-[82px]">
           <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[160px] md:w-[180px] h-[55px]" onClick={() => setMobileOpen(false)}>
-            <img src="/branding/chandhan-navbar-logo.png" alt="Chandan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
+            <img src="/branding/chandhan-navbar-logo.png" alt="Chandhan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
 
           <button

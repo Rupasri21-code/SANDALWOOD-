@@ -25,6 +25,7 @@ import testimonialRoutes from './routes/testimonial.routes';
 import faqRoutes from './routes/faq.routes';
 import galleryRoutes from './routes/gallery.routes';
 import contentRoutes from './routes/content.routes';
+import marketRoutes from './routes/market.routes';
 
 const app = express();
 
@@ -47,7 +48,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Chandan Nilayam Sandalwood Investments API — Online & Operational',
+    message: 'Chandhan Nilayam Sandalwood Investments API — Online & Operational',
     timestamp: new Date(),
   });
 });
@@ -73,6 +74,7 @@ app.use(`${API_PREFIX}/testimonials`, testimonialRoutes);
 app.use(`${API_PREFIX}/faqs`, faqRoutes);
 app.use(`${API_PREFIX}/gallery`, galleryRoutes);
 app.use(`${API_PREFIX}/content`, contentRoutes);
+app.use(`${API_PREFIX}/market-price`, marketRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

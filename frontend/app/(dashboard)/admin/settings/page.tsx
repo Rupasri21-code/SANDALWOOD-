@@ -145,7 +145,7 @@ export default function AdminSettingsPage() {
         </div>
         <div className="space-y-3">
           {[
-            { label: 'Platform', value: 'Chandan Nilayam v1.0' },
+            { label: 'Platform', value: 'Chandhan Nilayam v1.0' },
             { label: 'Role', value: profile?.role || '—' },
             { label: 'Member Since', value: '—' },
             { label: 'Database', value: 'Supabase PostgreSQL' },

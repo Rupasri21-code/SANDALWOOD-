@@ -53,7 +53,7 @@ async function main() {
       user_id: adminUser.id,
       first_name: 'Chandan',
       last_name: 'Nilayam',
-      full_name: 'Chandan Nilayam Administrator',
+      full_name: 'Chandhan Nilayam Administrator',
       email: 'admin@sandalwood.com',
       phone: '+91 98765 43210',
       address_line1: '42, Green Valley Estate, Mysore Road',
@@ -222,7 +222,7 @@ async function main() {
       {
         name: 'Rajesh Patel',
         location: 'Ahmedabad, Gujarat',
-        text: "I invested in Chandan Nilayam 2 years ago. The transparency of the investor portal and direct agronomical reports gave me absolute peace of mind. My plots are growing exceptionally well.",
+        text: "I invested in Chandhan Nilayam 2 years ago. The transparency of the investor portal and direct agronomical reports gave me absolute peace of mind. My plots are growing exceptionally well.",
         rating: 5,
         image_url: 'https://images.pexels.com/photos/8937582/pexels-photo-8937582.jpeg?auto=compress&cs=tinysrgb&w=100',
       },
@@ -236,7 +236,7 @@ async function main() {
       {
         name: 'Amit Sharma',
         location: 'Mumbai, Maharashtra',
-        text: "Sandalwood offers stellar physical asset hedging. Chandan Nilayam's complete managed services take care of land clearance, plantation, legal checks, and growth tracking seamlessly.",
+        text: "Sandalwood offers stellar physical asset hedging. Chandhan Nilayam's complete managed services take care of land clearance, plantation, legal checks, and growth tracking seamlessly.",
         rating: 5,
         image_url: 'https://images.pexels.com/photos/9363120/pexels-photo-9363120.jpeg?auto=compress&cs=tinysrgb&w=100',
       },

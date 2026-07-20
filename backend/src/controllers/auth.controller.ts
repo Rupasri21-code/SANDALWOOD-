@@ -141,7 +141,7 @@ export const forgotPassword = async (req: AuthRequest, res: Response, next: Next
     console.log(`🔑 [DEBUG] Password Reset Link for ${user.email}: ${resetUrl}`);
 
     try {
-      const emailResult = await sendEmail(user.email, 'Chandan Nilayam - Password Reset', message);
+      const emailResult = await sendEmail(user.email, 'Chandhan Nilayam - Password Reset', message);
 
       if (!emailResult || !emailResult.success) {
         const errorMsg = emailResult?.error?.message || 'Email could not be sent';

@@ -1,6 +1,7 @@
 import app from './app';
 import { env } from './config/env';
 import { db } from './config/database';
+import { initializeCronJobs } from './config/cron';
 
 const PORT = env.PORT || 5000;
 
@@ -10,6 +11,9 @@ const startServer = async () => {
     console.log('🔄 Connecting to database...');
     await db.$connect();
     console.log('✅ Supabase PostgreSQL Database connected successfully!');
+    
+    // Start automated backend tasks
+    initializeCronJobs();
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running in ${env.NODE_ENV} mode on port ${PORT}`);

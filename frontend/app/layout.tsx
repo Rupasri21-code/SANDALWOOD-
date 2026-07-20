@@ -8,8 +8,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chandhannilayam
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Chandan Nilayam Investments | Premium Sandalwood Plantation',
-    template: '%s | Chandan Nilayam Investments',
+    default: 'Chandhan Nilayam Investments | Premium Sandalwood Plantation',
+    template: '%s | Chandhan Nilayam Investments',
   },
   description:
     'Premium sandalwood land investment and plantation management platform. Grow your wealth with high-yield, nature-backed assets near Dornala.',
@@ -20,32 +20,32 @@ export const metadata: Metadata = {
     'Agricultural Land Investment',
     'High Yield Investment',
     'Dornala',
-    'Chandan Nilayam',
+    'Chandhan Nilayam',
     'Eco-friendly Investment',
     'Farmland Investment India',
   ],
-  authors: [{ name: 'Chandan Nilayam Investments' }],
-  creator: 'Chandan Nilayam Investments',
-  publisher: 'Chandan Nilayam Investments',
+  authors: [{ name: 'Chandhan Nilayam Investments' }],
+  creator: 'Chandhan Nilayam Investments',
+  publisher: 'Chandhan Nilayam Investments',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: siteUrl,
-    title: 'Chandan Nilayam Investments | Premium Sandalwood Plantation',
+    title: 'Chandhan Nilayam Investments | Premium Sandalwood Plantation',
     description: 'Grow your wealth with high-yield, nature-backed sandalwood assets near Dornala.',
-    siteName: 'Chandan Nilayam Investments',
+    siteName: 'Chandhan Nilayam Investments',
     images: [
       {
         url: `/sandalwood_hero_bg.png`, // Using an existing image as fallback
         width: 1200,
         height: 630,
-        alt: 'Chandan Nilayam Investments',
+        alt: 'Chandhan Nilayam Investments',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Chandan Nilayam Investments | Premium Sandalwood Plantation',
+    title: 'Chandhan Nilayam Investments | Premium Sandalwood Plantation',
     description: 'Grow your wealth with high-yield, nature-backed sandalwood assets near Dornala.',
     images: [`/sandalwood_hero_bg.png`],
   },

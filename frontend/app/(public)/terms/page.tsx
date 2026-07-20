@@ -18,8 +18,8 @@ export default function TermsAndConditionsPage() {
           
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">1. Agreement to Terms</h2>
           <p className="mb-4 leading-relaxed">
-            By accessing our website and participating in the Chandan Nilayam Investments program, you agree to be bound by these Terms and Conditions. 
-            These terms constitute a legally binding agreement between you ("Investor") and Chandan Nilayam Investments ("Company") regarding your purchase of agricultural land and participation in our sandalwood plantation management.
+            By accessing our website and participating in the Chandhan Nilayam Investments program, you agree to be bound by these Terms and Conditions. 
+            These terms constitute a legally binding agreement between you ("Investor") and Chandhan Nilayam Investments ("Company") regarding your purchase of agricultural land and participation in our sandalwood plantation management.
           </p>
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">2. Land Registration & Ownership</h2>
@@ -36,7 +36,7 @@ export default function TermsAndConditionsPage() {
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">4. Investor Privileges (Clubhouse & Darshanam)</h2>
           <ul className="list-disc pl-6 mb-4 space-y-2">
-            <li><strong>Clubhouse & Resort Access:</strong> Investors are granted membership access to the Chandan Nilayam Clubhouse and eco-resort facilities, subject to advance booking, availability, and specific tier-based usage limits as outlined in your welcome kit.</li>
+            <li><strong>Clubhouse & Resort Access:</strong> Investors are granted membership access to the Chandhan Nilayam Clubhouse and eco-resort facilities, subject to advance booking, availability, and specific tier-based usage limits as outlined in your welcome kit.</li>
             <li><strong>VIP Srisailam Darshanam:</strong> The Company provides complimentary VIP Srisailam Darshanam tickets. These must be requested through our portal or support team at least 15 days in advance and are subject to temple authority availability and schedules.</li>
           </ul>
 
@@ -48,7 +48,7 @@ export default function TermsAndConditionsPage() {
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">6. Transfer of Ownership</h2>
           <p className="mb-4 leading-relaxed">
-            The Investor may sell or transfer the land to a third party at any time. However, the subsequent buyer must agree to be bound by the existing Plantation Management Agreement with Chandan Nilayam Investments for the remainder of the crop's lifecycle.
+            The Investor may sell or transfer the land to a third party at any time. However, the subsequent buyer must agree to be bound by the existing Plantation Management Agreement with Chandhan Nilayam Investments for the remainder of the crop's lifecycle.
           </p>
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">7. Governing Law</h2>

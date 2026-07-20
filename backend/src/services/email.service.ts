@@ -28,10 +28,10 @@ export const sendEmail = async (to: string, subject: string, html: string, text?
 };
 
 export const sendCredentials = async (email: string, fullName: string, passwordPlain: string) => {
-  const subject = 'Welcome to Chandan Nilayam - Your Investor Portal Credentials';
+  const subject = 'Welcome to Chandhan Nilayam - Your Investor Portal Credentials';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
-      <h2 style="color: #062E1F;">Welcome to Chandan Nilayam Sandalwood Investments!</h2>
+      <h2 style="color: #062E1F;">Welcome to Chandhan Nilayam Sandalwood Investments!</h2>
       <p>Dear ${fullName},</p>
       <p>We are excited to partner with you in your sandalwood investment journey. A secure investor account has been created for you.</p>
       <p>You can access your portal to monitor plot details, crop growth, investments, payments, and documents.</p>
@@ -49,20 +49,20 @@ export const sendCredentials = async (email: string, fullName: string, passwordP
 };
 
 export const sendInquiryConfirmation = async (email: string, fullName: string) => {
-  const subject = 'Thank you for your interest in Chandan Nilayam Investments';
+  const subject = 'Thank you for your interest in Chandhan Nilayam Investments';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <p>Dear ${fullName},</p>
-      <p>Thank you for showing interest in Chandan Nilayam Investments.</p>
+      <p>Thank you for showing interest in Chandhan Nilayam Investments.</p>
       <p>Our investment advisor will contact you within 24 hours to guide you through our sandalwood plots, investment process, documentation, and long-term growth opportunities.</p>
-      <p>Regards,<br/>Chandan Nilayam Investments Team</p>
+      <p>Regards,<br/>Chandhan Nilayam Investments Team</p>
     </div>
   `;
   return sendEmail(email, subject, html);
 };
 
 export const sendAdminInquiryNotification = async (inquiryData: { full_name: string; email: string; phone: string; investment_interest: string; budget_range: string; plot_size: string; message: string; }) => {
-  const subject = 'New Investment Inquiry Received - Chandan Nilayam';
+  const subject = 'New Investment Inquiry Received - Chandhan Nilayam';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F; border-bottom: 2px solid #C99A3A; padding-bottom: 10px;">New Inquiry Alert</h2>
@@ -107,7 +107,7 @@ export const sendAdminInquiryNotification = async (inquiryData: { full_name: str
 };
 
 export const sendUpdateNotification = async (email: string, fullName: string, updateTitle: string, updateDescription: string) => {
-  const subject = 'New Plantation Update - Chandan Nilayam';
+  const subject = 'New Plantation Update - Chandhan Nilayam';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">New Plantation Update Available</h2>
@@ -121,14 +121,14 @@ export const sendUpdateNotification = async (email: string, fullName: string, up
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to Portal</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandhan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
 };
 
 export const sendDocumentAlert = async (email: string, fullName: string, docTitle: string) => {
-  const subject = 'New Document Uploaded to Your Portal - Chandan Nilayam';
+  const subject = 'New Document Uploaded to Your Portal - Chandhan Nilayam';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">New Document Shared</h2>
@@ -139,14 +139,14 @@ export const sendDocumentAlert = async (email: string, fullName: string, docTitl
         <a href="http://localhost:3000/login" style="background-color: #9A6A2F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Documents</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandhan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
 };
 
 export const sendPaymentNotification = async (email: string, fullName: string, amount: string, date: string) => {
-  const subject = 'Payment Received - Chandan Nilayam Investments';
+  const subject = 'Payment Received - Chandhan Nilayam Investments';
   const html = `
     <div style="font-family: sans-serif; padding: 20px; color: #1F1B16; background-color: #F7F0E3; border-radius: 12px;">
       <h2 style="color: #062E1F;">Payment Confirmation</h2>
@@ -157,7 +157,7 @@ export const sendPaymentNotification = async (email: string, fullName: string, a
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Payments</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandhan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subject, html);
@@ -172,7 +172,7 @@ export const sendGeneralNotification = async (email: string, fullName: string, s
         <a href="http://localhost:3000/login" style="background-color: #062E1F; color: #FFF8ED; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to Portal</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #E7D7BC; margin: 20px 0;" />
-      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandan Nilayam Sandalwood Investments</p>
+      <p style="font-size: 12px; color: #1F1B16; opacity: 0.7;">Chandhan Nilayam Sandalwood Investments</p>
     </div>
   `;
   return sendEmail(email, subjectLine, html);

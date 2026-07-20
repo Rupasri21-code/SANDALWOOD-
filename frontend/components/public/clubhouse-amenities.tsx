@@ -6,33 +6,32 @@ import {
   Dumbbell,
   Waves,
   Smile,
-  Flag,
+  Film,
   Utensils,
   Landmark,
   TreePine,
   Map,
   Car,
-  ShieldCheck,
+  Gamepad2,
   Mountain,
-  Shield,
+  PartyPopper,
   Building2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const clubhouseAmenities = [
   { title: 'Walking Track', desc: 'Beautifully landscaped trails designed for natural tranquility.', icon: Footprints },
-  { title: 'Modern Gym', desc: 'Fully equipped fitness center to prioritize your health and wellness.', icon: Dumbbell },
+  { title: 'Modern Gym & Fitness Area', desc: 'Fully equipped fitness center to prioritize your health and wellness.', icon: Dumbbell },
   { title: 'Swimming Pool', desc: 'Elegant, temperature-controlled pool offering a relaxing oasis.', icon: Waves },
   { title: 'Children\'s Play Area', desc: 'Safe, dedicated recreational zones with premium outdoor equipment.', icon: Smile },
-  { title: 'Golf Ground', desc: 'Beautifully maintained golf court to practice your swing.', icon: Flag },
+  { title: 'Mini Theater', desc: 'Private, state-of-the-art screening room for exclusive entertainment experiences.', icon: Film },
   { title: 'Organic Dining', desc: 'On-site restaurant serving chef-curated meals at subsidized rates.', icon: Utensils, badge: 'EXCLUSIVE' },
-  { title: 'Grand Entrance Arch', desc: 'Luxury entrance gateway reflecting premium community planning.', icon: Landmark },
   { title: 'Landscaped Gardens', desc: 'Beautifully curated gardens creating a peaceful environment.', icon: TreePine },
   { title: 'Internal Roads', desc: 'Wide, well-planned internal roads ensuring smooth movement.', icon: Map },
   { title: 'Parking Area', desc: 'Dedicated parking spaces for residents and visitors.', icon: Car },
-  { title: 'Compound Fencing', desc: 'Secure boundary fencing for enhanced safety and privacy.', icon: ShieldCheck },
+  { title: 'Indoor Games', desc: 'Premium indoor recreational facility featuring billiards, table tennis, and more.', icon: Gamepad2 },
   { title: 'Scenic Hill Views', desc: 'Beautiful surrounding hill landscapes offering peaceful views.', icon: Mountain },
-  { title: '24/7 Security', desc: 'Round-the-clock security for a safe and secure community.', icon: Shield },
+  { title: 'Party Area', desc: 'Elegant outdoor and indoor venues perfectly designed for grand celebrations.', icon: PartyPopper },
   { title: 'Nearby City Access', desc: 'Convenient access to nearby cities and urban conveniences.', icon: Building2 }
 ];
 

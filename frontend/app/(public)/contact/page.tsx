@@ -168,7 +168,7 @@ export default function ContactPage() {
                     </div>
                     <h3 className="font-serif text-2xl font-bold text-[#12372A] mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Inquiry Submitted!</h3>
                     <p className="text-[#2F3E2F] text-sm max-w-sm mx-auto leading-relaxed">
-                      Thank you for contacting Chandan Nilayam. An investment advisor will contact you within 24 business hours.
+                      Thank you for contacting Chandhan Nilayam. An investment advisor will contact you within 24 business hours.
                     </p>
                   </div>
                 ) : (

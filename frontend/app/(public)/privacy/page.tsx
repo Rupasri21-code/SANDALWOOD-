@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
           
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">1. Introduction</h2>
           <p className="mb-4 leading-relaxed">
-            Welcome to Chandan Nilayam Investments ("Company," "we," "us," or "our"). We are committed to protecting your personal information and your right to privacy. 
+            Welcome to Chandhan Nilayam Investments ("Company," "we," "us," or "our"). We are committed to protecting your personal information and your right to privacy. 
             This Privacy Policy governs the manner in which we collect, use, maintain, and disclose information collected from users (each, a "User") of our website and investment portal.
           </p>
 
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-2">
             <li><strong>Land Registration & Profit Sharing:</strong> To legally register the agricultural plots in your name and maintain accurate records for the 12-year sandalwood harvest. Upon completion of the crop cycle and successful timber sale, the net profits are divided strictly on a 50:50 basis (50% to the Investor and 50% to the Company/Management). We use your financial data exclusively to execute and document this equal profit distribution.</li>
-            <li><strong>Clubhouse & Amenities:</strong> To process and manage your membership access to the Chandan Nilayam luxury clubhouse, eco-resort, and wellness facilities.</li>
+            <li><strong>Clubhouse & Amenities:</strong> To process and manage your membership access to the Chandhan Nilayam luxury clubhouse, eco-resort, and wellness facilities.</li>
             <li><strong>VIP Darshanam Bookings:</strong> To accurately book and coordinate your complimentary Srisailam temple Darshanam tickets as part of your site visit or investor privileges.</li>
             <li><strong>Investor Portal Updates:</strong> To provide secure access to your digital dashboard for real-time plantation monitoring, soil reports, and financial tracking.</li>
           </ul>

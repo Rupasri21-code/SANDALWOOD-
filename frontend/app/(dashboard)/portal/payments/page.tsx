@@ -162,7 +162,7 @@ export default function PortalPaymentsPage() {
                 
                 {/* Brand / Receipt Header */}
                 <div className="text-center border-b border-white/10 pb-5 print:border-gray-200">
-                  <h3 className="text-xl font-bold text-[#F7F0E4] print:text-black font-display">Chandan Nilayam</h3>
+                  <h3 className="text-xl font-bold text-[#F7F0E4] print:text-black font-display">Chandhan Nilayam</h3>
                   <p className="text-[10px] text-[#C49A5A] uppercase tracking-widest mt-0.5 print:text-gray-500 font-semibold">Official Payment Receipt</p>
                 </div>
 
@@ -200,7 +200,7 @@ export default function PortalPaymentsPage() {
 
                 {/* Footer Notes */}
                 <div className="text-center border-t border-white/5 pt-5 text-[10px] text-white/40 leading-relaxed print:border-gray-200 print:text-gray-500">
-                  Thank you for your investment with Chandan Nilayam Investments.<br />
+                  Thank you for your investment with Chandhan Nilayam Investments.<br />
                   This is a system generated receipt and does not require a signature.
                 </div>
 

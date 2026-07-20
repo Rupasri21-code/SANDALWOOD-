@@ -158,7 +158,7 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
           
           {/* Print Header */}
           <div className="hidden print:block mb-8 text-center border-b border-gray-300 pb-6">
-            <h1 className="text-3xl font-bold text-black mb-2">Chandan Nilayam</h1>
+            <h1 className="text-3xl font-bold text-black mb-2">Chandhan Nilayam</h1>
             <h2 className="text-xl font-medium text-gray-700">Investor Profile Record</h2>
           </div>
 

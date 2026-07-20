@@ -82,7 +82,7 @@ export default function AboutPage() {
           >
             <Leaf className="w-4 h-4 text-[#8B5E3C]" />
             <span className="text-[10px] font-bold tracking-[2px] uppercase text-[#8B5E3C]">
-              About Chandan Nilayam
+              About Chandhan Nilayam
             </span>
           </div>
 
@@ -123,7 +123,7 @@ export default function AboutPage() {
                 Managing Wealth Across Generations
               </h2>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
-                Chandan Nilayam Investments manages 100 acres of premium, high-fertility land near Dornala, Andhra Pradesh. We recognized the rare alignment between the soaring global demand for high-grade sandalwood (*Santalum album*) and the security of physical land ownership.
+                Chandhan Nilayam Investments manages 100 acres of premium, high-fertility land near Dornala, Andhra Pradesh. We recognized the rare alignment between the soaring global demand for high-grade sandalwood (*Santalum album*) and the security of physical land ownership.
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed mb-6 font-sans">
                 Our approach divides premium land into clearly surveyed, registered plots sold directly to investors. Post-purchase, our experienced agronomists and estate management teams take complete charge of soil conditioning, host-plant cultivation, security, and tree nourishment.

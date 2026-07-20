@@ -334,3 +334,15 @@ model SiteContent {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+model MarketPrice {
+  id           String   @id @default(uuid())
+  market_price Float
+  grade        String
+  unit         String
+  source       String
+  last_updated DateTime
+  verified     Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}

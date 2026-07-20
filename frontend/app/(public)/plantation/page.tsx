@@ -237,7 +237,7 @@ export default function PlantationPage() {
                 Dornala lies in Prakasam district, Andhra Pradesh. This region offers an excellent climate, low pollution levels, and secure land holdings.
               </p>
               <p className="text-[#2F3E2F] text-base leading-relaxed font-sans">
-                The land has clear registered titles, completely owned by Chandan Nilayam Investments and sub-deeded directly to investors. Our proximity to transportation routes simplifies physical audits and logistics.
+                The land has clear registered titles, completely owned by Chandhan Nilayam Investments and sub-deeded directly to investors. Our proximity to transportation routes simplifies physical audits and logistics.
               </p>
             </div>
 
