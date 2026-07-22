@@ -308,7 +308,7 @@ export default function InvestmentCalculator() {
 
       <div className="grid lg:grid-cols-12 gap-8">
         {/* LEFT COLUMN: INPUTS */}
-        <div className="lg:col-span-4 flex flex-col gap-6 bg-[rgba(6,31,24,0.95)] border border-[#C49A5A]/30 rounded-[24px] p-6 shadow-xl">
+        <div className="lg:col-span-4 flex flex-col gap-6 bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-[24px] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] h-fit lg:sticky lg:top-32 lg:z-10">
           <h3 className="text-[#F7F0E4] text-[16px] font-bold tracking-wide uppercase border-b border-[#C49A5A]/20 pb-3 mb-2 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-[#C49A5A]" />
             Parameters
@@ -461,82 +461,57 @@ export default function InvestmentCalculator() {
             </div>
           </div>
 
-          {/* Premium Market Price Widget */}
-          <div className="mt-4 p-5 rounded-[22px] bg-[rgba(6,31,24,0.95)] border border-[#C8A14A]/40 shadow-[0_8px_30px_rgba(200,161,74,0.12)] relative overflow-hidden flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5 mt-2">
+            <div className="flex justify-between">
+              <label className="text-[12px] text-[#B8C7BC] uppercase font-semibold">Market Price (₹/Ton)</label>
+              <span className="text-[#D9B36D] font-bold text-sm">₹{marketPricePerTon.toLocaleString('en-IN')}</span>
+            </div>
+            <input
+              type="range"
+              min="1000000"
+              max="25000000"
+              step="100000"
+              value={marketPricePerTon}
+              onChange={(e) => setMarketPricePerTon(parseInt(e.target.value))}
+              className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D]"
+            />
+            <div className="flex justify-between mt-1">
+                <span className="text-[10px] text-[#88998C]">₹10 L</span>
+                <span className="text-[10px] text-[#88998C]">₹2.5 Cr</span>
+            </div>
             
-            {/* Header */}
-            <div className="relative z-10">
-              <h4 className="text-[#C8A14A] text-[11px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                <BarChart2 className="w-4 h-4" />
-                LATEST VERIFIED INDIAN RED SANDALWOOD MARKET PRICE
-              </h4>
-              <p className="text-[#B8C7BC] text-[11px] leading-relaxed">
-                Latest available price for A-Grade Indian Red Sandalwood Heartwood. Automatically aggregated from trusted government auction reports and official industry publications.
-              </p>
-            </div>
-
-            {/* Price Display */}
-            <div className="bg-[#0A1A14] border border-[#C8A14A]/20 rounded-xl p-4 flex flex-col relative z-10 mt-1">
-              <span className="text-[#88998C] text-[10px] uppercase font-semibold mb-2 tracking-wide">Current Market Price (₹/Ton)</span>
-              
-              {isLoadingMarketData ? (
-                <div className="flex items-center gap-2 text-[#C8A14A] py-1">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span className="text-sm font-medium animate-pulse">Fetching latest verified market price...</span>
-                </div>
-              ) : marketDataError ? (
-                <div className="flex items-center gap-2 text-red-400 py-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span className="text-xs">No new verified auction data is currently available.</span>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-3xl font-serif font-bold text-[#F7F0E4]">
-                      ₹{marketPricePerTon.toLocaleString('en-IN')}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Meta Info */}
-            {!isLoadingMarketData && !marketDataError && marketData && (
-              <div className="flex flex-col gap-4 border-t border-[#C8A14A]/20 pt-4 relative z-10">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[#88998C] text-[10px] font-semibold tracking-wide">Last Updated:</span>
-                  <span className="text-[#F7F0E4] text-[12px] leading-relaxed font-medium">
-                    {new Date(marketData.lastUpdated).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    <br />
-                    {new Date(marketData.lastUpdated).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }).toUpperCase()} IST
-                  </span>
-                </div>
-                
-                <div className="flex flex-col gap-1">
-                  <span className="text-[#88998C] text-[10px] font-semibold tracking-wide">Source:</span>
-                  <span className="text-[#F7F0E4] text-[12px] font-medium leading-relaxed">
-                    {marketData.source || 'Government Forest Department Auction'}
-                  </span>
-                </div>
-                
-                <div className="flex flex-col gap-1">
-                  <span className="text-[#88998C] text-[10px] font-semibold tracking-wide">Status:</span>
-                  <div className="flex items-center gap-1.5 text-green-500">
-                    <span className="text-[12px] font-bold tracking-wide">{marketData.verified ? 'Verified ✓' : 'Unverified'}</span>
-                  </div>
-                </div>
+            <div className="flex items-center gap-4 mt-1">
+              <div className="flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-[#C49A5A]" />
+                <span className="text-[11px] text-[#B8C7BC] font-semibold uppercase tracking-wide">50% Investor</span>
               </div>
-            )}
-
-            {/* Disclaimer */}
-            <p className="text-[#88998C]/60 text-[9px] italic mt-2 text-center leading-relaxed relative z-10">
-              "Market prices are updated periodically based on the latest verified auction results and industry reports. Prices may vary depending on grade, heartwood quality, age, and market demand."
-            </p>
-
-            {/* Ambient Background Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[#C8A14A]/10 rounded-full blur-[60px] pointer-events-none" />
+              <div className="flex items-center gap-1.5 text-[#C49A5A]">
+                <span className="text-[11px] font-bold">|</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-[#C49A5A]" />
+                <span className="text-[11px] text-[#B8C7BC] font-semibold uppercase tracking-wide">50% Manager</span>
+              </div>
+            </div>
           </div>
 
+          {/* Profit Sharing Breakdown (Moved to Left Column to balance heights) */}
+          <div className="flex flex-col gap-4 mt-2 border-t border-[#C49A5A]/20 pt-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="flex items-center gap-2 mb-2">
+                <User className="w-5 h-5 text-[#D9B36D]" />
+                <span className="text-[11px] text-[#D9B36D] uppercase tracking-widest font-bold">Investor Share</span>
+              </div>
+              <span className="text-3xl font-serif font-bold text-[#F7F0E4] drop-shadow-sm">{formatCurrency(metrics.investorShare)}</span>
+            </motion.div>
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+              <div className="flex items-center gap-2 mb-2">
+                <Building2 className="w-5 h-5 text-[#D9B36D]" />
+                <span className="text-[11px] text-[#D9B36D] uppercase tracking-widest font-bold">Manager Share</span>
+              </div>
+              <span className="text-3xl font-serif font-bold text-[#F7F0E4] drop-shadow-sm">{formatCurrency(metrics.managementShare)}</span>
+            </motion.div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: OUTPUTS & CHARTS */}
@@ -545,7 +520,7 @@ export default function InvestmentCalculator() {
           {/* Metrics Grid (2 columns, 3 rows) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Total Trees */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">🌱</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">Total Trees</span>
@@ -554,7 +529,7 @@ export default function InvestmentCalculator() {
             </motion.div>
             
             {/* Surviving Trees */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">🌳</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">Surviving Trees</span>
@@ -563,7 +538,7 @@ export default function InvestmentCalculator() {
             </motion.div>
 
             {/* Yield (Per Tree) */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">🪵</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">Yield (Per Tree)</span>
@@ -572,7 +547,7 @@ export default function InvestmentCalculator() {
             </motion.div>
 
             {/* Revenue */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">💰</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">Revenue</span>
@@ -581,7 +556,7 @@ export default function InvestmentCalculator() {
             </motion.div>
 
             {/* ROI */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">📈</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">ROI</span>
@@ -590,7 +565,7 @@ export default function InvestmentCalculator() {
             </motion.div>
 
             {/* Net Profit */}
-            <motion.div className="bg-[#0B1E17] border border-[#C49A5A]/20 rounded-2xl p-5 flex items-center gap-4">
+            <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
               <div className="text-4xl drop-shadow-lg">🪙</div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-[#D9B36D] mb-1">Net Profit</span>
@@ -599,8 +574,10 @@ export default function InvestmentCalculator() {
             </motion.div>
           </div>
 
+
+
           {/* PROJECTED WEALTH AT MATURITY Card */}
-          <div className="bg-gradient-to-br from-[#0B1E17] to-[#06120D] border border-[#C49A5A]/50 rounded-2xl p-6 shadow-[0_0_20px_rgba(196,154,90,0.1)] flex flex-col items-center text-center">
+          <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] flex flex-col items-center text-center">
             <span className="text-[#D9B36D] text-[11px] uppercase tracking-widest font-bold mb-4">
               Projected Wealth At Maturity
             </span>
@@ -624,80 +601,98 @@ export default function InvestmentCalculator() {
           </div>
 
           {/* Calculation Breakdown Card */}
-          <div className="bg-[rgba(6,31,24,0.95)] border border-[#C49A5A]/40 rounded-[24px] p-6 shadow-xl flex flex-col">
-            <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-6 text-center tracking-widest">Revenue Calculation Breakdown</h4>
-            <div className="flex flex-col md:flex-row items-center justify-between text-[#F7F0E4] font-serif text-sm md:text-base px-2 gap-4 md:gap-0">
-              <div className="flex flex-col items-center">
-                <span className="text-xl md:text-2xl font-bold">{metrics.survivingTrees}</span>
-                <span className="text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-1">Trees</span>
-              </div>
-              <span className="text-[#D9B36D] font-bold text-lg">×</span>
-              <div className="flex flex-col items-center">
-                <span className="text-xl md:text-2xl font-bold">{yieldPerTree} KG</span>
-                <span className="text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-1">Per Tree</span>
-              </div>
-              <span className="text-[#D9B36D] font-bold text-lg">=</span>
-              <div className="flex flex-col items-center">
-                <span className="text-xl md:text-2xl font-bold">{metrics.totalYieldKg.toLocaleString('en-IN')} KG</span>
-                <span className="text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-1">({metrics.totalYieldTon.toFixed(2)} Tons)</span>
-              </div>
-              <span className="text-[#D9B36D] font-bold text-lg">×</span>
-              <div className="flex flex-col items-center">
-                <span className="text-xl md:text-2xl font-bold">{formatCurrency(marketPricePerTon)}</span>
-                <span className="text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-1">Per Ton</span>
-              </div>
-              <span className="text-[#D9B36D] font-bold text-lg">=</span>
-              <div className="flex flex-col items-center bg-[#0B241C] border border-[#C49A5A]/30 p-4 rounded-xl shadow-lg mt-4 md:mt-0">
-                <span className="text-[10px] text-[#D9B36D] font-sans uppercase tracking-wider mb-1">Estimated Gross Revenue</span>
-                <span className="text-xl md:text-2xl font-bold text-[#F7F0E4]">{formatCurrency(metrics.grossRevenue)}</span>
-              </div>
-            </div>
-          </div>
+          <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-[24px] p-4 lg:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] flex flex-col w-full overflow-hidden">
+            <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-4 lg:mb-6 text-center tracking-widest">Revenue Calculation Breakdown</h4>
+            
+            <div className="w-full overflow-x-auto custom-scrollbar pb-2">
+              <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-between text-[#F7F0E4] font-serif px-2 w-full md:min-w-max pt-4 md:pt-[44px] pb-4">
+                
+                {/* Left Side: Equation */}
+                <div className="flex flex-row items-start justify-center gap-2 lg:gap-3 flex-wrap md:flex-nowrap">
+                  
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl md:text-2xl font-bold h-[32px] md:h-[40px] flex items-center">{metrics.survivingTrees}</span>
+                    <span className="text-[9px] md:text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-2">Trees</span>
+                  </div>
+                  
+                  <span className="text-[#D9B36D] font-bold text-lg md:text-xl h-[32px] md:h-[40px] flex items-center">×</span>
 
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Revenue Growth Line Chart */}
-            <div className="bg-[rgba(8,35,27,0.85)] border border-[#C49A5A]/25 rounded-[18px] p-4 h-[250px] flex flex-col">
-              <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-4 text-center">Revenue Growth</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={displayYearlyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="year" stroke="#B8C7BC" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    formatter={(val: number) => formatCurrency(val)} 
-                    labelFormatter={(label) => `Year ${label}`}
-                    contentStyle={{ backgroundColor: 'rgba(10,38,30,0.95)', border: '1px solid rgba(196,154,90,0.5)', borderRadius: '8px' }}
-                  />
-                  <Line type="monotone" dataKey="marketValue" name="Gross Revenue" stroke="#D9B36D" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl md:text-2xl font-bold h-[32px] md:h-[40px] flex items-center">{yieldPerTree} <span className="text-sm md:text-base ml-1 font-sans font-semibold opacity-80">KG</span></span>
+                    <span className="text-[9px] md:text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-2">Per Tree</span>
+                  </div>
 
-            {/* Investment vs Profit Bar Chart */}
-            <div className="bg-[rgba(8,35,27,0.85)] border border-[#C49A5A]/25 rounded-[18px] p-4 h-[250px] flex flex-col">
-              <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-4 text-center">Investment vs Profit</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={displayYearlyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="year" stroke="#B8C7BC" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    formatter={(val: number) => formatCurrency(Math.max(0, val))}
-                    labelFormatter={(label) => `Year ${label}`}
-                    contentStyle={{ backgroundColor: 'rgba(10,38,30,0.95)', border: '1px solid rgba(196,154,90,0.5)', borderRadius: '8px' }}
-                  />
-                  <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
-                  <Bar dataKey="runningInvestment" name="Investment" stackId="a" fill="#B8C7BC" radius={[0,0,4,4]} />
-                  <Bar dataKey="runningNetProfit" name="Net Profit" stackId="a" fill="#22C55E" radius={[4,4,0,0]} />
-                </BarChart>
-              </ResponsiveContainer>
+                  <span className="text-[#D9B36D] font-bold text-lg md:text-xl h-[32px] md:h-[40px] flex items-center">=</span>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl md:text-2xl font-bold h-[32px] md:h-[40px] flex items-center">{metrics.totalYieldKg.toLocaleString('en-IN')} <span className="text-sm md:text-base ml-1 font-sans font-semibold opacity-80">KG</span></span>
+                    <span className="text-[9px] md:text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-2">({metrics.totalYieldTon.toFixed(2)} Tons)</span>
+                  </div>
+
+                  <span className="text-[#D9B36D] font-bold text-lg md:text-xl h-[32px] md:h-[40px] flex items-center">×</span>
+
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl md:text-2xl font-bold h-[32px] md:h-[40px] flex items-center">{formatCurrency(marketPricePerTon)}</span>
+                    <span className="text-[9px] md:text-[10px] text-[#B8C7BC] font-sans uppercase tracking-wider mt-2">Per Ton</span>
+                  </div>
+                </div>
+
+                <span className="text-[#D9B36D] font-bold text-2xl h-[40px] hidden md:flex items-center mx-3 lg:mx-4">=</span>
+                
+                {/* Right Side: Result */}
+                <div className="flex flex-col items-center bg-gradient-to-br from-[#1A4D35] to-[#123A28] border border-[#D9B36D]/40 px-5 lg:px-6 py-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] mt-6 md:mt-[-40px] w-full md:w-auto z-10 relative shrink-0">
+                  <span className="text-[10px] text-[#D9B36D] font-sans uppercase tracking-wider mb-2">Estimated Gross Revenue</span>
+                  <span className="text-2xl md:text-3xl font-bold text-[#F7F0E4] h-[32px] md:h-[40px] flex items-center drop-shadow-md">{formatCurrency(metrics.grossRevenue)}</span>
+                </div>
+
+              </div>
             </div>
           </div>
 
         </div>
       </div>
 
+      {/* Charts Section (Moved to full width for balanced layout) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+        {/* Revenue Growth Line Chart */}
+        <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-[18px] p-4 h-[250px] flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+          <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-4 text-center">Revenue Growth</h4>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={displayYearlyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <XAxis dataKey="year" stroke="#B8C7BC" fontSize={10} tickLine={false} axisLine={false} />
+              <Tooltip 
+                formatter={(val: number) => formatCurrency(val)} 
+                labelFormatter={(label) => `Year ${label}`}
+                contentStyle={{ backgroundColor: 'rgba(10,38,30,0.95)', border: '1px solid rgba(196,154,90,0.5)', borderRadius: '8px' }}
+              />
+              <Line type="monotone" dataKey="marketValue" name="Gross Revenue" stroke="#D9B36D" strokeWidth={3} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Investment vs Profit Bar Chart */}
+        <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/20 rounded-[18px] p-4 h-[250px] flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+          <h4 className="text-[#D9B36D] text-xs uppercase font-bold mb-4 text-center">Investment vs Profit</h4>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={displayYearlyData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <XAxis dataKey="year" stroke="#B8C7BC" fontSize={10} tickLine={false} axisLine={false} />
+              <Tooltip 
+                formatter={(val: number) => formatCurrency(Math.max(0, val))}
+                labelFormatter={(label) => `Year ${label}`}
+                contentStyle={{ backgroundColor: 'rgba(10,38,30,0.95)', border: '1px solid rgba(196,154,90,0.5)', borderRadius: '8px' }}
+              />
+              <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+              <Bar dataKey="runningInvestment" name="Investment" stackId="a" fill="#B8C7BC" radius={[0,0,4,4]} />
+              <Bar dataKey="runningNetProfit" name="Net Profit" stackId="a" fill="#22C55E" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       {/* YEARLY GROWTH TABLE */}
-      <div className="bg-[rgba(6,31,24,0.95)] border border-[#C49A5A]/30 rounded-[24px] p-6 shadow-xl overflow-hidden flex flex-col mt-4">
+      <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-[24px] p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col mt-4">
         <h3 className="text-[#F7F0E4] text-[16px] font-bold tracking-wide uppercase mb-1">
           Estimated Year-wise Plantation Performance
         </h3>

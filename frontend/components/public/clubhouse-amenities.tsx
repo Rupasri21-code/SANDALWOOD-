@@ -63,47 +63,50 @@ const SpotlightCard = ({ item, index }: { item: any, index: number }) => {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative rounded-2xl bg-[#0B1511] border border-[#16251D] p-6 md:p-8 flex items-start gap-5 overflow-hidden group hover:border-[#C49A5A]/30 transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_10px_35px_rgba(0,0,0,0.4)]"
-      style={{ transform: isHovered ? 'translateY(-4px)' : 'translateY(0)' }}
+      className="relative rounded-[24px] p-6 md:p-8 flex items-start gap-5 overflow-hidden group transition-all duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[10px] border border-[rgba(255,255,255,0.12)] shadow-[0_20px_60px_rgba(8,18,15,0.35)] hover:shadow-[0_35px_80px_rgba(8,20,18,0.45)] backdrop-blur-[24px] hover:backdrop-blur-[32px]"
+      style={{
+        background: `
+          linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05)),
+          radial-gradient(circle at top right, rgba(185, 255, 220, 0.4), transparent 50%),
+          linear-gradient(135deg, rgba(38, 110, 85, 0.45) 0%, rgba(76, 175, 134, 0.35) 40%, rgba(135, 230, 188, 0.3) 100%)
+        `
+      }}
     >
-      {/* Background Spotlight Glow */}
+      {/* Interactive Border Spotlight Shine */}
       <div 
-        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+        className="pointer-events-none absolute inset-0 z-0 rounded-[24px] transition-opacity duration-300 border border-transparent"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(400px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(196, 154, 90, 0.08), transparent 40%)`
+          maskImage: `radial-gradient(200px circle at ${mousePosition.x}px ${mousePosition.y}px, black, transparent 100%)`,
+          WebkitMaskImage: `radial-gradient(200px circle at ${mousePosition.x}px ${mousePosition.y}px, black, transparent 100%)`,
+          borderImage: `radial-gradient(250px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.8), transparent 100%) 1`
         }}
       />
 
-      {/* Border Highlight Glow */}
-      <div 
-        className="pointer-events-none absolute inset-0 z-0 rounded-2xl transition-opacity duration-300 border border-transparent"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          maskImage: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, black, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, black, transparent 100%)`,
-          borderImage: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(196,154,90,0.6), transparent 100%) 1`
-        }}
-      />
+      {/* Hover Brightness Overlay */}
+      <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] pointer-events-none" />
 
-      {/* Left Icon (Relative for Z-index above glow) */}
-      <div className="relative z-10 w-12 h-12 rounded-full border border-[#C49A5A]/25 flex items-center justify-center shrink-0 shadow-inner bg-[#0A120E]/80 group-hover:bg-[#C49A5A]/10 group-hover:border-[#C49A5A]/60 transition-all duration-500">
-        <Icon className="w-5 h-5 text-[#D4AF37] stroke-[1.5] group-hover:scale-110 transition-transform duration-500" />
+      {/* Mint Highlight on Hover */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#B8F2D5] rounded-full blur-[50px] opacity-0 group-hover:opacity-30 transition-opacity duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] pointer-events-none" />
+
+      {/* Left Icon */}
+      <div className="relative z-10 w-12 h-12 rounded-full border border-[rgba(255,255,255,0.3)] flex items-center justify-center shrink-0 bg-[rgba(255,255,255,0.15)] shadow-[inset_0_0_12px_rgba(255,255,255,0.15)] group-hover:scale-105 transition-transform duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]">
+        <Icon className="w-5 h-5 text-white stroke-[1.5]" />
       </div>
       
       {/* Content */}
       <div className="relative z-10 flex flex-col">
         <div className="flex items-center gap-3 mb-2">
-          <h3 className="text-[#F7F0E4] font-bold text-[15px] md:text-[17px] font-sans tracking-wide group-hover:text-[#FFF8DC] transition-colors duration-300">
+          <h3 className="text-white font-bold text-[15px] md:text-[17px] font-sans group-hover:text-white transition-colors duration-[450ms]" style={{ letterSpacing: '0.2px' }}>
             {item.title}
           </h3>
           {item.badge && (
-            <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-[4px] border border-[#C49A5A]/40 text-[#C49A5A] uppercase bg-[#C49A5A]/5 group-hover:bg-[#C49A5A]/15 transition-colors duration-300">
+            <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-[4px] border border-white/40 text-white uppercase bg-white/10">
               {item.badge}
             </span>
           )}
         </div>
-        <p className="text-[#899D93] text-[12px] md:text-[13px] leading-[1.6] font-sans group-hover:text-[#A3B8B0] transition-colors duration-300">
+        <p className="text-white/80 font-normal font-sans text-[12px] md:text-[13px] group-hover:text-white transition-colors duration-[450ms]" style={{ lineHeight: '1.7' }}>
           {item.desc}
         </p>
       </div>
@@ -130,7 +133,7 @@ export default function ClubhouseAmenities() {
         </div>
 
         {/* Spotlight Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {clubhouseAmenities.map((item, index) => (
             <SpotlightCard key={index} item={item} index={index} />
           ))}

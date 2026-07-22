@@ -42,19 +42,16 @@ export default function Navbar() {
   return (
     <nav
       suppressHydrationWarning={true}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
         scrolled
           ? 'shadow-[0_8px_30px_rgba(18,55,42,0.08)] border-b border-[#12372A]/10'
           : 'shadow-[0_4px_20px_rgba(18,55,42,0.05)] border-b border-[#12372A]/10'
       }`}
-      style={{
-        background: 'linear-gradient(90deg, #F8F3E9 0%, #F4ECDD 100%)'
-      }}
     >
       <div className="w-full max-w-[1560px] mx-auto px-[20px] md:px-[42px]">
         
         {/* Desktop Layout (104px) / Mobile Layout (72px) */}
-        <div className="hidden lg:grid items-center h-[104px]" style={{ gridTemplateColumns: '250px minmax(0, 1fr) auto', columnGap: '32px' }}>
+        <div className="hidden 2xl:grid items-center h-[104px]" style={{ gridTemplateColumns: '250px minmax(0, 1fr) auto', columnGap: '32px' }}>
           
           {/* COLUMN 1: Brand */}
           <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[250px] min-w-[250px] h-[82px]">
@@ -98,7 +95,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="lg:hidden flex justify-between items-center h-[72px] md:h-[82px]">
+        <div className="2xl:hidden flex justify-between items-center h-[72px] md:h-[82px]">
           <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[160px] md:w-[180px] h-[55px]" onClick={() => setMobileOpen(false)}>
             <img src="/branding/chandhan-navbar-logo.png" alt="Chandhan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
@@ -117,13 +114,13 @@ export default function Navbar() {
 
       {/* Mobile Slide-Down Menu Overlay */}
       <div 
-        className={`lg:hidden fixed inset-0 top-[72px] md:top-[82px] bg-[#0A120E]/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        className={`2xl:hidden fixed inset-0 top-[72px] md:top-[82px] bg-[#0A120E]/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         onClick={() => setMobileOpen(false)}
       />
 
       {/* Mobile Menu Panel */}
       <div 
-        className={`lg:hidden fixed top-[72px] md:top-[82px] left-0 right-0 bg-gradient-to-b from-[#F8F3E9] to-[#F4ECDD] border-t border-[#12372A]/10 shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-50 overflow-hidden ${mobileOpen ? 'max-h-[calc(100vh-72px)] opacity-100' : 'max-h-0 opacity-0'}`}
+        className={`2xl:hidden fixed top-[72px] md:top-[82px] left-0 right-0 bg-white border-t border-[#12372A]/10 shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-50 overflow-hidden ${mobileOpen ? 'max-h-[calc(100vh-72px)] opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <div className="flex flex-col px-[28px] py-[36px] gap-[24px] max-h-[calc(100vh-72px)] overflow-y-auto pb-32">
           {/* Links */}

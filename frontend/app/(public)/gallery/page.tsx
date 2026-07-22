@@ -23,13 +23,7 @@ const initialGalleryItems = [
     location: 'Block A, Dornala',
     type: 'image'
   },
-  { 
-    src: 'https://images.unsplash.com/photo-1464254786740-b97e5420c299?auto=format&fit=crop&q=80&w=800', 
-    category: 'Saplings', 
-    title: 'Certified Sandalwood Saplings', 
-    location: 'Dornala Nursery',
-    type: 'image'
-  },
+
   { 
     src: 'https://images.pexels.com/photos/15124451/pexels-photo-15124451.jpeg?auto=compress&cs=tinysrgb&w=800', 
     category: 'Plantation', 

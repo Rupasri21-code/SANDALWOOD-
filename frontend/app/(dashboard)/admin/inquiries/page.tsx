@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageSquare, Search, Filter, ArrowUpRight, Mail, Phone, Calendar, User, Clock, CheckCircle } from 'lucide-react';
+import { MessageSquare, Search, Filter, ArrowUpRight, Mail, Phone, Calendar, User, Clock, CheckCircle, Eye, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
@@ -24,6 +24,7 @@ export default function InquiriesPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
 
   const fetchInquiries = async () => {
     const token = localStorage.getItem('token');
@@ -183,6 +184,12 @@ export default function InquiriesPage() {
                           Mark Closed
                         </button>
                       )}
+                      <button
+                        onClick={() => setSelectedInquiry(inc)}
+                        className="text-xs font-semibold text-[#C49A5A] hover:text-white bg-[#C49A5A]/10 hover:bg-[#C49A5A] border border-[#C49A5A]/30 px-3 py-1.5 rounded-lg transition-all ml-2"
+                      >
+                        <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> View</span>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -191,6 +198,113 @@ export default function InquiriesPage() {
           )}
         </div>
       </div>
+
+      {/* View Modal */}
+      {selectedInquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#101A13] border border-[#C49A5A]/30 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-[#C49A5A]/20 bg-[#121F17] rounded-t-2xl">
+              <h2 className="text-[#F8F5EE] text-xl font-bold font-display flex items-center gap-2">
+                <User className="w-5 h-5 text-[#C49A5A]" />
+                Inquiry Details
+              </h2>
+              <button 
+                onClick={() => setSelectedInquiry(null)}
+                className="text-[#A8B5AA] hover:text-white bg-[#08120D] hover:bg-[#C49A5A]/20 p-2 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto custom-scrollbar flex flex-col gap-6">
+              
+              {/* Profile Info */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#08120D] p-5 rounded-xl border border-[#C49A5A]/10">
+                <div>
+                  <h3 className="text-xl font-bold text-[#F8F5EE] mb-1">{selectedInquiry.full_name}</h3>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-[#A8B5AA]">
+                    <span className="flex items-center gap-1.5"><Mail className="w-4 h-4 text-[#C49A5A]" /> {selectedInquiry.email}</span>
+                    <span className="flex items-center gap-1.5"><Phone className="w-4 h-4 text-[#C49A5A]" /> {selectedInquiry.phone}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-[#A8B5AA] uppercase tracking-wider mb-1">Status</div>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                    selectedInquiry.status === 'NEW' ? 'bg-[#C49A5A]/10 text-[#C49A5A] border-[#C49A5A]/30' :
+                    selectedInquiry.status === 'CONTACTED' ? 'bg-[#123F25] text-[#22C55E] border-[#22C55E]/30' :
+                    'bg-[#08120D] text-[#A8B5AA] border-[#A8B5AA]/30'
+                  }`}>
+                    {selectedInquiry.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Investment Criteria */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-[#121F17] p-5 rounded-xl border border-[#C49A5A]/10">
+                  <div className="text-xs text-[#A8B5AA] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <ArrowUpRight className="w-4 h-4 text-[#C49A5A]" /> Investment Interest
+                  </div>
+                  <div className="text-[#F8F5EE] font-medium">{selectedInquiry.investment_interest}</div>
+                </div>
+                
+                <div className="bg-[#121F17] p-5 rounded-xl border border-[#C49A5A]/10">
+                  <div className="text-xs text-[#A8B5AA] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Filter className="w-4 h-4 text-[#C49A5A]" /> Budget & Plot Size
+                  </div>
+                  <div className="text-[#D9B36D] font-bold mb-0.5">{selectedInquiry.budget_range}</div>
+                  <div className="text-[#F8F5EE] text-sm">{selectedInquiry.plot_size}</div>
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="bg-[#121F17] p-5 rounded-xl border border-[#C49A5A]/10">
+                <div className="text-xs text-[#A8B5AA] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <MessageSquare className="w-4 h-4 text-[#C49A5A]" /> Message / Questions
+                </div>
+                {selectedInquiry.message ? (
+                  <p className="text-[#F8F5EE] text-sm leading-relaxed whitespace-pre-wrap italic">
+                    "{selectedInquiry.message}"
+                  </p>
+                ) : (
+                  <p className="text-[#A8B5AA] text-sm italic">No additional message provided.</p>
+                )}
+              </div>
+
+              {/* Metadata */}
+              <div className="flex justify-between items-center text-xs text-[#A8B5AA] mt-2 px-2 border-t border-[#C49A5A]/10 pt-4">
+                <span>Inquiry ID: {selectedInquiry.id}</span>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" /> Submitted on {new Date(selectedInquiry.created_at).toLocaleString()}
+                </span>
+              </div>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-[#C49A5A]/20 bg-[#121F17] rounded-b-2xl flex justify-end gap-3">
+              <button
+                onClick={() => setSelectedInquiry(null)}
+                className="px-5 py-2.5 rounded-xl border border-[#C49A5A]/30 text-[#F8F5EE] font-semibold hover:bg-[#C49A5A]/10 transition-colors text-sm"
+              >
+                Close
+              </button>
+              {selectedInquiry.status === 'NEW' && (
+                <button
+                  onClick={() => {
+                    handleStatusUpdate(selectedInquiry.id, 'CONTACTED');
+                    setSelectedInquiry(null);
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-[#22C55E] text-[#0B1510] font-bold hover:bg-[#22C55E]/90 transition-colors text-sm"
+                >
+                  Mark as Contacted
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

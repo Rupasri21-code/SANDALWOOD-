@@ -261,7 +261,7 @@ async function main() {
       {
         title: 'Sandalwood logs ready for oil extraction',
         category: 'Crop growth',
-        image_url: 'https://images.pexels.com/photos/17052523/pexels-photo-17052523.jpeg?auto=compress&cs=tinysrgb&w=600',
+        image_url: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&q=80&w=600',
         description: 'Matured logs showcase high concentration of core heartwood.',
       },
     ],

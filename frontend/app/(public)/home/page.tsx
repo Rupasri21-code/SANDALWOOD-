@@ -418,26 +418,15 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const heroSequence = [
-    '/gallery_01.png',
-    '/gallery_02.jpg',
-    '/gallery_03.jpg',
-    '/gallery_04.jpg',
-    '/gallery_05.png',
-    '/media__1780138743022.png',
-    '/media__1780138713953.png',
-    '/media__1780138673726.png',
-    '/media__1780138759009.png',
-    '/media__1780138786375.png',
-    '/media__1780238695392.png',
-    '/media__1780238718069.png',
-    '/media__1780238752402.jpg',
-    '/media__1780238775743.png',
-    '/media__1780238824506.png',
-    '/media__1780239390979.jpg',
-    '/media__1780239547699.png',
-    '/media__1780239602852.jpg',
-    '/media__1780239666538.png',
-    '/media__1780239713568.png',
+    '/media__1784542732304.jpg',
+    '/media__1784542781834.jpg',
+    '/media__1784542836552.jpg',
+    '/media__1784543215344.jpg',
+    '/media__1784543244820.jpg',
+    '/media__1784541866089.jpg',
+    '/media__1784541877736.jpg',
+    '/media__1784541925264.jpg',
+    '/media__1784541990743.jpg',
   ];
 
   useEffect(() => {
@@ -594,11 +583,11 @@ export default function HomePage() {
           {heroSequence.map((src, idx) => {
             let positionClass = '';
             if (idx === currentHeroImage) {
-              positionClass = 'translate-x-0 opacity-100 z-10 transition-all duration-1000 ease-in-out';
+              positionClass = 'opacity-100 z-10 transition-all duration-[2000ms] ease-in-out scale-105';
             } else if (idx === prevHeroImage) {
-              positionClass = '-translate-x-full opacity-0 z-0 transition-all duration-1000 ease-in-out';
+              positionClass = 'opacity-0 z-0 transition-all duration-[2000ms] ease-in-out scale-105';
             } else {
-              positionClass = 'translate-x-full opacity-0 z-0 transition-none';
+              positionClass = 'opacity-0 z-0 transition-none scale-100';
             }
 
             return (
@@ -673,7 +662,7 @@ export default function HomePage() {
           <p 
             className="text-[15px] md:text-[18px] max-w-2xl leading-relaxed mb-10" 
             style={{ 
-              color: '#E7DBC7',
+              color: '#FFFFFF',
               fontFamily: "'Lora', serif", 
               textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)' 
             }}
@@ -717,70 +706,64 @@ export default function HomePage() {
       {/* 3. Floating Premium Statistics Section */}
       <section className="relative z-30 -mt-16 md:-mt-20 px-6 max-w-[1080px] mx-auto w-full">
         <div 
-          className="rounded-[24px] py-6 px-8 md:py-7 md:px-9 shadow-[0_15px_35px_rgba(0,0,0,0.30)] hover:border-[#C49A5A]/50 transition-all duration-500 group/card border"
-          style={{
-            background: 'rgba(18, 55, 42, 0.82)',
-            borderColor: 'rgba(196, 154, 90, 0.35)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-          }}
+          className="rounded-[24px] py-6 px-8 md:py-7 md:px-9 shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:border-[#D9B36D]/60 transition-all duration-500 group/card border border-[#D9B36D]/30 bg-gradient-to-br from-[#12402B] to-[#0A2418] backdrop-blur-xl"
         >
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 lg:gap-y-0">
             {/* Stat 1: Acres */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#C49A5A]/15 lg:border-r-0 border-b border-[#C49A5A]/15 pb-4 lg:pb-0 lg:border-b-0">
-              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
-                <Trees className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#D9B36D]/15 lg:border-r-0 border-b border-[#D9B36D]/15 pb-4 lg:pb-0 lg:border-b-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#D9B36D]/30 flex-shrink-0 group-hover/item:border-[#D9B36D]/60 transition-colors duration-500 bg-[#D9B36D]/5">
+                <Trees className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {homeContent.statsAum || '100+'}
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
                   ACRES OF PREMIUM LAND
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#D9B36D]/20" /></div>
             </div>
 
             {/* Stat 2: Plots */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-b border-[#C49A5A]/15 pb-4 lg:pb-0 lg:border-b-0 lg:border-r-0">
-              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
-                <MapPin className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-b border-[#D9B36D]/15 pb-4 lg:pb-0 lg:border-b-0 lg:border-r-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#D9B36D]/30 flex-shrink-0 group-hover/item:border-[#D9B36D]/60 transition-colors duration-500 bg-[#D9B36D]/5">
+                <MapPin className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   400+
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
                   PREMIUM PLOTS
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#D9B36D]/20" /></div>
             </div>
 
             {/* Stat 3: Growth Cycle */}
-            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#C49A5A]/15 lg:border-r-0 pt-4 lg:pt-0">
-              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
-                <Sprout className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+            <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 border-r border-[#D9B36D]/15 lg:border-r-0 pt-4 lg:pt-0">
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#D9B36D]/30 flex-shrink-0 group-hover/item:border-[#D9B36D]/60 transition-colors duration-500 bg-[#D9B36D]/5">
+                <Sprout className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {homeContent.statsGrowth || '12+'}
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
                   YEARS OF GROWTH
                 </span>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#C49A5A]/20" /></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#D9B36D]/20" /></div>
             </div>
 
             {/* Stat 4: Investors */}
             <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 pt-4 lg:pt-0">
-              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#C49A5A]/25 flex-shrink-0 group-hover/item:border-[#C49A5A]/50 transition-colors duration-500" style={{ background: 'rgba(196, 154, 90, 0.05)' }}>
-                <Users className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#C49A5A] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#D9B36D]/30 flex-shrink-0 group-hover/item:border-[#D9B36D]/60 transition-colors duration-500 bg-[#D9B36D]/5">
+                <Users className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left" style={{ color: '#C49A5A', fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {homeContent.statsInvestors || '500+'}
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
@@ -793,27 +776,27 @@ export default function HomePage() {
       </section>
 
             {/* 4. About Our Heritage / Vision & Mission Section */}
-      <section id="about-heritage" className="py-[80px] lg:py-[100px] bg-[#F7F0E4] relative overflow-hidden">
-        <div className="max-w-[1480px] mx-auto px-6 md:px-12 lg:px-[60px]">
-          <div className="flex flex-col lg:flex-row gap-16 lg:gap-20 items-start">
+      <section id="about-heritage" className="py-[80px] xl:py-[100px] bg-[#F7F0E4] relative overflow-hidden">
+        <div className="max-w-[1480px] mx-auto px-6 md:px-12 xl:px-[60px]">
+          <div className="flex flex-col xl:flex-row gap-16 xl:gap-20 items-start">
             
             {/* Left Column */}
-            <div className="w-full lg:w-[46%] flex flex-col pt-4">
+            <div className="w-full xl:w-[46%] flex flex-col pt-4">
               
               {/* Eyebrow */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-10 h-[1px] bg-[#C49A5A]/65" />
-                <span className="text-[#C49A5A] text-[11px] lg:text-xs font-semibold tracking-[0.20em] uppercase font-sans">
+                <span className="text-[#C49A5A] text-[11px] xl:text-xs font-semibold tracking-[0.20em] uppercase font-sans">
                   OUR HERITAGE
                 </span>
               </div>
               
               {/* Heading */}
               <h2 className="flex flex-col mb-8">
-                <span className="font-serif text-[42px] sm:text-[52px] lg:text-[72px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="font-serif text-[42px] sm:text-[52px] xl:text-[72px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   The Chandhan Nilayam
                 </span>
-                <span className="font-serif text-[38px] sm:text-[48px] lg:text-[64px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="font-serif text-[38px] sm:text-[48px] xl:text-[64px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Story
                 </span>
               </h2>
@@ -828,7 +811,7 @@ export default function HomePage() {
               </div>
               
               {/* Story Content */}
-              <div className="flex flex-col gap-6 mb-12 text-[#4F5D55] text-base md:text-lg lg:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
+              <div className="flex flex-col gap-6 mb-12 text-[#4F5D55] text-base md:text-lg xl:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
                 {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership.\n\nOur foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted heritage partner, successfully aligning high-yielding green investments with active ecological preservation.`)
                   .split('\n')
                   .filter((p: string) => p.trim() !== '')
@@ -845,7 +828,7 @@ export default function HomePage() {
                   PREMIUM SANDALWOOD PLOTS NEAR DORNALA
                 </span>
                 <div className="w-12 h-[2px] bg-[#C49A5A] mb-6 opacity-60" />
-                <p className="text-[#0B2F24] font-serif text-[22px] md:text-[30px] lg:text-[32px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <p className="text-[#0B2F24] font-serif text-[22px] md:text-[30px] xl:text-[32px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Building wealth today.<br />
                   Preserving nature for generations to come.<br />
                   Enjoying exclusive clubhouse and premium resort amenities.
@@ -855,10 +838,10 @@ export default function HomePage() {
             </div>
 
             {/* Right Column */}
-            <div className="w-full lg:w-[54%] relative flex flex-col items-center lg:items-end">
+            <div className="w-full xl:w-[54%] relative flex flex-col items-center xl:items-end">
               
               {/* Plantation Image */}
-              <div className="relative w-full h-[500px] sm:h-[600px] lg:h-[720px] rounded-[32px] overflow-hidden">
+              <div className="relative w-full h-[500px] sm:h-[600px] xl:h-[720px] rounded-[32px] overflow-hidden">
                 <img 
                   src="/our_heritage_image.png"
                   alt="Our Heritage Image"
@@ -868,26 +851,37 @@ export default function HomePage() {
 
               {/* Vision & Mission Panel */}
               <div 
-                className="relative lg:absolute lg:bottom-12 lg:left-[-10%] w-full lg:w-[105%] mt-[-40px] lg:mt-0 rounded-[28px] p-8 md:p-12 shadow-[0_24px_60px_rgba(11,47,36,0.20)] z-10"
-                style={{
-                  background: 'linear-gradient(135deg, #12372A 0%, #0B2F24 55%, #164B38 100%)'
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+                  e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
                 }}
+                className="group relative xl:absolute xl:bottom-12 xl:left-[-10%] w-full xl:w-[105%] mt-[-40px] xl:mt-0 bg-gradient-to-br from-[#12402B] to-[#0A2418] border border-[#D9B36D]/30 rounded-[28px] p-8 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-10 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:border-[#D9B36D]/60"
               >
+                {/* Interactive Cursor Spotlight Glow */}
+                <div 
+                  className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(217,179,109,0.08), transparent 40%)'
+                  }}
+                />
                 
                 {/* Panel Header */}
                 <div className="flex flex-col items-center text-center mb-10">
                   <h3 className="text-[#F7F0E4] font-serif text-[32px] md:text-[40px] font-semibold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                     Vision & Mission
                   </h3>
-                  <div className="w-12 h-[2px] bg-[#C49A5A]" />
+                  <div className="w-12 h-[2px] bg-[#D9B36D]" />
                 </div>
 
                 {/* Panel Content (Two Columns) */}
                 <div className="flex flex-col md:flex-row gap-8 md:gap-0 relative">
                   
                   {/* Left: Our Vision */}
-                  <div className="flex-1 md:pr-10 lg:pr-12 flex flex-col text-left">
-                    <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  <div className="flex-1 md:pr-10 xl:pr-12 flex flex-col text-left">
+                    <h4 className="text-[#D9B36D] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Vision
                     </h4>
                     <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
@@ -896,14 +890,14 @@ export default function HomePage() {
                   </div>
                   
                   {/* Vertical Divider (Hidden on mobile) */}
-                  <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-[rgba(196,154,90,0.3)] -translate-x-1/2" />
+                  <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-[#D9B36D]/30 -translate-x-1/2" />
                   
                   {/* Horizontal Divider (Visible only on mobile) */}
-                  <div className="block md:hidden w-full h-[1px] bg-[rgba(196,154,90,0.3)] my-2" />
+                  <div className="block md:hidden w-full h-[1px] bg-[#D9B36D]/30 my-2" />
 
                   {/* Right: Our Mission */}
-                  <div className="flex-1 md:pl-10 lg:pl-12 flex flex-col text-left">
-                    <h4 className="text-[#C49A5A] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  <div className="flex-1 md:pl-10 xl:pl-12 flex flex-col text-left">
+                    <h4 className="text-[#D9B36D] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Mission
                     </h4>
                     <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
@@ -924,10 +918,10 @@ export default function HomePage() {
       {/* 4.5 The Sandalwood Opportunity Section */}
       <section id="opportunity" className="pt-20 pb-12 md:pt-24 md:pb-16 bg-[#F7F0E4] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
+          <div className="grid xl:grid-cols-12 gap-12 items-center">
             
             {/* Left Col - Headings & Copy */}
-            <div className="lg:col-span-7">
+            <div className="xl:col-span-7">
               <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">THE SANDALWOOD OPPORTUNITY</span>
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] mb-6 leading-tight font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                 Nurtured by Nature.<br />Built for the Future.
@@ -937,7 +931,7 @@ export default function HomePage() {
               </p>
 
               {/* Stacked columns in left panel */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {features.map((feat, i) => (
                   <div key={i} className="flex flex-col group">
                     <div className="w-10 h-10 rounded-full bg-[#8B5E3C]/10 flex items-center justify-center text-[#8B5E3C] mb-4 group-hover:scale-105 transition-transform">
@@ -950,7 +944,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 relative flex justify-center w-full">
+            <div className="xl:col-span-5 relative flex justify-center w-full">
               <div className="relative w-full max-w-[520px] aspect-[1.25] rounded-[2rem] md:rounded-[3rem] p-3 bg-[#F3E8D2] border border-[#C49A5A]/30 shadow-[0_30px_70px_rgba(139,94,60,0.25)] group hover:scale-[1.02] transition-all duration-500">
                 <div className="w-full h-full rounded-[1.75rem] md:rounded-[2.5rem] overflow-hidden relative">
                   <img 
@@ -1110,20 +1104,43 @@ export default function HomePage() {
                 desc: 'A magnificent entrance arch that sets a majestic tone, welcoming you into a world of unparalleled luxury and prestige.'
               }
             ].map((item, i) => (
-              <div key={i} className="rounded-[20px] bg-[#0A1A14] border border-[#163324] p-6 hover:border-[#C49A5A]/40 transition-all duration-300 flex items-start gap-5">
-                <div className="w-12 h-12 rounded-[12px] border border-[#C49A5A]/30 flex items-center justify-center shrink-0 bg-[#06120D]">
-                  <item.icon className="w-5 h-5 text-[#C49A5A] stroke-[1.5]" />
-                </div>
-                <div className="flex flex-col flex-1">
-                  <div className="flex flex-col items-start gap-2 mb-3">
-                    <h4 className="text-[#F8F4EC] font-serif text-[18px] md:text-[20px] font-bold leading-tight">{item.title}</h4>
-                    {item.badge && (
-                      <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-[4px] border border-[#C49A5A]/40 text-[#C49A5A] uppercase bg-[#C49A5A]/5">
-                        {item.badge}
-                      </span>
-                    )}
+              <div 
+                key={i} 
+                className="group relative rounded-[22px] p-[30px] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(212,175,55,0.35)] shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-[12px] hover:-translate-y-2 transition-all duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] overflow-hidden"
+                style={{ 
+                  background: 'radial-gradient(circle at top right, #4E6F2A 0%, #254B34 22%, #163A2D 48%, #0F2B24 72%, #081A17 100%)' 
+                }}
+              >
+                {/* Hover Gradient Overlay */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] z-0 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle at top right, #6A8D39 0%, #356046 25%, #1F4735 50%, #123126 75%, #081A17 100%)'
+                  }}
+                />
+                
+                {/* Ambient glow inside card */}
+                <div className="absolute top-[-10%] right-[-10%] w-32 h-32 bg-[rgba(78,111,42,0.15)] rounded-full blur-[40px] z-0 pointer-events-none group-hover:bg-[rgba(106,141,57,0.25)] transition-colors duration-[450ms]" />
+
+                {/* Content Container */}
+                <div className="relative z-10 flex items-start gap-5 w-full h-full">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-full border border-[rgba(212,175,55,0.18)] flex items-center justify-center shrink-0 bg-[rgba(255,255,255,0.05)] group-hover:shadow-[0_0_20px_rgba(212,175,55,0.25)] transition-shadow duration-[450ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]">
+                    <item.icon className="w-5 h-5 text-[#D4AF37] stroke-[1.5]" />
                   </div>
-                  <p className="text-[#F8F4EC]/60 font-sans text-[12px] leading-[1.6]">{item.desc}</p>
+                  
+                  {/* Text */}
+                  <div className="flex flex-col flex-1">
+                    <div className="flex flex-col items-start gap-2 mb-3">
+                      <h4 className="text-[#FFF9F0] font-serif text-[18px] md:text-[20px] font-bold leading-tight">{item.title}</h4>
+                      {item.badge && (
+                        <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-[4px] border border-[rgba(212,175,55,0.35)] text-[#D4AF37] uppercase bg-[rgba(212,175,55,0.05)]">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[rgba(240,233,220,0.78)] font-sans text-[12px] leading-[1.6]">{item.desc}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1156,25 +1173,25 @@ export default function HomePage() {
 
       {/* --- END MASTER PLANTATION SECTION --- */}
 {/* 8.5 Estimate Your Red Sandalwood Wealth Section */}
-      <section id="calculator" className="py-12 md:py-16 bg-gradient-to-br from-[#061F18] to-[#031A14] text-[#F7F0E4] relative z-20">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
+      <section id="calculator" className="py-16 md:py-24 bg-gradient-to-b from-[#0F3524] via-[#0A2418] to-[#06150E] text-[#F7F0E4] relative z-20 overflow-hidden">
+        {/* Soft Ambient Spotlights mimicking the reference */}
+        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#1A4D35]/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#C49A5A]/5 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 md:px-6 w-full relative z-10">
           {/* Top Header */}
-          <div className="flex flex-col items-center text-center mb-12">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#C49A5A]"></div>
-              <span className="text-[#C49A5A] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase font-sans flex items-center gap-2">
-                PLAN YOUR FUTURE
-              </span>
-              <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#C49A5A]"></div>
-            </div>
+          <div className="flex flex-col items-center text-center mb-16">
+            <span className="text-[#D9B36D] text-[10px] md:text-[11px] font-bold tracking-[0.25em] uppercase font-sans flex items-center gap-2 mb-6">
+              Plan Your Future
+            </span>
             <h2 
-              className="font-serif text-3xl md:text-[48px] font-bold leading-tight font-display mb-4" 
+              className="font-serif text-4xl md:text-[56px] lg:text-[64px] font-medium leading-[1.1] font-display mb-6 text-[#F2E8D5] drop-shadow-sm" 
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
-              Estimate Your <span className="text-[#C49A5A]">Red Sandalwood Wealth</span>
+              Estimate Your <br className="md:hidden" /><span className="text-[#D9B36D] italic">Red Sandalwood Wealth</span>
             </h2>
             <p 
-              className="text-[#B8C7BC] text-sm md:text-[18px] max-w-3xl"
+              className="text-[#9DB0A3] text-sm md:text-[17px] max-w-2xl font-light leading-relaxed"
               style={{ fontFamily: "'Lora', serif" }}
             >
               See how your plantation investment can grow over time based on plot size, tree count, survival rate, timber yield, and market value.
@@ -1186,14 +1203,18 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="rounded-[28px] p-6 md:p-8 lg:p-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.45)] border border-[#C49A5A]/35 mb-8"
-            style={{ background: 'linear-gradient(145deg, rgba(6,31,24,0.95), rgba(3,12,10,0.98))' }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full bg-[#081F15]/80 backdrop-blur-[40px] border border-[#D9B36D]/20 rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.6)] p-2 md:p-4 lg:p-6 relative overflow-hidden"
           >
-            <div className="w-full">
+            {/* Inner Glows for the Dashboard Card */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ background: 'rgba(217,179,109,0.06)' }} />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ background: 'rgba(26,77,53,0.1)' }} />
+
+            <div className="relative z-10 w-full">
               <InvestmentCalculator />
             </div>
           </motion.div>
+
 
           {/* BOTTOM BENEFIT STRIP */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-20">
@@ -1214,7 +1235,7 @@ export default function HomePage() {
                 {idx !== 0 && (
                   <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-12 bg-white/10" />
                 )}
-                <div className="mt-1 bg-[#12372A]/50 p-2.5 rounded-[12px] border border-[#C49A5A]/20 shrink-0 shadow-inner">
+                <div className="mt-1 bg-gradient-to-br from-[#12402B] to-[#0A2418] p-2.5 rounded-[12px] border border-[#D9B36D]/30 shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
                   <item.icon className="w-5 h-5 text-[#D9B36D]" />
                 </div>
                 <div className="flex flex-col">
@@ -1450,28 +1471,28 @@ export default function HomePage() {
       </section>
 
 {/* 8. Testimonials Section */}
-      <section className="py-12 md:py-16 bg-[#F7F0E4]">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-[#FAF6EE] to-[#F6F0E5]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             
             {/* Left side text and reviews */}
             <div className="lg:col-span-8">
-              <span className="text-[#8B5E3C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">TRUSTED BY VISIONARY INVESTORS</span>
+              <span className="text-[#A1783C] text-xs font-bold tracking-[0.2em] uppercase block mb-3 font-sans">TRUSTED BY VISIONARY INVESTORS</span>
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
-                <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#12372A] font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#14372C] font-display" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Their Words,<br />Our Pride.
                 </h2>
                 <div className="flex gap-4 flex-wrap mb-2">
                   <button 
                     onClick={() => setIsReviewModalOpen(true)}
-                    className="bg-transparent border-2 border-[#C49A5A] hover:bg-[#C49A5A]/10 text-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
+                    className="bg-[#D4AF37] hover:bg-[#C89B3C] text-[#14372C] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
                   >
                     <Star className="w-3.5 h-3.5" /> Write a Review
                   </button>
                   {activeTestimonials.length > 6 && (
                     <button 
                       onClick={() => setShowAllReviews(!showAllReviews)}
-                      className="bg-[#C49A5A] hover:bg-[#B38747] text-white border-2 border-[#C49A5A] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
+                      className="bg-[#D4AF37] hover:bg-[#C89B3C] text-[#14372C] font-bold uppercase text-[10px] tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 flex items-center gap-2 w-fit"
                     >
                       {showAllReviews ? 'Show Less Reviews' : 'Show More Reviews'}
                     </button>
@@ -1481,25 +1502,25 @@ export default function HomePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeTestimonials.slice(0, showAllReviews ? activeTestimonials.length : 6).map((test, i) => (
-                  <div key={i} className="bg-white border border-[#8B5E3C]/15 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                  <div key={i} className="bg-gradient-to-b from-[#FFFDF8] to-[#F8F3E8] border border-[rgba(201,155,69,0.18)] rounded-3xl p-6 shadow-[0_12px_35px_rgba(20,35,25,0.08)] hover:shadow-[0_18px_40px_rgba(20,35,25,0.12)] hover:border-[#D4AF37] hover:from-[#FFFCF5] hover:to-[#FFFCF5] transition-all flex flex-col justify-between">
                     <div>
-                      <div className="flex gap-0.5 text-[#C49A5A] mb-4">
+                      <div className="flex gap-0.5 text-[#D4AF37] mb-4">
                         {[...Array(test.stars)].map((_, idx) => (
-                          <Star key={idx} className="w-3.5 h-3.5 fill-[#C49A5A]" />
+                          <Star key={idx} className="w-3.5 h-3.5 fill-[#D4AF37]" />
                         ))}
                       </div>
-                      <p className="text-[#2F3E2F] text-xs italic leading-relaxed mb-6 font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                      <p className="text-[#4C4A45] text-xs italic leading-relaxed mb-6 font-serif" style={{ fontFamily: "'Lora', serif" }}>
                         "{test.text}"
                       </p>
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase text-[#12372A] font-sans">{test.name}</h4>
+                      <h4 className="text-xs font-bold uppercase text-[#14372C] font-sans">{test.name}</h4>
                       <div className="flex items-center gap-1">
-                        <span className="text-[10px] text-[#8B5E3C] font-bold font-sans">{test.location}</span>
+                        <span className="text-[10px] text-[#7C776C] font-bold font-sans">{test.location}</span>
                         {test.investment && (
                           <>
-                            <span className="text-[#C49A5A]/50 text-[10px]">•</span>
-                            <span className="text-[10px] text-[#12372A] font-bold uppercase tracking-wider font-sans bg-[#C49A5A]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
+                            <span className="text-[#D4AF37]/50 text-[10px]">•</span>
+                            <span className="text-[10px] text-[#7C776C] font-bold uppercase tracking-wider font-sans bg-[#D4AF37]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
                           </>
                         )}
                       </div>
@@ -1511,7 +1532,7 @@ export default function HomePage() {
 
             {/* Right side visual */}
             <div className="lg:col-span-4 flex justify-center">
-              <div className="group relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 hover:shadow-[0_0_30px_rgba(196,154,90,0.35)] transition-shadow duration-300">
+              <div className="group relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden border-[3px] border-[#D4AF37] shadow-[0_8px_20px_rgba(212,175,55,0.18)] transition-shadow duration-300">
                 <img 
                   src="/investment-growth.jpg" 
                   alt="Investment Growth and Wealth Creation" 
