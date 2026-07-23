@@ -62,7 +62,7 @@ export default function InvestmentCalculator() {
   const [plantationAge, setPlantationAge] = useState(12);
   const [survivalRate, setSurvivalRate] = useState(100);
   const [yieldPerTree, setYieldPerTree] = useState(100);
-  const [marketPricePerTon, setMarketPricePerTon] = useState(15000000);
+  const [marketPricePerTon, setMarketPricePerTon] = useState(5000000);
   const [marketData, setMarketData] = useState<any>(null);
   const [isLoadingMarketData, setIsLoadingMarketData] = useState(true);
   const [marketDataError, setMarketDataError] = useState<string | null>(null);
@@ -72,108 +72,8 @@ export default function InvestmentCalculator() {
 
   // Fetch Market Data from API with robust fallbacks
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    const fetchMarketPriceWithFallbacks = async (isRetry = false) => {
-      try {
-        if (!isRetry) {
-          setIsLoadingMarketData(true);
-        }
-        setMarketDataError(null);
-        console.log('API Request Started');
-
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
-        let response = await fetch(`${apiUrl}/market-price`);
-        
-        // Secondary fallback if primary fails
-        if (!response.ok) {
-          console.log('API Error: Primary failed. Attempting secondary backup API...');
-          response = await fetch(`${apiUrl}/market-price-backup`);
-          if (response.ok) {
-            console.log('Using Backup API successfully.');
-          }
-        }
-
-        if (!response.ok) {
-          throw new Error(`API Error: Status ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('API Response Received:', data);
-
-        // Validate the response flexibly
-        const price = data.price || data.marketPrice || data.currentPrice || data.value;
-        
-        // If invalid value, retry once after 5s
-        if (price === null || price === undefined || isNaN(price) || price === 0) {
-          if (!isRetry) {
-            console.warn('Invalid price received. Retrying in 5 seconds...');
-            timeoutId = setTimeout(() => fetchMarketPriceWithFallbacks(true), 5000);
-            return;
-          } else {
-            throw new Error('Invalid price received after retry');
-          }
-        }
-
-        console.log('Price Parsed Successfully:', price);
-        console.log('Last Updated:', data.lastUpdated);
-
-        const validData = {
-          marketPrice: price,
-          lastUpdated: data.lastUpdated || new Date().toISOString(),
-          source: data.source || 'Government Auction / Verified Market Data',
-          verified: data.verified !== false,
-          grade: data.grade || 'A-Grade Indian Red Sandalwood',
-          unit: data.unit || 'Ton'
-        };
-
-        setMarketData(validData);
-        setMarketPricePerTon(price);
-
-        // Cache the last successful value
-        localStorage.setItem('cachedMarketPrice', JSON.stringify({
-          ...validData,
-          cachedAt: new Date().getTime()
-        }));
-        
-        setIsLoadingMarketData(false);
-      } catch (err: any) {
-        console.log('API Error:', err.message);
-        
-        // If both fail, check cache
-        const cachedStr = localStorage.getItem('cachedMarketPrice');
-        if (cachedStr) {
-          try {
-            const cached = JSON.parse(cachedStr);
-            const now = new Date().getTime();
-            // Cache valid for 24 hours (24 * 60 * 60 * 1000)
-            if (now - cached.cachedAt < 86400000) {
-              console.log('Using Cached Value');
-              setMarketData({ ...cached, isCached: true });
-              setMarketPricePerTon(cached.marketPrice);
-              setIsLoadingMarketData(false);
-              return;
-            }
-          } catch (e) {
-            console.error('Error parsing cache', e);
-          }
-        }
-        
-        // Only if everything fails
-        if (!isRetry) {
-           setMarketDataError('Market price is temporarily unavailable.');
-           setIsLoadingMarketData(false);
-        }
-      }
-    };
-
-    fetchMarketPriceWithFallbacks();
-    // Auto refresh every 12 hours
-    const interval = setInterval(() => fetchMarketPriceWithFallbacks(), 12 * 60 * 60 * 1000);
-    return () => {
-      clearInterval(interval);
-      if (timeoutId) clearTimeout(timeoutId);
-    };
+    // Disabled API fetch to use the fixed 50 Lakhs per ton logic as requested
+    setIsLoadingMarketData(false);
   }, []);
 
   // Handle Plot Size Change

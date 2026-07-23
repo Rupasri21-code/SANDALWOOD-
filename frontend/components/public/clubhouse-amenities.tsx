@@ -24,7 +24,7 @@ const clubhouseAmenities = [
   { title: 'Modern Gym & Fitness Area', desc: 'Fully equipped fitness center to prioritize your health and wellness.', icon: Dumbbell },
   { title: 'Swimming Pool', desc: 'Elegant, temperature-controlled pool offering a relaxing oasis.', icon: Waves },
   { title: 'Children\'s Play Area', desc: 'Safe, dedicated recreational zones with premium outdoor equipment.', icon: Smile },
-  { title: 'Mini Theater', desc: 'Private, state-of-the-art screening room for exclusive entertainment experiences.', icon: Film },
+  { title: 'Open Air Theater', desc: 'Exclusive outdoor venue for premium cinematic and entertainment experiences under the stars.', icon: Film },
   { title: 'Organic Dining', desc: 'On-site restaurant serving chef-curated meals at subsidized rates.', icon: Utensils, badge: 'EXCLUSIVE' },
   { title: 'Landscaped Gardens', desc: 'Beautifully curated gardens creating a peaceful environment.', icon: TreePine },
   { title: 'Internal Roads', desc: 'Wide, well-planned internal roads ensuring smooth movement.', icon: Map },

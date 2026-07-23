@@ -61,6 +61,7 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import SiteVisitSection from '@/components/public/site-visit-section';
 import InvestmentCalculator from '@/components/public/investment-calculator';
+import WhyRedSandalwood from '@/components/public/why-red-sandalwood';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import {
@@ -1074,7 +1075,7 @@ export default function HomePage() {
               },
               { 
                 icon: Landmark, 
-                title: 'VIP Srisailam Darshan', 
+                title: 'Srisailam Darshanam Pass', 
                 badge: 'ANNUAL BENEFIT',
                 desc: 'Receive an annual complimentary VIP Darshan pass for 3-4 family members, valid for 12 years, to seek blessings with ease.'
               },
@@ -1172,6 +1173,7 @@ export default function HomePage() {
       </section>
 
       {/* --- END MASTER PLANTATION SECTION --- */}
+      <WhyRedSandalwood />
 {/* 8.5 Estimate Your Red Sandalwood Wealth Section */}
       <section id="calculator" className="py-16 md:py-24 bg-gradient-to-b from-[#0F3524] via-[#0A2418] to-[#06150E] text-[#F7F0E4] relative z-20 overflow-hidden">
         {/* Soft Ambient Spotlights mimicking the reference */}
