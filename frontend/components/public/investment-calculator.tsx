@@ -22,7 +22,7 @@ const formatCurrency = (value: number) => {
 };
 
 // Animated Number Component
-const AnimatedNumber = ({ value, prefix = '', suffix = '', duration = 1 }) => {
+const AnimatedNumber = ({ value, prefix = '', suffix = '', duration = 1 }: { value: number; prefix?: string; suffix?: string; duration?: number }) => {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
