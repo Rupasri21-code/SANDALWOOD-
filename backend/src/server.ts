@@ -7,22 +7,21 @@ const PORT = env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Test Database connection
     console.log('🔄 Connecting to database...');
     await db.$connect();
     console.log('✅ Supabase PostgreSQL Database connected successfully!');
-    
-    // Start automated backend tasks
     initializeCronJobs();
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running in ${env.NODE_ENV} mode on port ${PORT}`);
-      console.log(`🔗 API Base URL: http://localhost:${PORT}/api/v1`);
-    });
+    if (process.env.NODE_ENV !== 'production') {
+      app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+      });
+    }
   } catch (error) {
-    console.error('❌ Failed to connect to database or start server:', error);
-    process.exit(1);
+    console.error('❌ Database connection error:', error);
   }
 };
 
 startServer();
+
+export default app;
