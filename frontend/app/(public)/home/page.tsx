@@ -205,11 +205,11 @@ const benefits = [
 ];
 
 const initialProgressionImages = [
-  { url: '/gallery_01.png', title: 'Raw Land' },
-  { url: '/gallery_02.jpg', title: 'Fresh Sandalwood Saplings' },
-  { url: '/gallery_03.jpg', title: '3-Month Growth Stage' },
-  { url: '/gallery_04.jpg', title: 'Developed Sandalwood Plantation' },
-  { url: '/gallery_05.png', title: 'Mature Sandalwood Trees' },
+  { url: '/media__1784542732304.jpg', title: 'Aerial Plantation View' },
+  { url: '/media__1784542781834.jpg', title: 'Drip Irrigation & Cultivation' },
+  { url: '/media__1784542836552.jpg', title: 'Young Sandalwood Rows' },
+  { url: '/media__1784543215344.jpg', title: 'Mature Sandalwood Trees' },
+  { url: '/media__1784543244820.jpg', title: 'Sandalwood Estate Forest' },
 ];
 
 const initialTestimonials = [
@@ -650,14 +650,14 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-[68px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6 whitespace-pre-line"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6 whitespace-nowrap"
             style={{ 
               color: '#F7F2E8',
               fontFamily: "'Cormorant Garamond', serif", 
               textShadow: '0 4px 24px rgba(0, 0, 0, 0.5)' 
             }}
           >
-            {homeContent.heroTitle}
+            {homeContent.heroTitle ? homeContent.heroTitle.replace(/\n/g, ' ') : 'Invest in Nature. Grow Your Wealth.'}
           </h1>
 
           {/* Gold Leaf Divider */}
@@ -1415,8 +1415,8 @@ export default function HomePage() {
                     src={img.url} 
                     alt={img.title} 
                     onError={(e) => { 
-                      if (!e.currentTarget.src.includes('gallery_01.png')) {
-                        e.currentTarget.src = '/gallery_01.png'; 
+                      if (!e.currentTarget.src.includes('media__1784542732304.jpg')) {
+                        e.currentTarget.src = '/media__1784542732304.jpg'; 
                       }
                     }}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
