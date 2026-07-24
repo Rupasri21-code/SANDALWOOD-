@@ -823,7 +823,7 @@ export default function HomePage() {
               
               {/* Story Content */}
               <div className="flex flex-col gap-6 mb-12 text-[#4F5D55] text-base md:text-lg xl:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular purpose: to pioneer a secure pathway for generational wealth through managed agroforestry. Specializing in high-yield, premium Sandalwood cultivation, we integrate advanced agricultural methods with verified, clear-title land ownership.\n\nOur foundation is built on absolute transparency, legal security, and sustainable forest management. Over the years, we have evolved into a trusted heritage partner, successfully aligning high-yielding green investments with active ecological preservation.`)
+                {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular vision: to create a secure and professionally managed destination where sustainable wealth creation and meaningful experiences coexist. Rooted in premium Red Sandalwood cultivation, the project combines advanced agroforestry practices with legally verified, clear-title land ownership, offering a foundation built on transparency, responsibility, and long-term value.\n\nMore than a plantation, Chandhan Nilayam has been thoughtfully planned as a nature-inspired lifestyle retreat where investors and their families can reconnect with nature, celebrate special occasions, enjoy weekend getaways, and create lasting memories. The community features a premium clubhouse for gatherings and events, beautifully landscaped gardens, walking tracks, a semi-open fitness zone, children's play area, visitor seating spaces, scenic hill views, and a golf practice area designed to enhance leisure and recreation in a peaceful natural environment.\n\nTo ensure comfort, convenience, and peace of mind, the development also includes wide internal roads, organized parking facilities, professionally managed 24×7 security, secure compound fencing, and seamless connectivity to nearby towns and essential services. Every element has been carefully planned to deliver a harmonious balance between nature, modern infrastructure, and premium community living.\n\nToday, Chandhan Nilayam stands as more than an investment—it is a destination where responsible plantation management, sustainable living, recreational experiences, and enduring family moments come together, creating a Sustainable Future that can be appreciated for generations to come.`)
                   .split('\n')
                   .filter((p: string) => p.trim() !== '')
                   .map((paragraph: string, idx: number) => (
@@ -896,7 +896,7 @@ export default function HomePage() {
                       Our Vision
                     </h4>
                     <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
-                      {publicContent.companyVision || "To be the most trusted name in sustainable sandalwood investments, creating long-term value for investors and a lasting positive impact on the environment."}
+                      {publicContent.companyVision || "To build lasting trust by making every investor our highest priority. We aim to provide a secure, transparent, and professionally managed sandalwood investment opportunity that delivers sustainable long-term value while creating a nature-inspired destination where investments, relationships, and experiences grow together."}
                     </p>
                   </div>
                   
@@ -912,7 +912,7 @@ export default function HomePage() {
                       Our Mission
                     </h4>
                     <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
-                      {publicContent.companyMission || "To deliver high-growth green investment opportunities through scientific plantation management, transparent operations, and a commitment to ecological restoration."}
+                      {publicContent.companyMission || "To deliver sustainable, long-term green investment opportunities through scientific plantation management, advanced drip irrigation systems, transparent operations, and environmentally responsible practices, ensuring healthy plantation growth while maximizing long-term value for our investors and contributing to ecological restoration."}
                     </p>
                   </div>
                   
