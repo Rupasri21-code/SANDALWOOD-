@@ -101,7 +101,7 @@ export default function WhyRedSandalwood() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[#88998C] text-[11px] uppercase tracking-wider font-semibold mb-1 flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> Estimated Value</span>
-                    <span className="text-[#2E7D32] text-xl font-bold">₹50 Lakhs+</span>
+                    <span className="text-[#2E7D32] text-xl font-bold">₹1 Crore+</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[#88998C] text-[11px] uppercase tracking-wider font-semibold mb-1 flex items-center gap-1.5"><LineChart className="w-3.5 h-3.5" /> Annual Growth</span>
@@ -116,11 +116,11 @@ export default function WhyRedSandalwood() {
                 {/* Checklist */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                   {[
-                    'Scientific Plantation', 'Drip Irrigation', 'Government Compliant', 
-                    'Transparent Ownership', 'Low Maintenance', 'Eco Friendly', 
-                    'Premium Clubhouse Access', 'Resort Lifestyle', 'International Golf Course', 
-                    '24×7 Security', 'Connecting Roads'
-                  ].map((item, i) => (
+                      'Scientific Plantation', 'Drip Irrigation', 'Government Compliant', 
+                      'Transparent Ownership', 'Low Maintenance', 'Eco Friendly', 
+                      'Premium Clubhouse Access', 'Resort Lifestyle', 'International Golf Course', 
+                      '24×7 Security', 'Connecting Roads', 'EV Charging Station'
+                    ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="w-5 h-5 rounded-full bg-[#D4AF37]/10 flex items-center justify-center shrink-0">
                         <Check className="w-3 h-3 text-[#D4AF37] stroke-[3]" />
@@ -129,6 +129,10 @@ export default function WhyRedSandalwood() {
                     </div>
                   ))}
                 </div>
+
+                  <p className="text-[#5A6D60] text-sm mt-4 max-w-2xl font-medium" style={{ fontFamily: "'Lora', serif" }}>
+                    EV Charging Station: On-site electric vehicle charging infrastructure provides sustainable mobility options for residents and visitors, enhances property credentials for eco-conscious buyers, and future-proofs the development for increasing electric vehicle adoption.
+                  </p>
 
                 <div className="mt-auto pt-4">
                   <a href="#investor-inquiry" className="w-full flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#C49A5A] text-white font-bold uppercase tracking-wider text-sm py-5 rounded-2xl transition-colors shadow-lg shadow-[#D4AF37]/30">
@@ -209,7 +213,7 @@ export default function WhyRedSandalwood() {
             <div className="flex flex-col gap-2 relative z-10">
               <div className="flex justify-between items-end">
                 <span className="text-[#12372A] font-bold text-lg">Red Sandalwood</span>
-                <span className="text-[#2E7D32] font-bold text-xl drop-shadow-sm">₹50,00,000+</span>
+                <span className="text-[#2E7D32] font-bold text-xl drop-shadow-sm">₹1,00,00,000+</span>
               </div>
               <div className="w-full bg-[#F8F6F1] h-6 rounded-full overflow-hidden p-1 shadow-inner">
                 <motion.div 
@@ -256,7 +260,7 @@ export default function WhyRedSandalwood() {
             </h3>
             
             <div className="flex items-center justify-center gap-4 mb-12">
-              {[500000, 1000000, 2500000, 5000000].map((amt) => (
+              {[500000, 1000000, 2500000, 10000000].map((amt) => (
                 <button
                   key={amt}
                   onClick={() => setInvestmentAmount(amt)}
@@ -276,8 +280,8 @@ export default function WhyRedSandalwood() {
               <div className="col-span-2 md:col-span-4 bg-gradient-to-br from-[#D4AF37] to-[#C49A5A] rounded-[24px] p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
                 <div className="flex flex-col text-left">
                   <span className="text-white/80 text-[11px] uppercase tracking-widest font-bold">Red Sandalwood Final Value</span>
-                  <span className="text-4xl md:text-5xl font-bold text-white drop-shadow-md">
-                    <AnimatedNumber value={investmentAmount * 5} prefix="₹" suffix="+" />
+                    <span className="text-4xl md:text-5xl font-bold text-white drop-shadow-md">
+                    <AnimatedNumber value={investmentAmount * 10} prefix="₹" suffix="+" />
                   </span>
                 </div>
                 <div className="bg-white/20 px-6 py-3 rounded-full border border-white/30 backdrop-blur-sm">

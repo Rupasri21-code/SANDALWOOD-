@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/lib/auth-context';
 import { Toaster } from '@/components/ui/sonner';
+import WhatsAppWidget from '@/components/public/whatsapp-widget';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chandhannilayam.com';
 
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           {children}
           <Toaster richColors position="top-right" />
+          <WhatsAppWidget />
         </AuthProvider>
       </body>
     </html>

@@ -53,7 +53,8 @@ import {
   Calendar,
   Building,
   AlertTriangle,
-  Castle
+  Castle,
+  Zap
 } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
 import { Button } from '@/components/ui/button';
@@ -71,6 +72,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ClubhouseAmenities from '@/components/public/clubhouse-amenities';
+import WhatsAppWidget from '@/components/public/whatsapp-widget';
 
 // Form validation schema
 const inquirySchema = z.object({
@@ -1095,6 +1097,12 @@ export default function HomePage() {
                 desc: 'The entire estate is fortified with robust perimeter fencing and controlled access points to protect against unauthorized entry.'
               },
               { 
+                icon: Zap, 
+                title: 'EV Charging Station', 
+                badge: 'ECO-FRIENDLY',
+                desc: 'Dedicated high-speed electric vehicle charging hubs across the estate, ensuring seamless eco-friendly mobility and convenience for plot owners.'
+              },
+              { 
                 icon: FlagTriangleRight, 
                 title: 'International Golf Course', 
                 desc: 'Enjoy access to an international-standard golf course, perfectly landscaped for premium sporting and networking.'
@@ -2080,6 +2088,9 @@ export default function HomePage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Floating WhatsApp Widget */}
+      <WhatsAppWidget />
     </div>
   );
 }

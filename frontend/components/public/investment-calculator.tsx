@@ -60,9 +60,9 @@ export default function InvestmentCalculator() {
   const [plotSize, setPlotSize] = useState('12.5 Cents');
   const [treeCount, setTreeCount] = useState(50);
   const [plantationAge, setPlantationAge] = useState(12);
-  const [survivalRate, setSurvivalRate] = useState(100);
+  const [survivalRate, setSurvivalRate] = useState(90);
   const [yieldPerTree, setYieldPerTree] = useState(100);
-  const [marketPricePerTon, setMarketPricePerTon] = useState(5000000);
+  const [marketPricePerTon, setMarketPricePerTon] = useState(10000000);
   const [marketData, setMarketData] = useState<any>(null);
   const [isLoadingMarketData, setIsLoadingMarketData] = useState(true);
   const [marketDataError, setMarketDataError] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function InvestmentCalculator() {
 
   // Fetch Market Data from API with robust fallbacks
   useEffect(() => {
-    // Disabled API fetch to use the fixed 50 Lakhs per ton logic as requested
+    // Disabled API fetch to use the fixed ₹1 Crore per ton logic as requested
     setIsLoadingMarketData(false);
   }, []);
 
@@ -301,8 +301,8 @@ export default function InvestmentCalculator() {
               min="60"
               max="100"
               value={survivalRate}
-              onChange={(e) => setSurvivalRate(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D]"
+              disabled
+              className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-not-allowed accent-[#D9B36D] opacity-70"
             />
           </div>
 
@@ -316,8 +316,8 @@ export default function InvestmentCalculator() {
               min="100"
               max="300"
               value={yieldPerTree}
-              onChange={(e) => setYieldPerTree(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D]"
+              disabled
+              className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-not-allowed accent-[#D9B36D] opacity-70"
             />
           </div>
 
@@ -348,14 +348,10 @@ export default function InvestmentCalculator() {
               <select
                 value={profitSharingRatio}
                 onChange={(e) => setProfitSharingRatio(e.target.value)}
-                className="w-full h-[44px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#F7F0E4] rounded-xl px-3 text-sm focus:outline-none focus:border-[#D9B36D] appearance-none"
+                disabled
+                className="w-full h-[44px] bg-[#0B241C] border border-[#C49A5A]/35 text-[#88998C] rounded-xl px-3 text-sm appearance-none cursor-not-allowed opacity-70"
               >
-                <option value="100%">100% Investor</option>
-                <option value="80:20">80:20</option>
-                <option value="70:30">70:30</option>
-                <option value="60:40">60:40</option>
                 <option value="50:50">50:50</option>
-                <option value="40:60">40:60</option>
               </select>
               <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-[#C49A5A] pointer-events-none" />
             </div>
