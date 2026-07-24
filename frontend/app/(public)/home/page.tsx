@@ -383,7 +383,15 @@ export default function HomePage() {
         }
 
         if (publicRes?.data?.data) {
-          setPublicContent(publicRes.data.data);
+          setPublicContent((prev: any) => {
+            const data = publicRes.data.data;
+            return {
+              aboutStory: data.aboutStory && data.aboutStory.trim() !== '' ? data.aboutStory : prev.aboutStory,
+              locationAdvantages: data.locationAdvantages && data.locationAdvantages.trim() !== '' ? data.locationAdvantages : prev.locationAdvantages,
+              companyVision: data.companyVision && data.companyVision.trim() !== '' ? data.companyVision : prev.companyVision,
+              companyMission: data.companyMission && data.companyMission.trim() !== '' ? data.companyMission : prev.companyMission,
+            };
+          });
         }
 
         if (galleryRes?.data?.data && galleryRes.data.data.length > 0) {
