@@ -396,7 +396,7 @@ export default function HomePage() {
 
         if (galleryRes?.data?.data && galleryRes.data.data.length > 0) {
           const validGallery = galleryRes.data.data.filter((item: any) => 
-            item.image_url && typeof item.image_url === 'string' && item.image_url.trim().startsWith('http')
+            item.image_url && typeof item.image_url === 'string' && item.image_url.trim() !== ''
           );
 
           if (validGallery.length > 0) {
