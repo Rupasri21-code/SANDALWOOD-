@@ -364,15 +364,15 @@ export default function InvestmentCalculator() {
             </div>
             <input
               type="range"
-              min="1000000"
+              min="5000000"
               max="25000000"
               step="100000"
-              value={marketPricePerTon}
+              value={marketPricePerTon < 5000000 ? 5000000 : marketPricePerTon}
               onChange={(e) => setMarketPricePerTon(parseInt(e.target.value))}
               className="w-full h-1.5 bg-[#0B241C] rounded-lg appearance-none cursor-pointer accent-[#D9B36D]"
             />
             <div className="flex justify-between mt-1">
-                <span className="text-[10px] text-[#88998C]">₹10 L</span>
+                <span className="text-[10px] text-[#88998C]">₹50 L</span>
                 <span className="text-[10px] text-[#88998C]">₹2.5 Cr</span>
             </div>
             

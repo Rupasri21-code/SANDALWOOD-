@@ -275,7 +275,7 @@ const faqData = [
   },
   {
     question: "Will investors receive complimentary Srisailam Darshan tickets?",
-    answer: "Yes, as a token of appreciation and to welcome our investors into the Chandhan Nilayam family, we provide complimentary VIP Darshan tickets to the sacred Srisailam temple during their visits to the plantation site."
+    answer: "Yes, as a token of appreciation and to welcome our investors into the Chandhan Nilayam family, we provide complimentary Srisailam Darshan passes during their visits to the plantation site."
   },
   {
     question: "How can investors monitor their plantation and investment progress?",
@@ -743,7 +743,7 @@ export default function HomePage() {
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  400+
+                  500+
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
                   PREMIUM PLOTS
@@ -768,17 +768,17 @@ export default function HomePage() {
               <div className="absolute right-0 top-1/2 -translate-y-1/2 h-[50%] w-[1px] hidden lg:block"><div className="h-full w-full bg-[#D9B36D]/20" /></div>
             </div>
 
-            {/* Stat 4: Investors */}
+            {/* Stat 4: Clubhouse */}
             <div className="flex items-center gap-3.5 group/item relative px-2 lg:px-6 pt-4 lg:pt-0">
               <div className="relative flex items-center justify-center w-12 h-12 md:w-[54px] md:h-[54px] rounded-full border border-[#D9B36D]/30 flex-shrink-0 group-hover/item:border-[#D9B36D]/60 transition-colors duration-500 bg-[#D9B36D]/5">
-                <Users className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
+                <Building2 className="w-5.5 h-5.5 md:w-6 md:h-6 text-[#D9B36D] relative z-10 transition-transform duration-500 group-hover/item:-translate-y-1" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-2xl md:text-[36px] font-bold tracking-tight leading-none transition-transform duration-500 group-hover/item:scale-102 select-none origin-left text-[#D9B36D]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  {homeContent.statsInvestors || '500+'}
+                  LUXURY
                 </span>
                 <span className="text-[9px] md:text-[11px] font-semibold tracking-[1px] uppercase select-none mt-1 leading-tight animate-none" style={{ color: '#F7F2E8', fontFamily: "'Montserrat', sans-serif" }}>
-                  HAPPY INVESTORS
+                  CLUBHOUSE
                 </span>
               </div>
             </div>
@@ -786,13 +786,13 @@ export default function HomePage() {
         </div>
       </section>
 
-            {/* 4. About Our Heritage / Vision & Mission Section */}
+      {/* 4. About Our Heritage / Vision & Mission Section (Editorial 2-Column Master Reference Blueprint) */}
       <section id="about-heritage" className="py-[80px] xl:py-[100px] bg-[#F7F0E4] relative overflow-hidden">
         <div className="max-w-[1480px] mx-auto px-6 md:px-12 xl:px-[60px]">
-          <div className="flex flex-col xl:flex-row gap-16 xl:gap-20 items-start">
+          <div className="flex flex-col xl:flex-row gap-12 xl:gap-16 items-start">
             
-            {/* Left Column */}
-            <div className="w-full xl:w-[46%] flex flex-col pt-4">
+            {/* Left Column (38-40% Width) */}
+            <div className="w-full xl:w-[40%] flex flex-col pt-2">
               
               {/* Eyebrow */}
               <div className="flex items-center gap-4 mb-6">
@@ -804,10 +804,10 @@ export default function HomePage() {
               
               {/* Heading */}
               <h2 className="flex flex-col mb-8">
-                <span className="font-serif text-[42px] sm:text-[52px] xl:text-[72px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="font-serif text-[42px] sm:text-[52px] xl:text-[68px] font-bold leading-[1.05] text-[#0B2F24] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   The Chandhan Nilayam
                 </span>
-                <span className="font-serif text-[38px] sm:text-[48px] xl:text-[64px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="font-serif text-[38px] sm:text-[48px] xl:text-[60px] font-normal leading-[1.1] italic text-[#C49A5A] mt-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Story
                 </span>
               </h2>
@@ -816,30 +816,30 @@ export default function HomePage() {
               <div className="flex items-center w-full max-w-md mb-8 opacity-70">
                 <div className="h-[1px] flex-1 bg-[rgba(196,154,90,0.4)]" />
                 <div className="px-3 text-[#C49A5A]">
-                  <Leaf className="w-3 h-3 md:w-4 md:h-4 stroke-[1.5]" />
+                  <Leaf className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.5]" />
                 </div>
                 <div className="h-[1px] flex-1 bg-[rgba(196,154,90,0.4)]" />
               </div>
               
-              {/* Story Content */}
-              <div className="flex flex-col gap-6 mb-12 text-[#4F5D55] text-base md:text-lg xl:text-[19px] leading-[1.7] font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular vision: to create a secure and professionally managed destination where sustainable wealth creation and meaningful experiences coexist. Rooted in premium Red Sandalwood cultivation, the project combines advanced agroforestry practices with legally verified, clear-title land ownership, offering a foundation built on transparency, responsibility, and long-term value.\n\nMore than a plantation, Chandhan Nilayam has been thoughtfully planned as a nature-inspired lifestyle retreat where investors and their families can reconnect with nature, celebrate special occasions, enjoy weekend getaways, and create lasting memories. The community features a premium clubhouse for gatherings and events, beautifully landscaped gardens, walking tracks, a semi-open fitness zone, children's play area, visitor seating spaces, scenic hill views, and a golf practice area designed to enhance leisure and recreation in a peaceful natural environment.\n\nTo ensure comfort, convenience, and peace of mind, the development also includes wide internal roads, organized parking facilities, professionally managed 24×7 security, secure compound fencing, and seamless connectivity to nearby towns and essential services. Every element has been carefully planned to deliver a harmonious balance between nature, modern infrastructure, and premium community living.\n\nToday, Chandhan Nilayam stands as more than an investment—it is a destination where responsible plantation management, sustainable living, recreational experiences, and enduring family moments come together, creating a Sustainable Future that can be appreciated for generations to come.`)
+              {/* Story Content (Two Large Paragraphs) */}
+              <div className="flex flex-col gap-6 mb-10 text-[#4F5D55] text-base md:text-lg xl:text-[17.5px] leading-[1.75] font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                {(publicContent.aboutStory || `Chandhan Nilayam was established with a singular vision: to combine high-yield Red Sandalwood agroforestry with 100% legally verified, clear-title land ownership. Situated near Dornala, every plot is individually registered under the investor's name and managed using scientific agronomy, drip irrigation, and 24/7 security, delivering complete legal certainty and long-term asset value.\n\nBeyond timber cultivation, Chandhan Nilayam is master-planned as a nature-inspired lifestyle retreat for families. Investors enjoy exclusive amenities including a luxury clubhouse, eco-resort suites, landscaped gardens, golf facilities, and complimentary annual Srisailam Darshan passes. It stands as a prestigious legacy destination balancing modern comfort with ecological sustainability for generations to come.`)
                   .split('\n')
                   .filter((p: string) => p.trim() !== '')
                   .map((paragraph: string, idx: number) => (
                     <p key={idx} className="text-justify">
-                      {paragraph.trim()}
+                      {paragraph.replace(/\*\*/g, '').trim()}
                     </p>
                   ))}
               </div>
 
               {/* Bottom Left Quote Panel */}
-              <div className="bg-[#F1E9D8] rounded-[20px] p-8 md:p-10 w-full flex flex-col items-center text-center">
-                <span className="text-[#8B5E3C] text-[11px] md:text-xs font-semibold tracking-[0.15em] uppercase font-sans mb-4">
+              <div className="bg-[#F1E9D8] rounded-[20px] p-7 md:p-8 w-full flex flex-col items-center text-center border border-[#C49A5A]/20 shadow-sm">
+                <span className="text-[#8B5E3C] text-[11px] md:text-xs font-semibold tracking-[0.15em] uppercase font-sans mb-3">
                   PREMIUM SANDALWOOD PLOTS NEAR DORNALA
                 </span>
-                <div className="w-12 h-[2px] bg-[#C49A5A] mb-6 opacity-60" />
-                <p className="text-[#0B2F24] font-serif text-[22px] md:text-[30px] xl:text-[32px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <div className="w-12 h-[2px] bg-[#C49A5A] mb-4 opacity-60" />
+                <p className="text-[#0B2F24] font-serif text-[20px] md:text-[25px] xl:text-[27px] italic leading-[1.4]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Building wealth today.<br />
                   Preserving nature for generations to come.<br />
                   Enjoying exclusive clubhouse and premium resort amenities.
@@ -848,19 +848,19 @@ export default function HomePage() {
 
             </div>
 
-            {/* Right Column */}
-            <div className="w-full xl:w-[54%] relative flex flex-col items-center xl:items-end">
+            {/* Right Column (60-62% Width, Master Reference Blueprint Composition) */}
+            <div className="w-full xl:w-[60%] flex flex-col gap-[20px]">
               
-              {/* Plantation Image */}
-              <div className="relative w-full h-[500px] sm:h-[600px] xl:h-[720px] rounded-[32px] overflow-hidden">
+              {/* 1. Large Hero Image (330-360px Height, Wide Landscape) */}
+              <div className="relative w-full h-[330px] sm:h-[370px] xl:h-[350px] rounded-[24px] overflow-hidden shadow-xl border border-[#C49A5A]/30 shrink-0">
                 <img 
                   src="/our_heritage_image.png"
-                  alt="Our Heritage Image"
-                  className="w-full h-full object-cover object-center"
+                  alt="Our Heritage Plantation"
+                  className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
                 />
               </div>
 
-              {/* Vision & Mission Panel */}
+              {/* 2. Vision & Mission Card (380-420px Height, Dark Green, Centered Header, 2 Equal Columns) */}
               <div 
                 onMouseMove={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
@@ -869,7 +869,7 @@ export default function HomePage() {
                   e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
                   e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
                 }}
-                className="group relative xl:absolute xl:bottom-12 xl:left-[-10%] w-full xl:w-[105%] mt-[-40px] xl:mt-0 bg-gradient-to-br from-[#12402B] to-[#0A2418] border border-[#D9B36D]/30 rounded-[28px] p-8 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-10 overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:border-[#D9B36D]/60"
+                className="group relative w-full bg-gradient-to-br from-[#12402B] to-[#0A2418] border border-[#D9B36D]/30 rounded-[28px] p-8 md:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-10 overflow-hidden transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.6)] hover:border-[#D9B36D]/60 shrink-0"
               >
                 {/* Interactive Cursor Spotlight Glow */}
                 <div 
@@ -879,49 +879,110 @@ export default function HomePage() {
                   }}
                 />
                 
-                {/* Panel Header */}
-                <div className="flex flex-col items-center text-center mb-10">
-                  <h3 className="text-[#F7F0E4] font-serif text-[32px] md:text-[40px] font-semibold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                {/* Centered Panel Title */}
+                <div className="flex flex-col items-center text-center mb-8">
+                  <h3 className="text-[#F7F0E4] font-serif text-[28px] sm:text-[32px] md:text-[34px] font-semibold mb-3 tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                     Vision & Mission
                   </h3>
-                  <div className="w-12 h-[2px] bg-[#D9B36D]" />
+                  <div className="w-16 h-[2px] bg-[#D9B36D]" />
                 </div>
 
-                {/* Panel Content (Two Columns) */}
+                {/* Two Equal Columns (Left Vision, Right Mission, Vertical Divider) */}
                 <div className="flex flex-col md:flex-row gap-8 md:gap-0 relative">
                   
                   {/* Left: Our Vision */}
-                  <div className="flex-1 md:pr-10 xl:pr-12 flex flex-col text-left">
-                    <h4 className="text-[#D9B36D] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  <div className="flex-1 md:pr-8 xl:pr-10 flex flex-col text-left">
+                    <h4 className="text-[#D9B36D] font-serif text-[22px] md:text-[24px] font-medium mb-3 tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Vision
                     </h4>
-                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
+                    <p className="text-[#F7F0E4]/90 text-[14px] md:text-[15px] leading-[1.8] font-sans whitespace-pre-line">
                       {publicContent.companyVision || "To build lasting trust by making every investor our highest priority. We aim to provide a secure, transparent, and professionally managed sandalwood investment opportunity that delivers sustainable long-term value while creating a nature-inspired destination where investments, relationships, and experiences grow together."}
                     </p>
                   </div>
                   
-                  {/* Vertical Divider (Hidden on mobile) */}
+                  {/* Subtle Vertical Divider */}
                   <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-[#D9B36D]/30 -translate-x-1/2" />
                   
-                  {/* Horizontal Divider (Visible only on mobile) */}
-                  <div className="block md:hidden w-full h-[1px] bg-[#D9B36D]/30 my-2" />
+                  {/* Horizontal Divider (Mobile) */}
+                  <div className="block md:hidden w-full h-[1px] bg-[#D9B36D]/30 my-4" />
 
                   {/* Right: Our Mission */}
-                  <div className="flex-1 md:pl-10 xl:pl-12 flex flex-col text-left">
-                    <h4 className="text-[#D9B36D] font-serif text-[24px] md:text-[26px] font-medium mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  <div className="flex-1 md:pl-8 xl:pl-10 flex flex-col text-left">
+                    <h4 className="text-[#D9B36D] font-serif text-[22px] md:text-[24px] font-medium mb-3 tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Our Mission
                     </h4>
-                    <p className="text-[#F7F0E4] text-[15px] md:text-[17px] leading-[1.6] font-sans opacity-90 whitespace-pre-line">
+                    <p className="text-[#F7F0E4]/90 text-[14px] md:text-[15px] leading-[1.8] font-sans whitespace-pre-line">
                       {publicContent.companyMission || "To deliver sustainable, long-term green investment opportunities through scientific plantation management, advanced drip irrigation systems, transparent operations, and environmentally responsible practices, ensuring healthy plantation growth while maximizing long-term value for our investors and contributing to ecological restoration."}
                     </p>
                   </div>
                   
                 </div>
-
               </div>
 
-            </div>
+              {/* 3. Four Feature Cards (Professional 2x2 Grid with Bright Legible Text & Gold Accents) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 w-full">
+                {/* Feature 1: 100% Legal Certainty */}
+                <div className="group relative bg-gradient-to-br from-[#0F3524] via-[#0C2B1D] to-[#081F15] border border-[#D9B36D]/40 hover:border-[#D9B36D]/90 rounded-[24px] p-6 md:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_40px_rgba(18,64,43,0.5)] transition-all duration-300 backdrop-blur-md flex items-start gap-4 h-full min-h-[145px]">
+                  <div className="w-13 h-13 rounded-2xl bg-[#D9B36D]/20 border border-[#D9B36D]/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(217,179,109,0.25)] group-hover:scale-108 group-hover:bg-[#D9B36D]/30 transition-all duration-300">
+                    <ShieldCheck className="w-6 h-6 text-[#D9B36D] group-hover:text-[#FFF8DC] transition-colors" />
+                  </div>
+                  <div className="flex flex-col justify-center my-auto">
+                    <h5 className="text-white font-bold text-[16.5px] md:text-[17.5px] tracking-wide font-sans group-hover:text-[#D9B36D] transition-colors drop-shadow-sm">
+                      100% Legal Certainty
+                    </h5>
+                    <p className="text-[#E8DFC8] font-normal text-[13.5px] md:text-[14px] leading-[1.6] mt-1.5 font-sans">
+                      Clear-title registered plots with complete legal verification.
+                    </p>
+                  </div>
+                </div>
 
+                {/* Feature 2: Scientific Agronomy */}
+                <div className="group relative bg-gradient-to-br from-[#0F3524] via-[#0C2B1D] to-[#081F15] border border-[#D9B36D]/40 hover:border-[#D9B36D]/90 rounded-[24px] p-6 md:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_40px_rgba(18,64,43,0.5)] transition-all duration-300 backdrop-blur-md flex items-start gap-4 h-full min-h-[145px]">
+                  <div className="w-13 h-13 rounded-2xl bg-[#D9B36D]/20 border border-[#D9B36D]/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(217,179,109,0.25)] group-hover:scale-108 group-hover:bg-[#D9B36D]/30 transition-all duration-300">
+                    <Sprout className="w-6 h-6 text-[#D9B36D] group-hover:text-[#FFF8DC] transition-colors" />
+                  </div>
+                  <div className="flex flex-col justify-center my-auto">
+                    <h5 className="text-white font-bold text-[16.5px] md:text-[17.5px] tracking-wide font-sans group-hover:text-[#D9B36D] transition-colors drop-shadow-sm">
+                      Scientific Agronomy
+                    </h5>
+                    <p className="text-[#E8DFC8] font-normal text-[13.5px] md:text-[14px] leading-[1.6] mt-1.5 font-sans">
+                      Drip irrigation & expert sandalwood forest management.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Feature 3: Clubhouse & Resort */}
+                <div className="group relative bg-gradient-to-br from-[#0F3524] via-[#0C2B1D] to-[#081F15] border border-[#D9B36D]/40 hover:border-[#D9B36D]/90 rounded-[24px] p-6 md:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_40px_rgba(18,64,43,0.5)] transition-all duration-300 backdrop-blur-md flex items-start gap-4 h-full min-h-[145px]">
+                  <div className="w-13 h-13 rounded-2xl bg-[#D9B36D]/20 border border-[#D9B36D]/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(217,179,109,0.25)] group-hover:scale-108 group-hover:bg-[#D9B36D]/30 transition-all duration-300">
+                    <Building2 className="w-6 h-6 text-[#D9B36D] group-hover:text-[#FFF8DC] transition-colors" />
+                  </div>
+                  <div className="flex flex-col justify-center my-auto">
+                    <h5 className="text-white font-bold text-[16.5px] md:text-[17.5px] tracking-wide font-sans group-hover:text-[#D9B36D] transition-colors drop-shadow-sm">
+                      Clubhouse & Resort
+                    </h5>
+                    <p className="text-[#E8DFC8] font-normal text-[13.5px] md:text-[14px] leading-[1.6] mt-1.5 font-sans">
+                      Luxury clubhouse amenities & annual Srisailam Darshan passes.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Feature 4: Generational Wealth */}
+                <div className="group relative bg-gradient-to-br from-[#0F3524] via-[#0C2B1D] to-[#081F15] border border-[#D9B36D]/40 hover:border-[#D9B36D]/90 rounded-[24px] p-6 md:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_40px_rgba(18,64,43,0.5)] transition-all duration-300 backdrop-blur-md flex items-start gap-4 h-full min-h-[145px]">
+                  <div className="w-13 h-13 rounded-2xl bg-[#D9B36D]/20 border border-[#D9B36D]/50 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(217,179,109,0.25)] group-hover:scale-108 group-hover:bg-[#D9B36D]/30 transition-all duration-300">
+                    <TrendingUp className="w-6 h-6 text-[#D9B36D] group-hover:text-[#FFF8DC] transition-colors" />
+                  </div>
+                  <div className="flex flex-col justify-center my-auto">
+                    <h5 className="text-white font-bold text-[16.5px] md:text-[17.5px] tracking-wide font-sans group-hover:text-[#D9B36D] transition-colors drop-shadow-sm">
+                      Generational Wealth
+                    </h5>
+                    <p className="text-[#E8DFC8] font-normal text-[13.5px] md:text-[14px] leading-[1.6] mt-1.5 font-sans">
+                      Compounding asset growth over 12+ years for your family.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
       </section>

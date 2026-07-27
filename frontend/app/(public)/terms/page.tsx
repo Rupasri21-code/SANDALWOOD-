@@ -37,7 +37,7 @@ export default function TermsAndConditionsPage() {
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">4. Investor Privileges (Clubhouse & Darshanam)</h2>
           <ul className="list-disc pl-6 mb-4 space-y-2">
             <li><strong>Clubhouse & Resort Access:</strong> Investors are granted membership access to the Chandhan Nilayam Clubhouse and eco-resort facilities, subject to advance booking, availability, and specific tier-based usage limits as outlined in your welcome kit.</li>
-            <li><strong>VIP Srisailam Darshanam:</strong> The Company provides complimentary VIP Srisailam Darshanam tickets. These must be requested through our portal or support team at least 15 days in advance and are subject to temple authority availability and schedules.</li>
+            <li><strong>Srisailam Darshanam Passes:</strong> The Company provides complimentary Srisailam Darshanam passes. These must be requested through our portal or support team at least 15 days in advance and are subject to temple authority availability and schedules.</li>
           </ul>
 
           <h2 className="text-2xl font-semibold text-[#12372A] mt-8 mb-4">5. Investment Risks & Projections</h2>

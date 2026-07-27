@@ -1,13 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MessageCircle, X, Send, Phone, User, Mail, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { MessageCircle, X, Send, Phone, User, Mail, Sparkles, CheckCircle2, ShieldCheck, MapPin } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function WhatsAppWidget() {
+  const pathname = usePathname();
+  const isLandingPage = pathname === '/' || pathname === '/home';
+
   const [isOpen, setIsOpen] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedOffice, setSelectedOffice] = useState('918688660644'); // Default: Active WhatsApp (+91 86886 60644)
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -16,7 +22,15 @@ export default function WhatsAppWidget() {
     message: '',
   });
 
-  const adminWhatsAppNumber = '919063016733'; // Official WhatsApp Contact
+  const officeOptions = [
+    { label: 'Chandhan Nilayam WhatsApp (+91 86886 60644)', number: '918688660644' },
+    { label: 'Hyderabad Office (+91 90630 16733)', number: '919063016733' },
+  ];
+
+  // If user dismissed widget on non-landing pages, do not render
+  if (!isLandingPage && isDismissed) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,9 +82,13 @@ Hello Team, I would like to inquire about Sandalwood Investment opportunities.
 ${formData.message.trim() ? `💬 *Message:* ${formData.message.trim()}\n` : ''}
 Please share complete details and plot availability. Thank you!`;
 
-    const whatsappUrl = `https://wa.me/${adminWhatsAppNumber}?text=${encodeURIComponent(formattedMessage)}`;
+    // Ensure phone number contains ONLY pure digits (no spaces, pluses, or dashes)
+    const cleanNumber = selectedOffice.replace(/\D/g, '');
 
-    toast.success('Redirecting to WhatsApp Chat...');
+    // Universal wa.me WhatsApp direct link format
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(formattedMessage)}`;
+
+    toast.success('Opening WhatsApp Chat...');
     window.open(whatsappUrl, '_blank');
     setIsOpen(false);
   };
@@ -80,6 +98,21 @@ Please share complete details and plot availability. Thank you!`;
       {/* 1. FLOATING WHATSAPP BUTTON */}
       {!isOpen && (
         <div className="relative group flex items-center gap-3">
+          {/* Close / Cross Mark button to remove widget on non-landing pages */}
+          {!isLandingPage && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDismissed(true);
+              }}
+              aria-label="Remove WhatsApp Widget"
+              className="absolute -top-2 -right-2 z-30 w-6 h-6 rounded-full bg-[#0B2F24] border border-[#C49A5A] text-[#F7F0E4] hover:bg-red-900/80 hover:border-red-400 hover:text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+              title="Remove widget"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+
           {/* Tooltip Popup Bubble */}
           <div 
             onClick={() => setIsOpen(true)}
@@ -148,6 +181,27 @@ Please share complete details and plot availability. Thank you!`;
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4 bg-[#07130F]">
+            {/* Preferred Office */}
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-[#C49A5A] mb-1.5 block">
+                Connect With Office
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3.5 top-3 w-4 h-4 text-[#C49A5A]/70" />
+                <select
+                  value={selectedOffice}
+                  onChange={(e) => setSelectedOffice(e.target.value)}
+                  className="w-full bg-[#0E1E18] border border-[#C49A5A]/30 rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] focus:outline-none focus:border-[#C49A5A] transition-colors"
+                >
+                  {officeOptions.map((opt) => (
+                    <option key={opt.number} value={opt.number} className="bg-[#07130F]">
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {/* Name */}
             <div>
               <label className="text-[11px] font-semibold uppercase tracking-wider text-[#C49A5A] mb-1.5 block">
@@ -236,7 +290,7 @@ Please share complete details and plot availability. Thank you!`;
                 <ShieldCheck className="w-3.5 h-3.5 text-[#25D366]" /> 100% Private & Secure
               </span>
               <a 
-                href="tel:+919063016733" 
+                href={`tel:+${selectedOffice.replace(/\D/g, '')}`}
                 className="flex items-center gap-1 text-[#C49A5A] hover:underline font-semibold"
               >
                 <Phone className="w-3.5 h-3.5" /> Call Directly
@@ -248,3 +302,5 @@ Please share complete details and plot availability. Thank you!`;
     </div>
   );
 }
+
+

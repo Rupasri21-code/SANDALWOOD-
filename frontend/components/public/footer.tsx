@@ -5,6 +5,7 @@ import {
   MapPin, 
   Phone, 
   Mail, 
+  Globe,
   Instagram, 
   Facebook, 
   Linkedin, 
@@ -12,19 +13,38 @@ import {
 } from 'lucide-react';
 
 export default function Footer() {
+  const offices = [
+    {
+      city: 'GUNTUR',
+      phone: '8688660644',
+      phoneFormatted: '+91 86886 60644',
+      email: 'chandhannilayam@gmail.com',
+      website: 'www.chandhannilayam.com',
+      address: 'Sri Saravana Bhava Nilayam, Lakshmipuram Main Rd, Guntur, Andhra Pradesh 522002',
+      mapUrl: 'https://maps.google.com/?q=Lakshmipuram+Main+Rd,+Guntur,+Andhra+Pradesh+522002'
+    },
+    {
+      city: 'HYDERABAD',
+      phone: '9063016733',
+      phoneFormatted: '+91 90630 16733',
+      email: 'chandhannilayam@gmail.com',
+      website: 'www.chandhannilayam.com',
+      address: '3, 8-277/45, 2nd Floor, UBI Colony, Banjara Hills, Hyderabad, Telangana 500034',
+      mapUrl: 'https://maps.google.com/?q=UBI+Colony,+Banjara+Hills,+Hyderabad,+Telangana+500034'
+    }
+  ];
+
   return (
-    <footer className="text-[#F7F0E4]/90 border-t border-[#D9B36D]/30 bg-gradient-to-br from-[#12402B] to-[#0A2418]" style={{ padding: '70px 64px 34px' }}>
+    <footer className="text-[#F7F0E4]/90 border-t border-[#D9B36D]/30 bg-gradient-to-br from-[#12402B] to-[#0A2418] px-6 sm:px-12 lg:px-16 py-16">
       <div className="max-w-[1560px] mx-auto w-full">
         
         {/* Main responsive grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 items-start mb-20 gap-y-16 lg:gap-x-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 items-start mb-16 gap-y-12 lg:gap-x-10">
           
           {/* Column 1: Logo, Brand & Description (Takes 4 columns on large screens) */}
-          <div className="lg:col-span-4 flex flex-col items-start pr-0 lg:pr-10">
+          <div className="lg:col-span-4 flex flex-col items-start pr-0 lg:pr-6">
             {/* FULL-COLOR LOGO IN CREAM BRAND PANEL */}
-            <div 
-              className="mb-6 flex items-center justify-center lg:justify-start w-full lg:w-auto"
-            >
+            <div className="mb-6 flex items-center justify-center lg:justify-start w-full lg:w-auto">
               <div 
                 className="inline-block"
                 style={{
@@ -42,64 +62,12 @@ export default function Footer() {
               </div>
             </div>
 
-            <p className="font-serif text-[18px] leading-[1.8] text-[#F7F0E4]/80 max-w-[400px]">
+            <p className="font-serif text-[16px] leading-[1.8] text-[#F7F0E4]/80 max-w-[400px] mb-8">
               Building generational wealth through professionally managed, high-yield premium red sandalwood plantations.
             </p>
-          </div>
 
-          {/* Column 2: Quick Links (Takes 2 columns) */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left pt-2">
-            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#D9B36D] mb-8 font-sans border-b border-[#D9B36D]/30 pb-4 w-full">Explore</h4>
-            <div className="flex flex-col gap-4 text-[15px] font-sans">
-              <Link href="/home#opportunity" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">The Opportunity</Link>
-              <Link href="/home#about-heritage" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">About Us</Link>
-              <Link href="/home#plantation" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Our Plantation</Link>
-              <Link href="/home#privileges-amenities" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Investor Privileges</Link>
-              <Link href="/home#privileges-amenities" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Lifestyle Amenities</Link>
-            </div>
-          </div>
-
-          {/* Column 3: Resources (Takes 2 columns) */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left pt-2">
-            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#D9B36D] mb-8 font-sans border-b border-[#D9B36D]/30 pb-4 w-full">Resources</h4>
-            <div className="flex flex-col gap-4 text-[15px] font-sans">
-              <Link href="/home#calculator" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Plan Your Future</Link>
-              <Link href="/home#gallery" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Gallery</Link>
-              <Link href="/home#brochure" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Brochure</Link>
-              <Link href="/login" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Investor Portal</Link>
-            </div>
-          </div>
-
-          {/* Column 4: Contact & Social (Takes 4 columns) */}
-          <div className="lg:col-span-4 flex flex-col items-start text-left pt-2">
-            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#D9B36D] mb-8 font-sans border-b border-[#D9B36D]/30 pb-4 w-full">Contact Us</h4>
-            
-            <div className="flex flex-col gap-6 text-[15px] font-sans w-full">
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-[#F7F0E4]/5 border border-[#F7F0E4]/10 hover:border-[#D9B36D]/30 transition-colors">
-                <MapPin className="w-5 h-5 text-[#D9B36D] shrink-0 mt-0.5" /> 
-                <a href="https://maps.google.com/?q=Dornala,+Andhra+Pradesh,+India" target="_blank" rel="noopener noreferrer" className="leading-[1.6] text-[#F7F0E4]/80 hover:text-[#F7F0E4] transition-colors">
-                  Dornala, Prakasam District,<br />
-                  Andhra Pradesh, India
-                </a>
-              </div>
-              
-              <div className="flex flex-col gap-3">
-                <span className="flex items-center gap-4 text-[#F7F0E4]/80 group">
-                  <Phone className="w-5 h-5 text-[#D9B36D] shrink-0 group-hover:scale-110 transition-transform" /> 
-                  <div className="flex items-center gap-3">
-                    <a href="tel:+919063016733" className="hover:text-[#D9B36D] transition-colors">+91 906 301 6733</a>
-                    <span className="text-[#F7F0E4]/30">|</span>
-                    <a href="tel:+916300016733" className="hover:text-[#D9B36D] transition-colors">+91 630 001 6733</a>
-                  </div>
-                </span>
-                <span className="flex items-center gap-4 text-[#F7F0E4]/80 group mt-2">
-                  <Mail className="w-5 h-5 text-[#D9B36D] shrink-0 group-hover:scale-110 transition-transform" /> 
-                  <a href="mailto:chandhannilayam@gmail.com" className="hover:text-[#D9B36D] transition-colors">chandhannilayam@gmail.com</a>
-                </span>
-              </div>
-            </div>
-
-            <div className="flex gap-4 mt-10">
+            {/* Social Media Links */}
+            <div className="flex gap-3">
               {[
                 { icon: Instagram, href: 'https://instagram.com/chandannilayam' },
                 { icon: Facebook, href: 'https://facebook.com/chandannilayam' },
@@ -113,14 +81,101 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-full border border-[#D9B36D]/30 flex items-center justify-center text-[#D9B36D] hover:border-[#D9B36D] hover:bg-[#D9B36D] hover:text-[#0B2F24] transition-all duration-300 shadow-[0_0_15px_rgba(217,179,109,0.1)] hover:shadow-[0_0_20px_rgba(217,179,109,0.3)] hover:-translate-y-1"
+                    className="w-10 h-10 rounded-full border border-[#D9B36D]/30 flex items-center justify-center text-[#D9B36D] hover:border-[#D9B36D] hover:bg-[#D9B36D] hover:text-[#0B2F24] transition-all duration-300 shadow-[0_0_15px_rgba(217,179,109,0.1)] hover:shadow-[0_0_20px_rgba(217,179,109,0.3)] hover:-translate-y-1"
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                   </a>
                 );
               })}
             </div>
           </div>
+
+          {/* Column 2: Quick Links (Takes 2 columns) */}
+          <div className="lg:col-span-2 flex flex-col items-start text-left pt-2">
+            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#D9B36D] mb-6 font-sans border-b border-[#D9B36D]/30 pb-3 w-full">Explore</h4>
+            <div className="flex flex-col gap-3.5 text-[15px] font-sans">
+              <Link href="/home#opportunity" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">The Opportunity</Link>
+              <Link href="/home#about-heritage" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">About Us</Link>
+              <Link href="/home#plantation" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Our Plantation</Link>
+              <Link href="/home#privileges-amenities" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Investor Privileges</Link>
+              <Link href="/home#calculator" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Plan Your Future</Link>
+              <Link href="/login" className="text-[#F7F0E4]/70 hover:text-[#D9B36D] hover:translate-x-1 transition-all duration-300">Investor Portal</Link>
+            </div>
+          </div>
+
+          {/* Column 3 & 4: Office Addresses (Takes 6 columns on lg screens) */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left pt-2">
+            <h4 className="text-[14px] font-bold uppercase tracking-[0.15em] text-[#D9B36D] mb-6 font-sans border-b border-[#D9B36D]/30 pb-3 w-full">Our Offices</h4>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+              {offices.map((office, index) => (
+                <div 
+                  key={index}
+                  className="flex flex-col p-5 rounded-2xl bg-[#F7F0E4]/[0.04] border border-[#D9B36D]/20 hover:border-[#D9B36D]/50 transition-all duration-300 shadow-lg hover:shadow-[#D9B36D]/5"
+                >
+                  {/* City Header with Icon */}
+                  <div className="flex items-center gap-2.5 mb-4 text-[#F7F0E4]">
+                    <div className="w-8 h-8 rounded-full bg-[#D9B36D]/15 border border-[#D9B36D]/40 flex items-center justify-center shrink-0">
+                      <MapPin className="w-4 h-4 text-[#D9B36D]" />
+                    </div>
+                    <h5 className="font-bold tracking-wider text-[16px] text-[#F7F0E4] font-serif uppercase">{office.city}</h5>
+                  </div>
+
+                  {/* Contact Info List */}
+                  <div className="flex flex-col gap-2.5 text-[14px] font-sans text-[#F7F0E4]/80 mb-5">
+                    <a 
+                      href={`tel:+91${office.phone}`} 
+                      className="flex items-center gap-3 hover:text-[#D9B36D] transition-colors group"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-[#D9B36D]/10 flex items-center justify-center shrink-0 group-hover:bg-[#D9B36D]/20 transition-colors">
+                        <Phone className="w-3.5 h-3.5 text-[#D9B36D]" />
+                      </div>
+                      <span className="font-mono text-[13px]">{office.phone}</span>
+                    </a>
+
+                    <a 
+                      href={`mailto:${office.email}`} 
+                      className="flex items-center gap-3 hover:text-[#D9B36D] transition-colors group"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-[#D9B36D]/10 flex items-center justify-center shrink-0 group-hover:bg-[#D9B36D]/20 transition-colors">
+                        <Mail className="w-3.5 h-3.5 text-[#D9B36D]" />
+                      </div>
+                      <span className="truncate">{office.email}</span>
+                    </a>
+
+                    <a 
+                      href={`https://${office.website}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex items-center gap-3 hover:text-[#D9B36D] transition-colors group"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-[#D9B36D]/10 flex items-center justify-center shrink-0 group-hover:bg-[#D9B36D]/20 transition-colors">
+                        <Globe className="w-3.5 h-3.5 text-[#D9B36D]" />
+                      </div>
+                      <span>{office.website}</span>
+                    </a>
+                  </div>
+
+                  {/* Office Address Pill Badge */}
+                  <div className="mt-auto">
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#0A2F1D] border border-[#D9B36D]/40 text-[#D9B36D] text-[12px] font-semibold tracking-wide mb-3">
+                      Office Address :
+                    </div>
+                    <a 
+                      href={office.mapUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="block text-[13.5px] leading-relaxed text-[#F7F0E4]/75 hover:text-[#F7F0E4] transition-colors font-serif"
+                    >
+                      {office.address}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
         </div>
 
         {/* Bottom Legal Bar */}
@@ -138,3 +193,4 @@ export default function Footer() {
     </footer>
   );
 }
+
