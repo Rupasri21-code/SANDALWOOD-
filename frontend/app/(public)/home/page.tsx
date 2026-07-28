@@ -438,6 +438,11 @@ export default function HomePage() {
     '/media__1784541877736.jpg',
     '/media__1784541925264.jpg',
     '/media__1784541990743.jpg',
+    '/media__1785215149299.png',
+    '/media__1785215176646.jpg',
+    '/media__1785215207272.jpg',
+    '/media__1785215452125.png',
+    '/media__1785215480071.jpg',
   ];
 
   useEffect(() => {

@@ -145,8 +145,8 @@ export default function InvestmentCalculator() {
     if (profitSharingRatio === '50:50') { investorSplit = 0.5; managementSplit = 0.5; }
     if (profitSharingRatio === '40:60') { investorSplit = 0.4; managementSplit = 0.6; }
 
-    const investorShare = netProfit > 0 ? netProfit * investorSplit : 0;
-    const managementShare = netProfit > 0 ? netProfit * managementSplit : 0;
+    const investorShare = grossRevenue > 0 ? grossRevenue * investorSplit : 0;
+    const managementShare = grossRevenue > 0 ? grossRevenue * managementSplit : 0;
 
     return {
       survivingTrees,
@@ -391,21 +391,27 @@ export default function InvestmentCalculator() {
             </div>
           </div>
 
-          {/* Profit Sharing Breakdown (Moved to Left Column to balance heights) */}
+          {/* Profit Sharing Breakdown */}
           <div className="flex flex-col gap-4 mt-2 border-t border-[#C49A5A]/20 pt-4">
             <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-1">
                 <User className="w-5 h-5 text-[#D9B36D]" />
                 <span className="text-[11px] text-[#D9B36D] uppercase tracking-widest font-bold">Investor Share</span>
               </div>
               <span className="text-3xl font-serif font-bold text-[#F7F0E4] drop-shadow-sm">{formatCurrency(metrics.investorShare)}</span>
+              <span className="text-[10px] text-[#B8C7BC] mt-1 italic">
+                50% Share of Total Harvest Revenue
+              </span>
             </motion.div>
             <motion.div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-1">
                 <Building2 className="w-5 h-5 text-[#D9B36D]" />
-                <span className="text-[11px] text-[#D9B36D] uppercase tracking-widest font-bold">Manager Share</span>
+                <span className="text-[11px] text-[#D9B36D] uppercase tracking-widest font-bold">Manager / Admin Share</span>
               </div>
               <span className="text-3xl font-serif font-bold text-[#F7F0E4] drop-shadow-sm">{formatCurrency(metrics.managementShare)}</span>
+              <span className="text-[10px] text-[#B8C7BC] mt-1 italic">
+                50% Share of Total Harvest Revenue
+              </span>
             </motion.div>
           </div>
         </div>
@@ -469,8 +475,6 @@ export default function InvestmentCalculator() {
               </div>
             </motion.div>
           </div>
-
-
 
           {/* PROJECTED WEALTH AT MATURITY Card */}
           <div className="bg-white/5 backdrop-blur-xl border border-[#D9B36D]/30 rounded-2xl p-6 shadow-[0_12px_40px_rgba(0,0,0,0.4)] flex flex-col items-center text-center">
@@ -543,8 +547,16 @@ export default function InvestmentCalculator() {
 
               </div>
             </div>
-          </div>
 
+            {/* Note Box inside Revenue Calculation Breakdown */}
+            <div className="bg-[#2A0E12]/80 border border-red-500/40 rounded-xl p-4 flex items-start gap-3 shadow-[0_4px_20px_rgba(239,68,68,0.15)] text-left mt-4 backdrop-blur-md">
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-red-200/90 leading-relaxed font-sans">
+                <span className="text-red-400 font-bold tracking-wide uppercase text-[10px] mr-2 px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/30">Important Note</span>
+                The figures shown are for illustrative purposes only. Applicable Government taxes will be deducted from the total harvest value before the final 50:50 distribution between the Investor and Chandhan Nilayam Management, as per the Investment Agreement.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

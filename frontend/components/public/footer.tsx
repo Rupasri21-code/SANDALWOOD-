@@ -15,22 +15,22 @@ import {
 export default function Footer() {
   const offices = [
     {
-      city: 'GUNTUR',
-      phone: '8688660644',
-      phoneFormatted: '+91 86886 60644',
-      email: 'chandhannilayam@gmail.com',
-      website: 'www.chandhannilayam.com',
-      address: 'Sri Saravana Bhava Nilayam, Lakshmipuram Main Rd, Guntur, Andhra Pradesh 522002',
-      mapUrl: 'https://maps.google.com/?q=Lakshmipuram+Main+Rd,+Guntur,+Andhra+Pradesh+522002'
-    },
-    {
       city: 'HYDERABAD',
       phone: '9063016733',
       phoneFormatted: '+91 90630 16733',
-      email: 'chandhannilayam@gmail.com',
+      email: 'info@chandhannilayam.com',
       website: 'www.chandhannilayam.com',
-      address: '3, 8-277/45, 2nd Floor, UBI Colony, Banjara Hills, Hyderabad, Telangana 500034',
-      mapUrl: 'https://maps.google.com/?q=UBI+Colony,+Banjara+Hills,+Hyderabad,+Telangana+500034'
+      address: '8-277/45, 2nd Floor, Rd No: 3, UBI Colony, Banjara Hills, Hyderabad, Telangana 500034',
+      mapUrl: 'https://maps.google.com/?q=8-277/45,+2nd+Floor,+Rd+No:+3,+UBI+Colony,+Banjara+Hills,+Hyderabad,+Telangana+500034'
+    },
+    {
+      city: 'GUNTUR',
+      phone: '8688660644',
+      phoneFormatted: '+91 86886 60644',
+      email: 'info@chandhannilayam.com',
+      website: 'www.chandhannilayam.com',
+      address: 'Sri Saravana Bhava Nilayam, Lakshmipuram Main Rd, Guntur, Andhra Pradesh 522002',
+      mapUrl: 'https://maps.google.com/?q=Sri+Saravana+Bhava+Nilayam,+Lakshmipuram+Main+Rd,+Guntur,+Andhra+Pradesh+522002'
     }
   ];
 
