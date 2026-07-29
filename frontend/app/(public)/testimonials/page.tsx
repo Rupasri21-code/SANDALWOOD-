@@ -178,30 +178,34 @@ export default function TestimonialsPage() {
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="bg-[#F3E8D2] border border-[#C49A5A]/35 rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="bg-[#F3E8D2] border border-[#C49A5A]/35 rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-[300px]"
               >
-                <div>
-                  <Quote className="w-8 h-8 text-[#C49A5A]/45 mb-4" />
-                  <p className="text-[#2F3E2F] text-xs md:text-sm leading-relaxed mb-6 font-serif italic" style={{ fontFamily: "'Lora', serif" }}>
-                    "{t.text}"
-                  </p>
-                </div>
-                <div>
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(t.rating)].map((_, j) => (
-                      <Star key={j} className="w-3.5 h-3.5 fill-[#C49A5A] text-[#C49A5A]" />
-                    ))}
+                <div className="flex flex-col h-[160px]">
+                  <div className="flex items-center justify-between mb-3 shrink-0">
+                    <Quote className="w-7 h-7 text-[#C49A5A]/50" />
+                    <div className="flex gap-0.5">
+                      {[...Array(t.rating)].map((_, j) => (
+                        <Star key={j} className="w-3.5 h-3.5 fill-[#C49A5A] text-[#C49A5A]" />
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3.5 pt-4 border-t border-[#C49A5A]/20">
+                  <div className="overflow-y-auto pr-2 scrollbar-thin flex-1 max-h-[110px]">
+                    <p className="text-[#2F3E2F] text-xs md:text-sm leading-relaxed font-serif italic" style={{ fontFamily: "'Lora', serif" }}>
+                      "{t.text}"
+                    </p>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-[#C49A5A]/20 shrink-0">
+                  <div className="flex items-center gap-3.5">
                     <img
                       src={t.image}
                       alt={t.name}
-                      className="w-11 h-11 rounded-full object-cover border-2 border-[#C49A5A]/30"
+                      className="w-11 h-11 rounded-full object-cover border-2 border-[#C49A5A]/30 shrink-0"
                     />
-                    <div className="text-left">
-                      <h4 className="font-serif text-sm font-bold text-[#12372A] leading-none mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{t.name}</h4>
-                      <div className="text-[#2F3E2F]/80 text-[10px] leading-none mb-0.5">{t.title} · {t.location}</div>
-                      <div className="text-[#8B5E3C] text-[9px] font-bold uppercase tracking-wider">{t.investment}</div>
+                    <div className="text-left min-w-0">
+                      <h4 className="font-serif text-sm font-bold text-[#12372A] leading-none mb-1 truncate" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{t.name}</h4>
+                      <div className="text-[#2F3E2F]/80 text-[10px] leading-none mb-1 truncate">{t.title} · {t.location}</div>
+                      <div className="text-[#8B5E3C] text-[9px] font-bold uppercase tracking-wider bg-[#C49A5A]/10 border border-[#C49A5A]/25 px-2 py-0.5 rounded-full inline-block truncate max-w-full">{t.investment}</div>
                     </div>
                   </div>
                 </div>

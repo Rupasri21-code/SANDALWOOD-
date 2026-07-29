@@ -11,6 +11,7 @@ import {
   Shield,
   Leaf,
   Star,
+  Quote,
   MapPin,
   Clock,
   CheckCircle2,
@@ -1586,25 +1587,33 @@ export default function HomePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeTestimonials.slice(0, showAllReviews ? activeTestimonials.length : 6).map((test, i) => (
-                  <div key={i} className="bg-gradient-to-b from-[#FFFDF8] to-[#F8F3E8] border border-[rgba(201,155,69,0.18)] rounded-3xl p-6 shadow-[0_12px_35px_rgba(20,35,25,0.08)] hover:shadow-[0_18px_40px_rgba(20,35,25,0.12)] hover:border-[#D4AF37] hover:from-[#FFFCF5] hover:to-[#FFFCF5] transition-all flex flex-col justify-between">
-                    <div>
-                      <div className="flex gap-0.5 text-[#D4AF37] mb-4">
-                        {[...Array(test.stars)].map((_, idx) => (
-                          <Star key={idx} className="w-3.5 h-3.5 fill-[#D4AF37]" />
-                        ))}
+                  <div 
+                    key={i} 
+                    className="bg-gradient-to-b from-[#FFFDF8] to-[#F8F3E8] border border-[rgba(201,155,69,0.22)] rounded-3xl p-6 shadow-[0_12px_35px_rgba(20,35,25,0.08)] hover:shadow-[0_18px_40px_rgba(20,35,25,0.14)] hover:border-[#D4AF37] hover:from-[#FFFCF5] hover:to-[#FFFCF5] transition-all flex flex-col justify-between h-[270px]"
+                  >
+                    <div className="flex flex-col h-[160px]">
+                      <div className="flex items-center justify-between gap-2 mb-3 shrink-0">
+                        <div className="flex gap-0.5 text-[#D4AF37]">
+                          {[...Array(test.stars || test.rating || 5)].map((_, idx) => (
+                            <Star key={idx} className="w-3.5 h-3.5 fill-[#D4AF37]" />
+                          ))}
+                        </div>
+                        <Quote className="w-4 h-4 text-[#D4AF37]/35" />
                       </div>
-                      <p className="text-[#4C4A45] text-xs italic leading-relaxed mb-6 font-serif" style={{ fontFamily: "'Lora', serif" }}>
-                        "{test.text}"
-                      </p>
+                      <div className="overflow-y-auto pr-2 scrollbar-thin flex-1 max-h-[120px]">
+                        <p className="text-[#4C4A45] text-xs italic leading-relaxed font-serif" style={{ fontFamily: "'Lora', serif" }}>
+                          "{test.text}"
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-bold uppercase text-[#14372C] font-sans">{test.name}</h4>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[10px] text-[#7C776C] font-bold font-sans">{test.location}</span>
+                    <div className="pt-4 border-t border-[rgba(201,155,69,0.18)] shrink-0">
+                      <h4 className="text-xs font-bold uppercase text-[#14372C] font-sans truncate">{test.name}</h4>
+                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                        <span className="text-[10px] text-[#7C776C] font-bold font-sans truncate max-w-[120px]">{test.location}</span>
                         {test.investment && (
                           <>
                             <span className="text-[#D4AF37]/50 text-[10px]">•</span>
-                            <span className="text-[10px] text-[#7C776C] font-bold uppercase tracking-wider font-sans bg-[#D4AF37]/10 px-1.5 py-0.5 rounded-sm">{test.investment}</span>
+                            <span className="text-[9px] text-[#7C776C] font-bold uppercase tracking-wider font-sans bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-2 py-0.5 rounded-full truncate max-w-[140px]">{test.investment}</span>
                           </>
                         )}
                       </div>
