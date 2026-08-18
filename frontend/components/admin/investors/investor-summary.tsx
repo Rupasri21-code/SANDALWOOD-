@@ -296,13 +296,13 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                 <p className="text-xs text-white/50 uppercase">Total Expected</p>
                 <p className="text-xl font-semibold text-white mt-1">
-                  ₹{formData.investments?.reduce((sum: number, inv: any) => sum + (Number(inv.total_amount) || 0), 0).toLocaleString() || '0'}
+                  ₹{formData.investments?.reduce((sum: number, inv: any) => sum + (Number(inv.amount) || 0), 0).toLocaleString() || '0'}
                 </p>
               </div>
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                 <p className="text-xs text-white/50 uppercase">Total Paid</p>
                 <p className="text-xl font-semibold text-[#22C55E] mt-1">
-                  ₹{formData.payments?.filter((p:any) => p.payment_status === 'COMPLETED').reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0).toLocaleString() || '0'}
+                  ₹{formData.payments?.filter((p:any) => p.status === 'COMPLETED').reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0).toLocaleString() || '0'}
                 </p>
               </div>
             </div>
@@ -325,10 +325,10 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
                         <td className="px-4 py-3 text-white/80">{p.payment_date ? new Date(p.payment_date).toLocaleDateString() : '—'}</td>
                         <td className="px-4 py-3 font-medium text-white">₹{Number(p.amount).toLocaleString()}</td>
                         <td className="px-4 py-3 text-white/60 capitalize">{p.payment_type?.replace('_', ' ') || '—'}</td>
-                        <td className="px-4 py-3 text-white/60">{p.payment_mode || '—'}</td>
+                        <td className="px-4 py-3 text-white/60">{p.payment_method || '—'}</td>
                         <td className="px-4 py-3">
-                          <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${p.payment_status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                            {p.payment_status || '—'}
+                          <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${p.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                            {p.status || '—'}
                           </span>
                         </td>
                       </tr>
@@ -549,7 +549,7 @@ export function InvestorSummary({ formData, onClose, onEdit }: { formData: any, 
               </div>
             ) : preview.isPdf ? (
               <iframe 
-                src={preview.url} 
+                src={preview.url.startsWith('http') && !preview.url.startsWith('blob:') ? `https://docs.google.com/gview?url=${encodeURIComponent(preview.url)}&embedded=true` : preview.url} 
                 className="w-full h-full bg-white rounded-xl flex items-center justify-center"
                 frameBorder="0"
                 onError={() => { console.error("Document preview failed"); setPreviewError(true); }}

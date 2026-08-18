@@ -20,7 +20,7 @@ type Notification = {
   created_at: string;
 };
 
-type Investor = { id: string; full_name: string; user_id: string | null };
+type Investor = { id: string; full_name: string; email: string; user_id: string | null };
 
 const typeColors: Record<string, string> = {
   info: 'bg-blue-400/15 text-blue-400',
@@ -67,7 +67,11 @@ export default function NotificationsPage() {
       const res = await fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) {
-        setInvestors(data.data);
+        const filtered = data.data.filter((c: any) => 
+          c.email !== 'admin@sandalwood.com' && 
+          (!c.user || c.user.role?.toUpperCase() !== 'ADMIN')
+        );
+        setInvestors(filtered);
       } else {
         console.error('Failed to fetch investors:', data.message);
         toast.error('Failed to fetch investors: ' + data.message);
@@ -106,7 +110,8 @@ export default function NotificationsPage() {
             link: form.link || undefined,
           })
         });
-        if (!res.ok) throw new Error('Failed to send to all');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to send to all');
         toast.success(`Sent to ${eligible.length} investors`);
       } else {
         if (!form.recipient_id) { toast.error('Select a recipient'); setLoading(false); return; }
@@ -123,7 +128,8 @@ export default function NotificationsPage() {
             link: form.link || undefined,
           })
         });
-        if (!res.ok) throw new Error('Failed to send');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to send');
         toast.success('Notification sent');
       }
 
@@ -229,7 +235,7 @@ export default function NotificationsPage() {
                     setForm({ ...form, investor_id: e.target.value, recipient_id: c?.user_id || '' });
                   }} className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                     <option value="" className="bg-[#141410]">Select investor</option>
-                    {investors.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}{!c.user_id ? ' (no account)' : ''}</option>)}
+                    {investors.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name} ({c.email}){!c.user_id ? ' (no account)' : ''}</option>)}
                   </select>
                 </div>
               )}

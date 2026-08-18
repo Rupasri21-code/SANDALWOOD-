@@ -22,7 +22,7 @@ type Payment = {
   status: string;
 };
 
-type Investor = { id: string; full_name: string };
+type Investor = { id: string; full_name: string; email: string };
 type Investment = { id: string; contract_number: string; investor_id: string };
 
 const defaultForm = {
@@ -66,7 +66,11 @@ export default function PaymentsPage() {
       const res = await fetch(`${API_URL}/investors`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) {
-        setInvestors(data.data);
+        const filtered = data.data.filter((c: any) => 
+          c.email !== 'admin@sandalwood.com' && 
+          (!c.user || c.user.role?.toUpperCase() !== 'ADMIN')
+        );
+        setInvestors(filtered);
       } else {
         console.error('Failed to fetch investors:', data.message);
         toast.error('Failed to fetch investors: ' + data.message);
@@ -333,7 +337,7 @@ export default function PaymentsPage() {
                 <select value={form.investor_id} onChange={(e) => setForm({ ...form, investor_id: e.target.value })}
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                   <option value="" className="bg-[#141410]">Select investor</option>
-                  {investors.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}</option>)}
+                  {investors.map((c) => <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name} ({c.email})</option>)}
                 </select>
               </div>
               <div>

@@ -149,7 +149,8 @@ export default function MediaLibraryPage() {
         if (dataMedia.success) {
           const mapped = dataMedia.data.map((m: any) => {
             const ext = m.file_url.split('.').pop()?.toLowerCase();
-            const type = ext === 'pdf' ? 'pdf' : ['mp4', 'mov', 'avi'].includes(ext || '') ? 'video' : 'image';
+            const isPdf = ext === 'pdf' || m.file_url.includes('/raw/upload/');
+            const type = isPdf ? 'pdf' : ['mp4', 'mov', 'avi'].includes(ext || '') ? 'video' : 'image';
             return {
               id: m.id,
               name: m.title,
@@ -166,7 +167,13 @@ export default function MediaLibraryPage() {
           });
           setMedia(mapped);
         }
-        if (dataInv.success) setInvestors(dataInv.data);
+        if (dataInv.success) {
+          const filtered = dataInv.data.filter((c: any) => 
+            c.email !== 'admin@sandalwood.com' && 
+            (!c.user || c.user.role?.toUpperCase() !== 'ADMIN')
+          );
+          setInvestors(filtered);
+        }
       } catch (err) {
         console.error('Failed to load media:', err);
       }
@@ -208,7 +215,8 @@ export default function MediaLibraryPage() {
           if (data.data) {
             const m = data.data;
             const ext = m.file_url.split('.').pop()?.toLowerCase();
-            const type = ext === 'pdf' ? 'pdf' : ['mp4', 'mov', 'avi'].includes(ext || '') ? 'video' : 'image';
+            const isPdf = ext === 'pdf' || m.file_url.includes('/raw/upload/');
+            const type = isPdf ? 'pdf' : ['mp4', 'mov', 'avi'].includes(ext || '') ? 'video' : 'image';
             
             newItems.push({
               id: m.id,
@@ -741,7 +749,7 @@ export default function MediaLibraryPage() {
               <img src={previewItem.url} alt={previewItem.name} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
             )}
             {previewItem.type === 'pdf' && (
-              <iframe src={previewItem.url} className="w-full max-w-5xl h-full rounded-xl bg-white shadow-2xl" />
+              <iframe src={previewItem.url.startsWith('http') && !previewItem.url.startsWith('blob:') ? `https://docs.google.com/gview?url=${encodeURIComponent(previewItem.url)}&embedded=true` : previewItem.url} className="w-full max-w-5xl h-full rounded-xl bg-white shadow-2xl" />
             )}
             {previewItem.type === 'video' && (
               <video src={previewItem.url} controls autoPlay className="max-w-full max-h-full rounded-xl shadow-2xl border border-white/10 bg-black" />

@@ -12,10 +12,17 @@ import crypto from 'crypto';
 export const listInvestors = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const investors = await db.investorProfile.findMany({
+      where: {
+        OR: [
+          { user: null },
+          { user: { role: { not: 'ADMIN' } } }
+        ]
+      },
       orderBy: { created_at: 'desc' },
       include: {
         landPlots: true,
         investments: true,
+        user: true,
       },
     });
 
@@ -212,7 +219,7 @@ export const createInvestor = async (req: Request, res: Response, next: NextFunc
 
     // If plot details are provided, create a land plot linked to the investor
     if (validated.passbookNumber || validated.plotSize || validated.plotConfiguration) {
-      await db.landPlot.create({
+      const landPlot = await db.landPlot.create({
         data: {
           investor_id: investor.id,
           title: `Plot for ${investor.full_name}`,
@@ -231,6 +238,40 @@ export const createInvestor = async (req: Request, res: Response, next: NextFunc
           images: validated.plotPhotos || '',
         }
       });
+
+      const totalInvestmentNum = Number(validated.totalInvestment) || 0;
+      if (totalInvestmentNum > 0) {
+        const investment = await db.investment.create({
+          data: {
+            investor_id: investor.id,
+            land_id: landPlot.id,
+            investment_type: validated.investmentInterest || 'Sandalwood',
+            amount: totalInvestmentNum,
+            expected_returns: totalInvestmentNum * 1.5,
+            roi_percentage: 15,
+            status: validated.paymentStatus === 'Paid' ? 'ACTIVE' : 'PENDING',
+            contract_number: validated.passbookNumber || 'CON_' + Date.now(),
+            notes: 'Created during investor onboarding'
+          }
+        });
+
+        const paidAmountNum = Number(validated.paidAmount) || 0;
+        if (paidAmountNum > 0) {
+          await db.payment.create({
+            data: {
+              investor_id: investor.id,
+              investment_id: investment.id,
+              amount: paidAmountNum,
+              payment_type: 'INSTALLMENT',
+              payment_method: validated.paymentMode || 'Bank Transfer',
+              transaction_id: 'TXN_' + Date.now(),
+              status: validated.paymentStatus === 'Paid' ? 'COMPLETED' : 'PENDING',
+              receipt_url: validated.paymentProofUrl || null,
+              notes: 'First installment during onboarding'
+            }
+          });
+        }
+      }
     }
 
     res.status(201).json(
@@ -255,6 +296,129 @@ export const updateInvestor = async (req: Request, res: Response, next: NextFunc
       where: { id },
       data: mapToPrisma(validated),
     });
+
+    const hasPlotUpdates = 
+      validated.passbookNumber !== undefined || 
+      validated.plotSize !== undefined || 
+      validated.plotConfiguration !== undefined || 
+      validated.plotPhotos !== undefined ||
+      validated.district !== undefined ||
+      validated.state !== undefined;
+
+    if (hasPlotUpdates) {
+      const existingPlot = await db.landPlot.findFirst({
+        where: { investor_id: id }
+      });
+
+      let landPlotId = existingPlot?.id;
+
+      if (existingPlot) {
+        const updatedPlot = await db.landPlot.update({
+          where: { id: existingPlot.id },
+          data: {
+            description: validated.plotConfiguration || existingPlot.description,
+            district: validated.district || existingPlot.district,
+            state: validated.state || existingPlot.state,
+            survey_number: validated.passbookNumber || existingPlot.survey_number,
+            total_area: validated.plotSize ? parseFloat(validated.plotSize) : existingPlot.total_area,
+            passbook_number: validated.passbookNumber || existingPlot.passbook_number,
+            plot_size: validated.plotSize || existingPlot.plot_size,
+            plot_configuration: validated.plotConfiguration || existingPlot.plot_configuration,
+            images: validated.plotPhotos !== undefined ? (validated.plotPhotos || '') : existingPlot.images,
+          }
+        });
+      } else if (validated.passbookNumber || validated.plotSize || validated.plotConfiguration) {
+        const newPlot = await db.landPlot.create({
+          data: {
+            investor_id: id,
+            title: `Plot for ${updated.full_name}`,
+            description: validated.plotConfiguration || 'Plot purchased by investor',
+            location: validated.district || 'TBD',
+            district: validated.district || 'TBD',
+            state: validated.state || 'TBD',
+            survey_number: validated.passbookNumber || 'TBD',
+            total_area: parseFloat(validated.plotSize || '0') || 0,
+            purchase_price: 0,
+            current_value: 0,
+            status: 'RESERVED',
+            passbook_number: validated.passbookNumber,
+            plot_size: validated.plotSize,
+            plot_configuration: validated.plotConfiguration,
+            images: validated.plotPhotos || '',
+          }
+        });
+        landPlotId = newPlot.id;
+      }
+
+      // Update or create associated Investment & Payment
+      const totalInvestmentNum = validated.totalInvestment !== undefined ? Number(validated.totalInvestment) : null;
+      if (totalInvestmentNum !== null) {
+        const existingInvestment = await db.investment.findFirst({
+          where: { investor_id: id }
+        });
+
+        let investmentId = existingInvestment?.id;
+
+        if (existingInvestment) {
+          const updatedInvestment = await db.investment.update({
+            where: { id: existingInvestment.id },
+            data: {
+              amount: totalInvestmentNum,
+              investment_type: validated.investmentInterest || existingInvestment.investment_type,
+              status: validated.paymentStatus === 'Paid' ? 'ACTIVE' : existingInvestment.status,
+            }
+          });
+        } else if (totalInvestmentNum > 0) {
+          const newInvestment = await db.investment.create({
+            data: {
+              investor_id: id,
+              land_id: landPlotId || null,
+              investment_type: validated.investmentInterest || 'Sandalwood',
+              amount: totalInvestmentNum,
+              expected_returns: totalInvestmentNum * 1.5,
+              roi_percentage: 15,
+              status: validated.paymentStatus === 'Paid' ? 'ACTIVE' : 'PENDING',
+              contract_number: validated.passbookNumber || 'CON_' + Date.now(),
+              notes: 'Created during investor profile update'
+            }
+          });
+          investmentId = newInvestment.id;
+        }
+
+        const paidAmountNum = validated.paidAmount !== undefined ? Number(validated.paidAmount) : null;
+        if (paidAmountNum !== null) {
+          const existingPayment = await db.payment.findFirst({
+            where: { investor_id: id }
+          });
+
+          if (existingPayment) {
+            await db.payment.update({
+              where: { id: existingPayment.id },
+              data: {
+                amount: paidAmountNum,
+                payment_method: validated.paymentMode || existingPayment.payment_method,
+                status: validated.paymentStatus === 'Paid' ? 'COMPLETED' : existingPayment.status,
+                receipt_url: validated.paymentProofUrl !== undefined ? (validated.paymentProofUrl || null) : existingPayment.receipt_url,
+              }
+            });
+          } else if (paidAmountNum > 0) {
+            await db.payment.create({
+              data: {
+                investor_id: id,
+                investment_id: investmentId || null,
+                amount: paidAmountNum,
+                payment_type: 'INSTALLMENT',
+                payment_method: validated.paymentMode || 'Bank Transfer',
+                transaction_id: 'TXN_' + Date.now(),
+                status: validated.paymentStatus === 'Paid' ? 'COMPLETED' : 'PENDING',
+                receipt_url: validated.paymentProofUrl || null,
+                notes: 'First installment during onboarding update'
+              }
+            });
+          }
+        }
+      }
+    }
 
     if (
       updated.passbook_verification_status &&

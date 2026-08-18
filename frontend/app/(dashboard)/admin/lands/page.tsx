@@ -46,7 +46,7 @@ type Land = {
   created_at: string;
 };
 
-type Investor = { id: string; full_name: string };
+type Investor = { id: string; full_name: string; email: string };
 
 const defaultForm = {
   title: '', description: '', location: '', district: '', state: '', country: 'India',
@@ -75,7 +75,15 @@ export default function LandsPage() {
       const [landsData, invData] = await Promise.all([landsRes.json(), invRes.json()]);
       
       setLands(landsData.success ? landsData.data : []);
-      setInvestors(invData.success ? invData.data : []);
+      if (invData.success) {
+        const filtered = invData.data.filter((c: any) => 
+          c.email !== 'admin@sandalwood.com' && 
+          (!c.user || c.user.role?.toUpperCase() !== 'ADMIN')
+        );
+        setInvestors(filtered);
+      } else {
+        setInvestors([]);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -405,7 +413,7 @@ export default function LandsPage() {
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                   <option value="" className="bg-[#141410]">— Unassigned —</option>
                   {investors.map((c) => (
-                    <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name}</option>
+                    <option key={c.id} value={c.id} className="bg-[#141410]">{c.full_name} ({c.email})</option>
                   ))}
                 </select>
               </div>

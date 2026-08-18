@@ -113,7 +113,7 @@ const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "i
     });
   };
 
-  const isPdf = file?.type === 'application/pdf' || url?.endsWith('.pdf');
+  const isPdf = file?.type === 'application/pdf' || url?.toLowerCase().endsWith('.pdf') || url?.includes('/raw/upload/');
 
   return (
     <div className="p-5 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col space-y-4">
@@ -133,11 +133,10 @@ const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "i
           {/* Top Half: Thumbnail (Dark Background) */}
           <div className="h-32 bg-[#141410] flex items-center justify-center overflow-hidden relative border-b border-white/5 group-hover:bg-[#1C1C1A] transition-colors">
              {isPdf ? (
-               url.includes('cloudinary') ? (
-                 <img src={url.replace('.pdf', '.jpg')} className="w-full h-full object-cover object-top opacity-80" onError={(e) => { e.currentTarget.style.display='none' }} />
-               ) : (
-                 <iframe src={`${url}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`} className="w-full h-[300px] -mt-20 pointer-events-none opacity-80 bg-white" />
-               )
+               <div className="flex flex-col items-center justify-center text-red-400">
+                 <FileIcon className="w-10 h-10 mb-1" />
+                 <span className="text-[10px] font-bold tracking-wider">PDF DOCUMENT</span>
+               </div>
              ) : (
                <img src={url} alt={title} className="w-full h-full object-cover opacity-80" />
              )}
@@ -278,13 +277,16 @@ export function InvestorWizard({
   }, [formData.totalInvestment, formData.paidAmount]);
 
   if (!isOpen) return null;
-
   const validateSection = (section: number) => {
     switch (section) {
       case 1: // Personal
         if (!formData.profilePhotoUrl) { toast.error("Profile Photo Upload is required"); return false; }
         if (!formData.firstName || formData.firstName.length < 2) { toast.error("First Name must be at least 2 characters"); return false; }
         if (!formData.lastName) { toast.error("Last Name is required"); return false; }
+        if (!formData.gender) { toast.error("Gender is required"); return false; }
+        if (!formData.maritalStatus) { toast.error("Marital Status is required"); return false; }
+        if (!formData.dob) { toast.error("Date of Birth is required"); return false; }
+        if (!formData.investorType) { toast.error("Investor Category is required"); return false; }
         if (formData.maritalStatus === 'Single' && !formData.fatherName) { toast.error("Father Name is required for Single status"); return false; }
         if (formData.maritalStatus === 'Married' && !formData.spouseName) { toast.error("Husband/Wife Name is required for Married status"); return false; }
         if (['Divorced', 'Widowed'].includes(formData.maritalStatus) && (!formData.fatherName || !formData.spouseName)) {
@@ -295,35 +297,43 @@ export function InvestorWizard({
         if (!formData.email) { toast.error("Email is required"); return false; }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { toast.error("Invalid email format"); return false; }
         if (!formData.phone || !/^[6-9]\d{9}$/.test(formData.phone)) { toast.error("Must be a valid 10-digit Indian mobile number"); return false; }
+        if (!formData.whatsappNumber || !/^[6-9]\d{9}$/.test(formData.whatsappNumber)) { toast.error("WhatsApp Number must be a valid 10-digit Indian mobile number"); return false; }
+        if (!formData.prefCommunication) { toast.error("Preferred Contact Method is required"); return false; }
         return true;
       case 3: // Address
-        if (!formData.currentCountry) { toast.error("Current Country is required"); return false; }
-        if (formData.currentCountry === 'India' && (!formData.currentState || !formData.currentDistrict)) {
-          toast.error("State and District are required for India"); return false;
-        }
-        if (formData.currentPincode && !/^\d{6}$/.test(formData.currentPincode)) { toast.error("Current Pincode must be exactly 6 digits"); return false; }
+        // Permanent Address is always required as primary
+        if (!formData.permanentCountry) { toast.error("Permanent Country is required"); return false; }
+        if (!formData.permanentState) { toast.error("Permanent State is required"); return false; }
+        if (!formData.permanentDistrict) { toast.error("Permanent District/City is required"); return false; }
+        if (!formData.permanentAddressLine1) { toast.error("Permanent Address Line 1 is required"); return false; }
+        if (!formData.permanentPincode) { toast.error("Permanent Pincode is required"); return false; }
+        if (!/^\d{6}$/.test(formData.permanentPincode)) { toast.error("Permanent Pincode must be exactly 6 digits"); return false; }
+
         if (!formData.sameAsPermanent) {
-          if (!formData.permanentCountry) { toast.error("Permanent Country is required"); return false; }
-          if (formData.permanentCountry === 'India' && (!formData.permanentState || !formData.permanentDistrict)) {
-            toast.error("Permanent State and District are required"); return false;
-          }
-          if (formData.permanentPincode && !/^\d{6}$/.test(formData.permanentPincode)) { toast.error("Permanent Pincode must be exactly 6 digits"); return false; }
+          if (!formData.currentCountry) { toast.error("Current Country is required"); return false; }
+          if (!formData.currentState) { toast.error("Current State is required"); return false; }
+          if (!formData.currentDistrict) { toast.error("Current District/City is required"); return false; }
+          if (!formData.currentAddressLine1) { toast.error("Current Address Line 1 is required"); return false; }
+          if (!formData.currentPincode) { toast.error("Current Pincode is required"); return false; }
+          if (!/^\d{6}$/.test(formData.currentPincode)) { toast.error("Current Pincode must be exactly 6 digits"); return false; }
         }
         return true;
       case 4: // Professional
-        if (formData.panNumber && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber.toUpperCase())) {
-          toast.error("Invalid PAN format (e.g. ABCDE1234F)"); return false;
-        }
+        if (!formData.occupation) { toast.error("Occupation is required"); return false; }
+        if (!formData.panNumber) { toast.error("PAN Number is required"); return false; }
+        if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber.toUpperCase())) {
+          toast.error("Invalid PAN format (e.g. ABCDE1234F)"); return false; }
         if (formData.gstNumber && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.gstNumber.toUpperCase())) {
           toast.error("Invalid GST format"); return false;
-        }
-        if (formData.aadhaarNumber && !/^\d{12}$/.test(formData.aadhaarNumber)) {
-          toast.error("Aadhaar Number must be exactly 12 digits"); return false;
         }
         return true;
       case 5: // Investment
         if (!formData.investmentInterest) { toast.error("Investment Interest is required"); return false; }
         if (!formData.budgetRange) { toast.error("Budget Range is required"); return false; }
+        if (!formData.investmentSource) { toast.error("Investment Source is required"); return false; }
+        if (!formData.riskPreference) { toast.error("Risk Preference is required"); return false; }
+        if (!formData.holdingPeriod) { toast.error("Preferred Holding Period is required"); return false; }
+        if (!formData.leadSource) { toast.error("Lead Source is required"); return false; }
         return true;
       case 6: // Plot Allocation
         if (!formData.passbookNumber) { toast.error("Passbook Number is required"); return false; }
@@ -336,19 +346,24 @@ export function InvestorWizard({
         if (!formData.totalInvestment) { toast.error("Total Investment Amount is required"); return false; }
         if (!formData.paidAmount) { toast.error("Paid Amount is required"); return false; }
         if (!formData.paymentStatus) { toast.error("Payment Status is required"); return false; }
+        if (!formData.paymentMode) { toast.error("Payment Mode is required"); return false; }
         if (formData.paymentStatus === 'Paid' && !formData.paymentProofUrl) { toast.error("Payment Proof Upload is required for completed payments"); return false; }
         return true;
       case 8: // Document Management
-        if (!formData.aadhaarUrl || !formData.panUrl || !formData.passbookPhotoUrl || !formData.landDocumentUrl) { 
-          toast.error("Please upload all mandatory documents (Aadhaar, PAN, Passbook, Land Document)."); return false; 
+        if (!formData.aadhaarNumber) { toast.error("Aadhaar Number is required"); return false; }
+        if (!/^\d{12}$/.test(formData.aadhaarNumber)) {
+          toast.error("Aadhaar Number must be exactly 12 digits"); return false;
         }
+        if (!formData.aadhaarUrl) { toast.error("Aadhaar Document Upload is required"); return false; }
+        if (!formData.panUrl) { toast.error("PAN Document Upload is required"); return false; }
+        if (!formData.passbookPhotoUrl) { toast.error("Passbook Front Page Upload is required"); return false; }
+        if (!formData.landDocumentUrl) { toast.error("Land Document Upload is required"); return false; }
         return true;
       case 9: // Nominee
         if (!formData.nomineeName || formData.nomineeName.length < 2) { toast.error("Nominee Name is required (min 2 chars)"); return false; }
         if (!formData.nomineeRelation) { toast.error("Nominee Relationship is required"); return false; }
         if (!formData.nomineePhone || !/^[6-9]\d{9}$/.test(formData.nomineePhone)) { toast.error("Nominee Phone must be a valid 10-digit mobile number"); return false; }
         if (formData.nomineeEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.nomineeEmail)) { toast.error("Invalid nominee email format"); return false; }
-        if (formData.nomineeAadhaar && !/^\d{12}$/.test(formData.nomineeAadhaar)) { toast.error("Nominee Aadhaar must be exactly 12 digits"); return false; }
         return true;
       default:
         return true;
@@ -742,7 +757,7 @@ export function InvestorWizard({
                       <Input readOnly value={formData.fullName || ''} className="bg-white/10 border-white/10 text-white/50 cursor-not-allowed" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Gender</Label>
+                      <Label className="text-white/70 text-xs">Gender <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.gender || ''} onChange={(e) => handleChange('gender', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Gender</option>
@@ -752,7 +767,7 @@ export function InvestorWizard({
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Marital Status</Label>
+                      <Label className="text-white/70 text-xs">Marital Status <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.maritalStatus || ''} onChange={(e) => handleChange('maritalStatus', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Status</option>
@@ -764,7 +779,7 @@ export function InvestorWizard({
                     </div>
                     {renderParentSpouseFields()}
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Date of Birth</Label>
+                      <Label className="text-white/70 text-xs">Date of Birth <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input type="date" value={formData.dob ? formData.dob.split('T')[0] : ''} onChange={(e) => handleChange('dob', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -773,7 +788,7 @@ export function InvestorWizard({
                       <Input type="number" readOnly value={formData.age || ''} className="bg-white/10 border-white/10 text-white/50 cursor-not-allowed" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Investor Category</Label>
+                      <Label className="text-white/70 text-xs">Investor Category <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.investorType || ''} onChange={(e) => handleChange('investorType', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Category</option>
@@ -820,12 +835,12 @@ export function InvestorWizard({
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">WhatsApp Number</Label>
+                      <Label className="text-white/70 text-xs">WhatsApp Number <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.whatsappNumber || ''} onChange={(e) => handleChange('whatsappNumber', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Preferred Contact Method</Label>
+                      <Label className="text-white/70 text-xs">Preferred Contact Method <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.prefCommunication || ''} onChange={(e) => handleChange('prefCommunication', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="Phone" className="bg-[#141410]">Phone</option>
@@ -909,7 +924,7 @@ export function InvestorWizard({
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">Pincode</Label>
+                        <Label className="text-white/70 text-xs">Pincode <span className="text-red-500 ml-0.5">*</span></Label>
                         <Input value={formData.permanentPincode || ''} onChange={(e) => handleChange('permanentPincode', e.target.value)}
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
@@ -983,7 +998,7 @@ export function InvestorWizard({
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">Pincode</Label>
+                        <Label className="text-white/70 text-xs">Pincode <span className="text-red-500 ml-0.5">*</span></Label>
                         <Input value={formData.currentPincode || ''} onChange={(e) => handleChange('currentPincode', e.target.value)}
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
@@ -1004,7 +1019,7 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Occupation</Label>
+                      <Label className="text-white/70 text-xs">Occupation <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.occupation || ''} onChange={(e) => handleChange('occupation', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -1035,7 +1050,7 @@ export function InvestorWizard({
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">PAN Number</Label>
+                      <Label className="text-white/70 text-xs">PAN Number <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.panNumber || ''} onChange={(e) => handleChange('panNumber', e.target.value)}
                         className="bg-white/5 border-white/10 text-white uppercase focus-visible:ring-[#c8851e]" />
                     </div>
@@ -1081,13 +1096,13 @@ export function InvestorWizard({
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Investment Source</Label>
+                      <Label className="text-white/70 text-xs">Investment Source <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.investmentSource || ''} onChange={(e) => handleChange('investmentSource', e.target.value)}
                         placeholder="e.g. Salary, Business, Loan"
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Risk Preference</Label>
+                      <Label className="text-white/70 text-xs">Risk Preference <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.riskPreference || ''} onChange={(e) => handleChange('riskPreference', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Profile</option>
@@ -1097,13 +1112,13 @@ export function InvestorWizard({
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Preferred Holding Period</Label>
+                      <Label className="text-white/70 text-xs">Preferred Holding Period <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.holdingPeriod || ''} onChange={(e) => handleChange('holdingPeriod', e.target.value)}
                         placeholder="e.g. 5-7 Years"
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Lead Source</Label>
+                      <Label className="text-white/70 text-xs">Lead Source <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.leadSource || ''} onChange={(e) => handleChange('leadSource', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -1237,7 +1252,7 @@ export function InvestorWizard({
                         className="bg-white/10 border-white/10 text-white/50 font-medium cursor-not-allowed" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Payment Mode</Label>
+                      <Label className="text-white/70 text-xs">Payment Mode <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.paymentMode || ''} onChange={(e) => handleChange('paymentMode', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Mode</option>
@@ -1267,7 +1282,7 @@ export function InvestorWizard({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 mb-2">
                        <div className="space-y-1.5">
-                         <Label className="text-white/70 text-xs">Aadhaar Number</Label>
+                         <Label className="text-white/70 text-xs">Aadhaar Number <span className="text-red-500 ml-0.5">*</span></Label>
                          <Input value={formData.aadhaarNumber || ''} onChange={(e) => handleChange('aadhaarNumber', e.target.value)}
                            className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                        </div>
@@ -1477,12 +1492,23 @@ export function InvestorWizard({
               </Button>
               
               {activeSection < SECTIONS.length ? (
-                <Button 
-                  onClick={handleNext}
-                  className="bg-white/10 hover:bg-white/20 text-white"
-                >
-                  Next <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
+                <>
+                  <Button 
+                    onClick={handleNext}
+                    className="bg-white/10 hover:bg-white/20 text-white"
+                  >
+                    Next <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                  {initialData && !isViewMode && (
+                    <Button 
+                      onClick={validateAndSave}
+                      disabled={loading}
+                      className="bg-[#c8851e] hover:bg-[#a96618] text-white shadow-lg shadow-[#c8851e]/20 ml-2"
+                    >
+                      {loading ? 'Updating...' : 'Update'}
+                    </Button>
+                  )}
+                </>
               ) : isViewMode ? (
                 <Button 
                   onClick={onClose}
@@ -1508,9 +1534,14 @@ export function InvestorWizard({
             <div className="relative w-full max-w-4xl h-[80vh] bg-[#141410] border border-white/10 rounded-xl overflow-hidden flex flex-col">
               <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
                 <h3 className="text-white font-medium">Document Preview</h3>
-                <button onClick={() => { setPreviewData(null); setPreviewError(false); }} className="text-white/60 hover:text-white transition-colors">
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <a href={previewData.url} download target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors" title="Download">
+                    <Download className="w-4 h-4" />
+                  </a>
+                  <button onClick={() => { setPreviewData(null); setPreviewError(false); }} className="text-white/60 hover:text-white transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               <div className="flex-1 overflow-auto bg-black/50 flex items-center justify-center p-4">
                 {previewError ? (
@@ -1525,7 +1556,7 @@ export function InvestorWizard({
                   </div>
                 ) : previewData.isPdf ? (
                   <iframe 
-                    src={previewData.url} 
+                    src={previewData.url.startsWith('http') && !previewData.url.startsWith('blob:') ? `https://docs.google.com/gview?url=${encodeURIComponent(previewData.url)}&embedded=true` : previewData.url} 
                     className="w-full h-full rounded-lg bg-white" 
                     frameBorder="0"
                     onError={() => { console.error("Document preview failed"); setPreviewError(true); }}

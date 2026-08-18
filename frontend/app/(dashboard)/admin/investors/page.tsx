@@ -111,7 +111,7 @@ const mapBackendToForm = (c: any) => {
     nomineeEmail: c.nominee_email || '',
     nomineeAadhaar: c.nominee_aadhaar || '',
     nomineeAddress: c.nominee_address || '',
-    nomineeDocumentUrl: c.nominee_id_url || '',
+    nomineeDocumentUrl: c.nominee_document_url || c.nominee_id_url || '',
 
     passbookPhotoUrl: c.passbook_photo_url || '',
     landDocumentUrl: c.land_document_url || '',
@@ -124,11 +124,12 @@ const mapBackendToForm = (c: any) => {
     plotConfiguration: c.landPlots?.[0]?.plot_configuration || '',
     plotSize: c.landPlots?.[0]?.total_area?.toString() || '',
     passbookNumber: c.landPlots?.[0]?.passbook_number || '',
-    plotPhotosUrls: c.landPlots?.[0]?.plot_photos ? c.landPlots[0].plot_photos.split(',') : [],
+    plotPhotosUrls: c.landPlots?.[0]?.images ? c.landPlots[0].images.split(',') : (c.landPlots?.[0]?.plot_photos ? c.landPlots[0].plot_photos.split(',') : []),
     
-    totalInvestment: c.payments?.[0]?.total_investment || '',
-    paidAmount: c.payments?.[0]?.paid_amount || '',
-    paymentStatus: c.payments?.[0]?.payment_status || '',
+    totalInvestment: c.investments?.[0]?.amount || '',
+    paidAmount: c.payments?.[0]?.amount || '',
+    paymentStatus: c.payments?.[0]?.status || '',
+    paymentMode: c.payments?.[0]?.payment_method || '',
 
     sendWelcomeEmail: c.send_welcome_email ?? true,
     sendWhatsapp: c.send_whatsapp ?? true,
@@ -167,7 +168,11 @@ export default function InvestorsPage() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setInvestors(data.data ?? []);
+        const filtered = (data.data ?? []).filter((c: any) => 
+          c.email !== 'admin@sandalwood.com' && 
+          (!c.user || c.user.role?.toUpperCase() !== 'ADMIN')
+        );
+        setInvestors(filtered);
       }
     } catch(e) {
       console.error(e);
@@ -187,8 +192,26 @@ export default function InvestorsPage() {
   );
 
   const openNew = () => { setForm(null); setEditId(null); setIsViewMode(false); setShowModal(true); };
-  const openEdit = (c: any) => {
-    setForm(mapBackendToForm(c));
+  const openEdit = async (c: any) => {
+    const toastId = toast.loading('Fetching full investor details...');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/investors/${c.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setForm(mapBackendToForm(data.data));
+        toast.dismiss(toastId);
+      } else {
+        setForm(mapBackendToForm(c));
+        toast.error('Failed to load full details. Using cached data.', { id: toastId });
+      }
+    } catch (e) {
+      console.error(e);
+      setForm(mapBackendToForm(c));
+      toast.error('Error loading details. Using cached data.', { id: toastId });
+    }
     setEditId(c.id);
     setIsViewMode(false);
     setShowModal(true);
