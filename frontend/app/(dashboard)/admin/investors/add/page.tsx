@@ -66,12 +66,46 @@ export default function AddInvestorPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string, isMultiple = false) => {
     if (e.target.files && e.target.files.length > 0) {
+      const selectedFiles = Array.from(e.target.files);
+      
+      // Explicitly reject videos
+      const hasVideos = selectedFiles.some(file => {
+        const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+        return file.type.startsWith('video/') || ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(fileExtension);
+      });
+      if (hasVideos) {
+        setError('Video files are not allowed.');
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      // Determine allowed types
+      const isDocOrPayment = fieldName === 'paymentProofPreview' || fieldName === 'landDocumentPreview';
+      const allowedExtensions = isDocOrPayment 
+        ? ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'] 
+        : ['image/jpeg', 'image/png', 'image/webp'];
+
+      const invalidFiles = selectedFiles.filter(file => {
+        return !allowedExtensions.includes(file.type);
+      });
+
+      if (invalidFiles.length > 0) {
+        setError(isDocOrPayment 
+          ? 'Only image files (JPG, PNG, WEBP) and PDF documents are allowed.' 
+          : 'Only image files (JPG, PNG, WEBP) are allowed.'
+        );
+        window.scrollTo(0, 0);
+        return;
+      }
+      
+      setError(null); // Clear previous errors
+
       if (isMultiple) {
-        const files = Array.from(e.target.files).slice(0, 4); // Max 4
+        const files = selectedFiles.slice(0, 4); // Max 4
         const urls = files.map(file => URL.createObjectURL(file));
         setFormData(prev => ({ ...prev, [fieldName]: urls }));
       } else {
-        const file = e.target.files[0];
+        const file = selectedFiles[0];
         setFormData(prev => ({ ...prev, [fieldName]: URL.createObjectURL(file) }));
       }
     }
@@ -238,7 +272,7 @@ export default function AddInvestorPage() {
               <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition-all">
                 <Upload className="w-6 h-6 text-white" />
               </div>
-              <input id="profilePhotoUpload" type="file" accept="image/*" className="hidden" onChange={(e) => handleFileChange(e, 'profilePhotoPreview')} />
+              <input id="profilePhotoUpload" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => handleFileChange(e, 'profilePhotoPreview')} />
             </div>
             <h3 className="text-lg font-semibold text-[#12372A]">Profile Picture</h3>
             <p className="text-sm text-gray-500">Click the image area to upload a professional photo</p>
@@ -252,7 +286,7 @@ export default function AddInvestorPage() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">First Name *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">First Name <span className="text-red-500 ml-0.5">*</span></label>
               <input type="text" name="firstName" required value={formData.firstName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C49A5A] outline-none" />
             </div>
             <div>
@@ -260,7 +294,7 @@ export default function AddInvestorPage() {
               <input type="text" name="middleName" value={formData.middleName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C49A5A] outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Last Name *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Last Name <span className="text-red-500 ml-0.5">*</span></label>
               <input type="text" name="lastName" required value={formData.lastName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C49A5A] outline-none" />
             </div>
             
@@ -275,14 +309,14 @@ export default function AddInvestorPage() {
             </div>
             {formData.maritalStatus === 'Single' && (
               <div>
-                <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Father's Name</label>
-                <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md outline-none focus:ring-[#C49A5A]" />
+                <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Father's Name <span className="text-red-500 ml-0.5">*</span></label>
+                <input type="text" name="fatherName" required value={formData.fatherName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md outline-none focus:ring-[#C49A5A]" />
               </div>
             )}
             {formData.maritalStatus === 'Married' && (
               <div>
-                <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Husband / Wife Name</label>
-                <input type="text" name="spouseName" value={formData.spouseName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md outline-none focus:ring-[#C49A5A]" />
+                <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Husband / Wife Name <span className="text-red-500 ml-0.5">*</span></label>
+                <input type="text" name="spouseName" required value={formData.spouseName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md outline-none focus:ring-[#C49A5A]" />
               </div>
             )}
 
@@ -310,11 +344,11 @@ export default function AddInvestorPage() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Primary Mobile *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Primary Mobile <span className="text-red-500 ml-0.5">*</span></label>
               <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Email Address *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Email Address <span className="text-red-500 ml-0.5">*</span></label>
               <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
             </div>
           </div>
@@ -333,29 +367,29 @@ export default function AddInvestorPage() {
               <h3 className="text-lg font-medium text-[#12372A] mb-4 border-b border-[#C49A5A]/20 pb-2">Current Address</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-3">
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Address Line 1 *</label>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Address Line 1 <span className="text-red-500 ml-0.5">*</span></label>
                   <input type="text" name="currentAddressLine1" required value={formData.currentAddressLine1} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country</label>
-                  <select name="currentCountry" value={formData.currentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="currentCountry" required value={formData.currentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
                     <option value="">Select Country</option>
                     {allCountries.map(c => <option key={c.isoCode} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province</label>
-                  <select name="currentState" value={formData.currentState} onChange={handleChange} disabled={!formData.currentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="currentState" required value={formData.currentState} onChange={handleChange} disabled={!formData.currentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
                     <option value="">Select State</option>
                     {getStates(formData.currentCountry).map(s => <option key={s.isoCode} value={s.name}>{s.name}</option>)}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                  <select name="currentDistrict" value={formData.currentDistrict} onChange={handleChange} disabled={!formData.currentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="currentDistrict" required value={formData.currentDistrict} onChange={handleChange} disabled={!formData.currentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
                     <option value="">Select City</option>
                     {getCities(formData.currentCountry, formData.currentState).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
                   </select>
@@ -382,29 +416,29 @@ export default function AddInvestorPage() {
               <h3 className="text-lg font-medium text-[#12372A] mb-4 border-b border-[#C49A5A]/20 pb-2">Permanent Address</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-3">
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Address Line 1 *</label>
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Address Line 1 <span className="text-red-500 ml-0.5">*</span></label>
                   <input type="text" name="permanentAddressLine1" required={!formData.sameAsPermanent} value={formData.permanentAddressLine1} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country</label>
-                  <select name="permanentCountry" value={formData.permanentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Country <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="permanentCountry" required={!formData.sameAsPermanent} value={formData.permanentCountry} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
                     <option value="">Select Country</option>
                     {allCountries.map(c => <option key={c.isoCode} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province</label>
-                  <select name="permanentState" value={formData.permanentState} onChange={handleChange} disabled={!formData.permanentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">State / Province <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="permanentState" required={!formData.sameAsPermanent} value={formData.permanentState} onChange={handleChange} disabled={!formData.permanentCountry} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
                     <option value="">Select State</option>
                     {getStates(formData.permanentCountry).map(s => <option key={s.isoCode} value={s.name}>{s.name}</option>)}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District</label>
-                  <select name="permanentDistrict" value={formData.permanentDistrict} onChange={handleChange} disabled={!formData.permanentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
+                  <label className="block text-sm font-medium text-[#1E1E1A] mb-1">City / District <span className="text-red-500 ml-0.5">*</span></label>
+                  <select name="permanentDistrict" required={!formData.sameAsPermanent} value={formData.permanentDistrict} onChange={handleChange} disabled={!formData.permanentState} className="w-full p-2.5 border border-gray-300 rounded-md bg-white disabled:opacity-50">
                     <option value="">Select City</option>
                     {getCities(formData.permanentCountry, formData.permanentState).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
                   </select>
@@ -431,13 +465,13 @@ export default function AddInvestorPage() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Passbook Number</label>
-              <input type="text" name="passbookNumber" value={formData.passbookNumber} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" placeholder="e.g. PBK123456" />
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Passbook Number <span className="text-red-500 ml-0.5">*</span></label>
+              <input type="text" name="passbookNumber" required value={formData.passbookNumber} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md" placeholder="e.g. PBK123456" />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Plot Size / Configuration</label>
-              <select name="plotConfiguration" value={formData.plotConfiguration} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Plot Size / Configuration <span className="text-red-500 ml-0.5">*</span></label>
+              <select name="plotConfiguration" required value={formData.plotConfiguration} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white">
                 <option value="">Select Size</option>
                 <option value="100 sq. yards">100 sq. yards</option>
                 <option value="200 sq. yards">200 sq. yards</option>
@@ -449,7 +483,7 @@ export default function AddInvestorPage() {
 
             {/* Plot Photos Upload */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-2">Plot Photos (Max 4, Mandatory) *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-2">Plot Photos (Max 4, Mandatory) <span className="text-red-500 ml-0.5">*</span></label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {formData.plotPhotosPreviews.map((url, i) => (
                   <div key={i} className="relative aspect-video rounded-md overflow-hidden border border-gray-200">
@@ -461,7 +495,7 @@ export default function AddInvestorPage() {
                   <div className="aspect-video rounded-md border-2 border-dashed border-[#C49A5A] flex flex-col items-center justify-center cursor-pointer hover:bg-[#C49A5A]/5 transition-colors" onClick={() => document.getElementById('plotPhotosUpload')?.click()}>
                     <Upload className="w-6 h-6 text-[#C49A5A] mb-1" />
                     <span className="text-xs text-gray-500">Upload Photo</span>
-                    <input id="plotPhotosUpload" type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFileChange(e, 'plotPhotosPreviews', true)} />
+                    <input id="plotPhotosUpload" type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={(e) => handleFileChange(e, 'plotPhotosPreviews', true)} />
                   </div>
                 )}
               </div>
@@ -498,7 +532,7 @@ export default function AddInvestorPage() {
                     <span className="text-sm text-gray-500">Click to upload receipt</span>
                   </>
                 )}
-                <input id="paymentProofUpload" type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, 'paymentProofPreview')} />
+                <input id="paymentProofUpload" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" onChange={(e) => handleFileChange(e, 'paymentProofPreview')} />
               </div>
             </div>
           </div>
@@ -512,7 +546,7 @@ export default function AddInvestorPage() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-2">Passbook Photo Upload</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-2">Passbook Photo Upload <span className="text-red-500 ml-0.5">*</span></label>
               <div className="w-full h-40 rounded-md border-2 border-dashed border-[#C49A5A] flex flex-col items-center justify-center cursor-pointer hover:bg-[#C49A5A]/5 transition-colors overflow-hidden relative" onClick={() => document.getElementById('passbookPhotoUpload')?.click()}>
                 {formData.passbookPhotoPreview ? (
                    <img src={formData.passbookPhotoPreview} alt="Passbook" className="w-full h-full object-cover" />
@@ -522,7 +556,7 @@ export default function AddInvestorPage() {
                     <span className="text-sm text-gray-500">Click to upload passbook photo</span>
                   </>
                 )}
-                <input id="passbookPhotoUpload" type="file" accept="image/*" className="hidden" onChange={(e) => handleFileChange(e, 'passbookPhotoPreview')} />
+                <input id="passbookPhotoUpload" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => handleFileChange(e, 'passbookPhotoPreview')} />
               </div>
             </div>
             
@@ -537,7 +571,7 @@ export default function AddInvestorPage() {
                     <span className="text-sm text-gray-500">Click to upload land document</span>
                   </>
                 )}
-                <input id="landDocumentUpload" type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileChange(e, 'landDocumentPreview')} />
+                <input id="landDocumentUpload" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" onChange={(e) => handleFileChange(e, 'landDocumentPreview')} />
               </div>
             </div>
           </div>
@@ -551,11 +585,11 @@ export default function AddInvestorPage() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Name *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Name <span className="text-red-500 ml-0.5">*</span></label>
               <input type="text" name="nomineeName" required value={formData.nomineeName} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C49A5A] outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Relationship *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Relationship <span className="text-red-500 ml-0.5">*</span></label>
               <select name="nomineeRelation" required value={formData.nomineeRelation} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-md bg-white focus:ring-[#C49A5A]">
                 <option value="">Select Relationship</option>
                 <option value="Spouse">Spouse</option>
@@ -566,7 +600,7 @@ export default function AddInvestorPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Phone *</label>
+              <label className="block text-sm font-medium text-[#1E1E1A] mb-1">Nominee Phone <span className="text-red-500 ml-0.5">*</span></label>
               <input 
                 type="tel" 
                 name="nomineePhone" 

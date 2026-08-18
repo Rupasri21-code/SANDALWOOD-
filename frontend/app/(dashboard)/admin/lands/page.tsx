@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Country, State, City } from 'country-state-city';
+import { useAuth } from '@/lib/auth-context';
 
 const allCountries = Country.getAllCountries();
 
@@ -29,9 +30,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1
 type Land = {
   id: string;
   title: string;
+  description: string;
   location: string;
   district: string;
   state: string;
+  survey_number: string;
   total_area: number;
   unit: string;
   status: string;
@@ -39,6 +42,7 @@ type Land = {
   current_value: number;
   latitude?: number;
   longitude?: number;
+  investor_id?: string;
   created_at: string;
 };
 
@@ -51,6 +55,7 @@ const defaultForm = {
 };
 
 export default function LandsPage() {
+  const { profile } = useAuth();
   const [lands, setLands] = useState<Land[]>([]);
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [search, setSearch] = useState('');
@@ -76,7 +81,11 @@ export default function LandsPage() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [profile]);
 
   const filtered = lands.filter(
     (l) => l.title.toLowerCase().includes(search.toLowerCase()) || l.location.toLowerCase().includes(search.toLowerCase())
@@ -84,8 +93,23 @@ export default function LandsPage() {
 
   const openNew = () => { setForm(defaultForm); setEditId(null); setShowModal(true); };
   const openEdit = (l: Land) => {
-    setForm({ ...defaultForm, title: l.title, location: l.location, district: l.district, state: l.state, country: 'India', total_area: String(l.total_area), unit: l.unit, status: l.status, purchase_price: String(l.purchase_price), current_value: String(l.current_value), latitude: l.latitude ? String(l.latitude) : '', longitude: l.longitude ? String(l.longitude) : '', investor_id: '' });
-    // Note: Investor ID needs an explicit fetch if it was returned in a different field, but we'll stick to the current implementation.
+    setForm({
+      title: l.title || '',
+      description: l.description || '',
+      location: l.location || '',
+      district: l.district || '',
+      state: l.state || '',
+      country: 'India',
+      survey_number: l.survey_number || '',
+      total_area: String(l.total_area || ''),
+      unit: l.unit || 'acres',
+      status: l.status ? l.status.toLowerCase() : 'active',
+      purchase_price: String(l.purchase_price || ''),
+      current_value: String(l.current_value || ''),
+      latitude: l.latitude ? String(l.latitude) : '',
+      longitude: l.longitude ? String(l.longitude) : '',
+      investor_id: l.investor_id || '',
+    });
     setEditId(l.id);
     setShowModal(true);
   };
@@ -177,7 +201,7 @@ export default function LandsPage() {
       purchasePrice: parseFloat(form.purchase_price) || 0,
       currentValue: parseFloat(form.current_value) || 0,
       status: backendStatus,
-      investorId: form.investor_id || undefined,
+      investorId: form.investor_id || '',
       latitude: form.latitude ? parseFloat(form.latitude) : undefined,
       longitude: form.longitude ? parseFloat(form.longitude) : undefined
     };

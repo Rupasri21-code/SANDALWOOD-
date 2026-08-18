@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -14,12 +15,15 @@ type Investment = {
   id: string;
   investor_id: string;
   land_id: string | null;
+  investment_type: string;
   amount: number;
   roi_percentage: number;
   status: string;
   investment_date: string;
+  maturity_date?: string;
   contract_number: string;
   expected_returns: number;
+  notes?: string;
 };
 
 type Investor = { id: string; full_name: string };
@@ -33,6 +37,7 @@ const defaultForm = {
 };
 
 export default function InvestmentsPage() {
+  const { profile } = useAuth();
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [lands, setLands] = useState<Land[]>([]);
@@ -94,7 +99,11 @@ export default function InvestmentsPage() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [profile]);
 
   const totalAUM = investments.reduce((s, i) => s + i.amount, 0);
   const activeCount = investments.filter((i) => i.status === 'active').length;
@@ -324,7 +333,19 @@ export default function InvestmentsPage() {
                     </td>
                     <td className="px-7 py-4 transition-transform duration-300 group-hover:-translate-x-[5px] text-right">
                       <button onClick={() => {
-                        setForm({ ...defaultForm, investor_id: inv.investor_id, land_id: inv.land_id || '', amount: String(inv.amount), roi_percentage: String(inv.roi_percentage), expected_returns: String(inv.expected_returns), status: inv.status, contract_number: inv.contract_number, investment_date: inv.investment_date });
+                        setForm({
+                          investor_id: inv.investor_id || '',
+                          land_id: inv.land_id || '',
+                          investment_type: inv.investment_type || 'full_purchase',
+                          amount: String(inv.amount || ''),
+                          investment_date: inv.investment_date ? inv.investment_date.split('T')[0] : '',
+                          maturity_date: inv.maturity_date ? inv.maturity_date.split('T')[0] : '',
+                          expected_returns: String(inv.expected_returns || ''),
+                          roi_percentage: String(inv.roi_percentage || ''),
+                          status: inv.status ? inv.status.toLowerCase() : 'active',
+                          contract_number: inv.contract_number || '',
+                          notes: inv.notes || '',
+                        });
                         setEditId(inv.id); setShowModal(true);
                       }} className="h-[36px] px-5 rounded-full font-bold text-[11px] uppercase tracking-wider border border-[#C49A5A] text-[#C49A5A] hover:bg-[#C49A5A] hover:text-[#08120D] hover:shadow-[0_0_15px_rgba(196,154,90,0.4)] transition-all duration-300 inline-flex items-center justify-center">
                         Edit

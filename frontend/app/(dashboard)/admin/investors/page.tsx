@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { InvestorWizard } from '@/components/admin/investors/investor-wizard';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -148,6 +149,7 @@ const mapBackendToForm = (c: any) => {
 };
 
 export default function InvestorsPage() {
+  const { profile } = useAuth();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -172,7 +174,11 @@ export default function InvestorsPage() {
     }
   };
 
-  useEffect(() => { fetchInvestors(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchInvestors();
+    }
+  }, [profile]);
 
   const filtered = investors.filter(
     (c) =>

@@ -27,22 +27,6 @@ export default function LoginPage() {
 
   useEffect(() => {
     setMounted(true);
-
-    const checkImage = (src: string) =>
-      new Promise<boolean>((resolve) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-      });
-
-    Promise.all([
-      checkImage('/login/background.webp'),
-      checkImage('/login/tree-frame.webp'),
-      checkImage('/login/leaves.svg'),
-    ]).then(([background, frame, leaves]) => {
-      setAssetStatus({ background, frame, leaves });
-    });
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -67,13 +51,11 @@ export default function LoginPage() {
       }
 
       toast.success('Welcome back!');
-      setTimeout(() => {
-        if (role === 'admin') {
-          router.push('/admin');
-        } else {
-          router.push('/portal');
-        }
-      }, 100);
+      if (role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/portal');
+      }
     } catch (err) {
       console.error('Login error:', err);
       toast.error('An unexpected error occurred.');

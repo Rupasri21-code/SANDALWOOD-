@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -30,6 +31,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default function NotificationsPage() {
+  const { profile } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -77,7 +79,11 @@ export default function NotificationsPage() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [profile]);
 
   const handleSend = async () => {
     if (!form.title || !form.message) { toast.error('Title and message required'); return; }

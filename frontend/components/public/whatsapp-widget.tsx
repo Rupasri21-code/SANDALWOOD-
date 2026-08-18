@@ -13,7 +13,7 @@ export default function WhatsAppWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedOffice, setSelectedOffice] = useState('918688660644'); // Default: Active WhatsApp (+91 86886 60644)
+  const [selectedOffice, setSelectedOffice] = useState('916300016733'); // Default: Active WhatsApp (+91 63000 16733)
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -22,8 +22,14 @@ export default function WhatsAppWidget() {
     message: '',
   });
 
+  const [errors, setErrors] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+  });
+
   const officeOptions = [
-    { label: 'Chandhan Nilayam WhatsApp (+91 86886 60644)', number: '918688660644' },
+    { label: 'Chandhan Nilayam WhatsApp (+91 63000 16733)', number: '916300016733' },
     { label: 'Hyderabad Office (+91 90630 16733)', number: '919063016733' },
   ];
 
@@ -32,19 +38,84 @@ export default function WhatsAppWidget() {
     return null;
   }
 
+  const validateField = (name: string, value: string) => {
+    let errMsg = '';
+    if (name === 'fullName') {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        errMsg = 'Full name is required';
+      } else if (trimmed.length < 3) {
+        errMsg = 'Full name must be at least 3 characters';
+      } else if (!/^[a-zA-Z\s]+$/.test(trimmed)) {
+        errMsg = 'Full name can only contain letters and spaces';
+      }
+    } else if (name === 'phone') {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        errMsg = 'Phone number is required';
+      } else if (!/^[0-9]+$/.test(trimmed)) {
+        errMsg = 'Phone number must contain only numbers';
+      } else if (trimmed.length !== 10) {
+        errMsg = 'Phone number must be exactly 10 digits';
+      }
+    } else if (name === 'email') {
+      const trimmed = value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!trimmed) {
+        errMsg = 'Email address is required';
+      } else if (!emailRegex.test(trimmed)) {
+        errMsg = 'Please enter a valid email address';
+      }
+    }
+    setErrors((prev) => ({ ...prev, [name]: errMsg }));
+    return errMsg;
+  };
+
+  const validateForm = () => {
+    const nameErr = validateField('fullName', formData.fullName);
+    const phoneErr = validateField('phone', formData.phone);
+    const emailErr = validateField('email', formData.email);
+    return !nameErr && !phoneErr && !emailErr;
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '' || /^[a-zA-Z\s]*$/.test(value)) {
+      setFormData((prev) => ({ ...prev, fullName: value }));
+      if (errors.fullName) {
+        setErrors((prev) => ({ ...prev, fullName: '' }));
+      }
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 10) {
+      setFormData((prev) => ({ ...prev, phone: value }));
+      if (errors.phone) {
+        setErrors((prev) => ({ ...prev, phone: '' }));
+      }
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, email: value }));
+    if (errors.email) {
+      setErrors((prev) => ({ ...prev, email: '' }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.fullName.trim()) {
-      toast.error('Please enter your full name');
-      return;
-    }
-    if (!formData.phone.trim() || formData.phone.trim().length < 10) {
-      toast.error('Please enter a valid 10-digit phone number');
-      return;
-    }
-    if (!formData.email.trim() || !formData.email.includes('@')) {
-      toast.error('Please enter a valid email address');
+    if (!validateForm()) {
+      toast.error('Please fix the validation errors before starting the chat');
       return;
     }
 
@@ -71,15 +142,15 @@ export default function WhatsAppWidget() {
 
     // Format WhatsApp message
     const formattedMessage = 
-`🌿 *CHANDHAN NILAYAM - INVESTMENT INQUIRY* 🌿
+`*CHANDHAN NILAYAM - INVESTMENT INQUIRY*
 
 Hello Team, I would like to inquire about Sandalwood Investment opportunities.
 
-👤 *Name:* ${formData.fullName.trim()}
-📞 *Phone:* ${formData.phone.trim()}
-✉️ *Email:* ${formData.email.trim()}
-🌲 *Investment Interest:* ${formData.investmentInterest}
-${formData.message.trim() ? `💬 *Message:* ${formData.message.trim()}\n` : ''}
+*Name:* ${formData.fullName.trim()}
+*Phone:* ${formData.phone.trim()}
+*Email:* ${formData.email.trim()}
+*Investment Interest:* ${formData.investmentInterest}
+${formData.message.trim() ? `*Message:* ${formData.message.trim()}\n` : ''}
 Please share complete details and plot availability. Thank you!`;
 
     // Ensure phone number contains ONLY pure digits (no spaces, pluses, or dashes)
@@ -212,12 +283,19 @@ Please share complete details and plot availability. Thank you!`;
                 <input
                   type="text"
                   required
+                  name="fullName"
                   placeholder="e.g. Ramesh Kumar"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full bg-[#0E1E18] border border-[#C49A5A]/30 rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none focus:border-[#C49A5A] transition-colors"
+                  onChange={handleNameChange}
+                  onBlur={handleBlur}
+                  className={`w-full bg-[#0E1E18] border ${
+                    errors.fullName ? 'border-red-500/80 focus:border-red-500' : 'border-[#C49A5A]/30 focus:border-[#C49A5A]'
+                  } rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none transition-colors`}
                 />
               </div>
+              {errors.fullName && (
+                <p className="text-red-400 text-[10px] mt-1 text-left font-sans">{errors.fullName}</p>
+              )}
             </div>
 
             {/* Phone */}
@@ -230,12 +308,19 @@ Please share complete details and plot availability. Thank you!`;
                 <input
                   type="tel"
                   required
+                  name="phone"
                   placeholder="10-digit Mobile Number"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-[#0E1E18] border border-[#C49A5A]/30 rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none focus:border-[#C49A5A] transition-colors"
+                  onChange={handlePhoneChange}
+                  onBlur={handleBlur}
+                  className={`w-full bg-[#0E1E18] border ${
+                    errors.phone ? 'border-red-500/80 focus:border-red-500' : 'border-[#C49A5A]/30 focus:border-[#C49A5A]'
+                  } rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none transition-colors`}
                 />
               </div>
+              {errors.phone && (
+                <p className="text-red-400 text-[10px] mt-1 text-left font-sans">{errors.phone}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -248,12 +333,19 @@ Please share complete details and plot availability. Thank you!`;
                 <input
                   type="email"
                   required
+                  name="email"
                   placeholder="e.g. ramesh@gmail.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[#0E1E18] border border-[#C49A5A]/30 rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none focus:border-[#C49A5A] transition-colors"
+                  onChange={handleEmailChange}
+                  onBlur={handleBlur}
+                  className={`w-full bg-[#0E1E18] border ${
+                    errors.email ? 'border-red-500/80 focus:border-red-500' : 'border-[#C49A5A]/30 focus:border-[#C49A5A]'
+                  } rounded-xl py-2.5 pl-10 pr-4 text-xs text-[#F7F0E4] placeholder-[#F7F0E4]/40 focus:outline-none transition-colors`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-400 text-[10px] mt-1 text-left font-sans">{errors.email}</p>
+              )}
             </div>
 
             {/* Investment Interest */}

@@ -5,6 +5,7 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { createInvestorSchema, updateInvestorSchema } from '../validators/investor.validator';
 import { sendCredentials } from '../services/email.service';
 import { sendWhatsAppCredentials, sendWhatsAppAccountCreated, sendWhatsAppKYCStatusUpdate } from '../services/whatsapp.service';
+import { createNotification } from '../services/notification.service';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -177,9 +178,37 @@ export const createInvestor = async (req: Request, res: Response, next: NextFunc
       }
     }
 
-    const investor = await db.investorProfile.create({
-      data: mapToPrisma(validated),
+    // Generate temporary portal password and create User account
+    const tempPassword = crypto.randomBytes(5).toString('hex');
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    const user = await db.user.create({
+      data: {
+        email: validated.email,
+        username: validated.email.split('@')[0],
+        password: hashedPassword,
+        role: 'INVESTOR',
+      },
     });
+
+    const investorData: any = mapToPrisma(validated);
+    investorData.user_id = user.id;
+
+    const investor = await db.investorProfile.create({
+      data: investorData,
+    });
+
+    // Automatically send credentials via Email
+    await sendCredentials(investor.email, investor.full_name, tempPassword).catch((err) =>
+      console.error('⚠️ Failed to send investor credentials email:', err)
+    );
+
+    // Send credentials via WhatsApp if phone available
+    if (investor.phone) {
+      sendWhatsAppAccountCreated(investor.phone, investor.email, tempPassword).catch((err) =>
+        console.error('⚠️ Failed to send WhatsApp credentials:', err)
+      );
+    }
 
     // If plot details are provided, create a land plot linked to the investor
     if (validated.passbookNumber || validated.plotSize || validated.plotConfiguration) {
@@ -205,7 +234,7 @@ export const createInvestor = async (req: Request, res: Response, next: NextFunc
     }
 
     res.status(201).json(
-      new ApiResponse(201, investor, 'Investor created successfully')
+      new ApiResponse(201, investor, 'Investor created successfully and login credentials sent via email.')
     );
   } catch (error) {
     next(error);
@@ -232,11 +261,36 @@ export const updateInvestor = async (req: Request, res: Response, next: NextFunc
       existing.passbook_verification_status !== updated.passbook_verification_status
     ) {
       try {
+        await createNotification({
+          recipientId: updated.user_id || undefined,
+          investorId: updated.id,
+          title: 'KYC & Passbook Verification Update',
+          message: `Your passbook verification status has been updated to: ${updated.passbook_verification_status}.`,
+          type: 'INFO',
+          link: '/portal/dashboard',
+          sendEmailAlert: true,
+        });
+
         if (updated.phone) {
           await sendWhatsAppKYCStatusUpdate(updated.phone, updated.passbook_verification_status);
         }
       } catch (waErr: any) {
-        console.error('⚠️ Failed to send WhatsApp KYC status update notification:', waErr.message || waErr);
+        console.error('⚠️ Failed to send WhatsApp/Email KYC status update notification:', waErr.message || waErr);
+      }
+    } else {
+      // General profile update alert
+      try {
+        await createNotification({
+          recipientId: updated.user_id || undefined,
+          investorId: updated.id,
+          title: 'Account Profile Updated',
+          message: `Your investor profile information has been updated by the administration team.`,
+          type: 'INFO',
+          link: '/portal/profile',
+          sendEmailAlert: true,
+        });
+      } catch (err: any) {
+        console.error('⚠️ Failed to send profile update email alert:', err.message || err);
       }
     }
 

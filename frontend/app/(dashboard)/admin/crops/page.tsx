@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -23,10 +24,19 @@ type Crop = {
   total_plants: number;
   surviving_plants: number;
   planted_date: string;
+  height_avg?: number;
+  notes?: string;
   created_at: string;
 };
 
-type Land = { id: string; title: string };
+type Land = { 
+  id: string; 
+  title: string;
+  investor?: {
+    id: string;
+    full_name: string;
+  } | null;
+};
 
 const stageColors: Record<string, string> = {
   seedling: 'bg-yellow-400/15 text-yellow-400',
@@ -43,6 +53,7 @@ const defaultForm = {
 };
 
 export default function CropsPage() {
+  const { profile } = useAuth();
   const [crops, setCrops] = useState<Crop[]>([]);
   const [lands, setLands] = useState<Land[]>([]);
   const [search, setSearch] = useState('');
@@ -71,7 +82,11 @@ export default function CropsPage() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [profile]);
 
   const filtered = crops.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -266,7 +281,10 @@ export default function CropsPage() {
                       </div>
                     </td>
                     <td className="px-7 py-4 text-[#A8B5AA] font-medium hidden md:table-cell transition-transform duration-300 group-hover:translate-x-[5px]">
-                      {lands.find((l) => l.id === crop.land_id)?.title || '—'}
+                      {(() => {
+                        const land = lands.find((l) => l.id === crop.land_id);
+                        return land ? (land.investor ? `${land.investor.full_name} (${land.title})` : land.title) : '—';
+                      })()}
                     </td>
                     <td className="px-7 py-4 transition-transform duration-300 group-hover:translate-x-[5px]">
                       <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider ${
@@ -303,7 +321,7 @@ export default function CropsPage() {
                           + Update
                         </button>
                         <button onClick={() => {
-                          setForm({ name: crop.name, variety: crop.variety || '', land_id: crop.land_id, planted_date: crop.planted_date || '', total_plants: String(crop.total_plants), surviving_plants: String(crop.surviving_plants), growth_stage: crop.growth_stage, health_status: crop.health_status, height_avg: '', notes: '' });
+                          setForm({ name: crop.name, variety: crop.variety || '', land_id: crop.land_id, planted_date: crop.planted_date ? crop.planted_date.split('T')[0] : '', total_plants: String(crop.total_plants), surviving_plants: String(crop.surviving_plants), growth_stage: crop.growth_stage ? crop.growth_stage.toLowerCase() : 'seedling', health_status: crop.health_status ? crop.health_status.toLowerCase() : 'good', height_avg: crop.height_avg ? String(crop.height_avg) : '', notes: crop.notes || '' });
                           setEditId(crop.id); setShowModal(true);
                         }} className="w-[40px] h-[40px] rounded-full bg-[#121F17] border border-[#C49A5A]/20 flex items-center justify-center text-[#A8B5AA] hover:text-[#C49A5A] hover:border-[#C49A5A] hover:shadow-[0_0_15px_rgba(196,154,90,0.3)] transition-all duration-300" title="Edit">
                           <Edit2 className="w-4 h-4" />
@@ -347,7 +365,14 @@ export default function CropsPage() {
                 <select value={form.land_id} onChange={(e) => setForm({ ...form, land_id: e.target.value })}
                   className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#c8851e]">
                   <option value="" className="bg-[#141410]">Select land</option>
-                  {lands.map((l) => <option key={l.id} value={l.id} className="bg-[#141410]">{l.title}</option>)}
+                  {lands
+                    .filter((l) => l.investor)
+                    .map((l) => (
+                      <option key={l.id} value={l.id} className="bg-[#141410]">
+                        {l.investor?.full_name} {l.title ? `(${l.title})` : ''}
+                      </option>
+                    ))
+                  }
                 </select>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">

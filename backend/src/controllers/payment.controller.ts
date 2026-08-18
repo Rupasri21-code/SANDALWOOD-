@@ -112,9 +112,9 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
     });
 
     try {
-      if (investor.user_id) {
+      if (investor) {
         await createNotification({
-          recipientId: investor.user_id,
+          recipientId: investor.user_id || undefined,
           investorId: investor.id,
           title: 'Payment Received',
           message: `We have received your payment of ${payment.currency} ${payment.amount} (Transaction ID: ${payment.transaction_id}). Status: ${payment.status}.`,
@@ -170,22 +170,21 @@ export const updatePayment = async (req: Request, res: Response, next: NextFunct
       },
     });
 
-    // WhatsApp: notify investor only when the payment status has changed
+    // WhatsApp & Email: notify investor only when the payment status has changed
     if (validated.status && validated.status !== existing.status) {
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
         if (investor) {
-          if (investor.user_id) {
-            await createNotification({
-              recipientId: investor.user_id,
-              investorId: investor.id,
-              title: 'Payment Status Updated',
-              message: `The status of your payment for ${updated.currency} ${updated.amount} (Transaction ID: ${updated.transaction_id}) has been updated to ${updated.status}.`,
-              type: 'INFO',
-              link: '/portal/payments',
-              sendEmailAlert: true,
-            });
-          }
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: 'Payment Status Updated',
+            message: `The status of your payment for ${updated.currency} ${updated.amount} (Transaction ID: ${updated.transaction_id}) has been updated to ${updated.status}.`,
+            type: 'INFO',
+            link: '/portal/payments',
+            sendEmailAlert: true,
+          });
+
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPaymentStatusUpdated(
@@ -199,7 +198,7 @@ export const updatePayment = async (req: Request, res: Response, next: NextFunct
           }
         }
       } catch (waErr: any) {
-        console.error('⚠️ Failed to send WhatsApp payment status update notification:', waErr.message || waErr);
+        console.error('⚠️ Failed to send WhatsApp/Email payment status update notification:', waErr.message || waErr);
       }
     }
 

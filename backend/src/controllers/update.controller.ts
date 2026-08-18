@@ -108,9 +108,9 @@ export const createUpdate = async (req: Request, res: Response, next: NextFuncti
     });
 
     // Send Notification to assigned investor
-    if (land.investor && land.investor.user_id) {
+    if (land.investor) {
       await createNotification({
-        recipientId: land.investor.user_id,
+        recipientId: land.investor.user_id || undefined,
         investorId: land.investor.id,
         title: `Plantation Update: ${validated.title}`,
         message: validated.description,

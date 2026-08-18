@@ -5,6 +5,7 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary.service';
 import { sendWhatsAppDocumentUploaded, getInvestorWhatsAppNumber } from '../services/whatsapp.service';
 import { sendDocumentAlert } from '../services/email.service';
+import { createNotification } from '../services/notification.service';
 import path from 'path';
 
 export const listMedia = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,16 +72,19 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
 
       // Broadcast to WhatsApp and Email
       for (const inv of allInvestors) {
-        if (inv.user_id) {
-          try {
-            const user = await db.user.findUnique({ where: { id: inv.user_id } });
-            if (user) {
-              await sendDocumentAlert(user.email, inv.full_name, title || req.file!.originalname);
-            }
-          } catch (e) {
-            console.error('Failed to send email broadcast:', e);
-          }
-        }
+        const email = inv.email || (inv.user_id ? (await db.user.findUnique({ where: { id: inv.user_id } }))?.email : null);
+        
+        // Create In-App notification & send email alert
+        await createNotification({
+          recipientId: inv.user_id || undefined,
+          investorId: inv.id,
+          title: 'New Media Asset Uploaded',
+          message: `A new media asset "${title || req.file!.originalname}" (${category || 'General'}) has been added to your media gallery.`,
+          type: 'INFO',
+          link: '/portal/documents',
+          sendEmailAlert: true,
+        }).catch((e: any) => console.error(`Failed notification for ${inv.full_name}:`, e.message || e));
+
         const waPhone = getInvestorWhatsAppNumber(inv);
         if (waPhone) {
           try {
@@ -110,19 +114,23 @@ export const createMedia = async (req: Request, res: Response, next: NextFunctio
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
         if (investor) {
-          if (investor.user_id) {
-            const user = await db.user.findUnique({ where: { id: investor.user_id } });
-            if (user) {
-              await sendDocumentAlert(user.email, investor.full_name, media.title);
-            }
-          }
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: 'New Media Asset Uploaded',
+            message: `A new media asset "${media.title}" (${media.category}) has been added to your gallery.`,
+            type: 'INFO',
+            link: '/portal/documents',
+            sendEmailAlert: true,
+          });
+
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppDocumentUploaded(waPhone, media.title, media.category);
           }
         }
-      } catch (waErr: any) {
-        console.error('WhatsApp failed:', waErr.message || waErr);
+      } catch (err: any) {
+        console.error('Email/WhatsApp sending failed for media upload:', err.message || err);
       }
 
       res.status(201).json(

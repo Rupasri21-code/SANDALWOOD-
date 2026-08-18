@@ -325,17 +325,82 @@ export default function MediaLibraryPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
-          { label: 'Total Files', value: totalFiles, icon: FileIcon, color: 'text-white/80' },
-          { label: 'Images', value: totalImages, icon: ImageIcon, color: 'text-emerald-400' },
-          { label: 'PDFs', value: totalPDFs, icon: FileText, color: 'text-red-400' },
-          { label: 'Videos', value: totalVideos, icon: Video, color: 'text-blue-400' },
-          { label: 'Storage Used', value: formatBytes(totalBytes), icon: HardDrive, color: 'text-[#c8851e]' },
-          { label: 'Uploaded This Month', value: uploadedThisMonth, icon: Calendar, color: 'text-white/80' },
+          { 
+            label: 'Total Files', 
+            value: totalFiles, 
+            icon: FileIcon, 
+            color: 'text-slate-200',
+            bgColor: 'bg-slate-500/10 border-slate-500/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(148,163,184,0.15)]',
+            gradient: 'from-slate-500/10 via-transparent to-transparent'
+          },
+          { 
+            label: 'Images', 
+            value: totalImages, 
+            icon: ImageIcon, 
+            color: 'text-emerald-400',
+            bgColor: 'bg-emerald-500/10 border-emerald-500/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(52,211,153,0.2)]',
+            gradient: 'from-emerald-500/10 via-transparent to-transparent'
+          },
+          { 
+            label: 'PDFs', 
+            value: totalPDFs, 
+            icon: FileText, 
+            color: 'text-rose-400',
+            bgColor: 'bg-rose-500/10 border-rose-500/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(251,113,133,0.2)]',
+            gradient: 'from-rose-500/10 via-transparent to-transparent'
+          },
+          { 
+            label: 'Videos', 
+            value: totalVideos, 
+            icon: Video, 
+            color: 'text-sky-400',
+            bgColor: 'bg-sky-500/10 border-sky-500/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(56,189,248,0.2)]',
+            gradient: 'from-sky-500/10 via-transparent to-transparent'
+          },
+          { 
+            label: 'Storage Used', 
+            value: formatBytes(totalBytes), 
+            icon: HardDrive, 
+            color: 'text-[#e6a843]',
+            bgColor: 'bg-[#c8851e]/10 border-[#c8851e]/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(200,133,30,0.25)]',
+            gradient: 'from-[#c8851e]/10 via-transparent to-transparent'
+          },
+          { 
+            label: 'Uploaded This Month', 
+            value: uploadedThisMonth, 
+            icon: Calendar, 
+            color: 'text-violet-400',
+            bgColor: 'bg-violet-500/10 border-violet-500/20',
+            glowColor: 'hover:shadow-[0_0_25px_-5px_rgba(167,139,250,0.2)]',
+            gradient: 'from-violet-500/10 via-transparent to-transparent'
+          },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#141410] border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-lg hover:border-white/20 transition-colors">
-            <stat.icon className={`w-6 h-6 mb-2 ${stat.color} opacity-80`} />
-            <div className="text-2xl font-bold text-white mb-0.5">{stat.value}</div>
-            <div className="text-xs text-white/50 font-medium">{stat.label}</div>
+          <div 
+            key={i} 
+            className={`group relative bg-[#141410]/90 backdrop-blur-xl border border-white/10 hover:border-white/25 rounded-2xl p-4 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1 cursor-default ${stat.glowColor} overflow-hidden`}
+          >
+            {/* Ambient Background Gradient Accent */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+
+            {/* Icon Container */}
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${stat.bgColor} mb-3 group-hover:scale-110 transition-transform duration-300 relative z-10`}>
+              <stat.icon className={`w-5 h-5 ${stat.color}`} />
+            </div>
+
+            {/* Value & Label */}
+            <div className="relative z-10 space-y-1">
+              <div className="text-2xl font-bold tracking-tight text-white group-hover:text-white transition-colors">
+                {stat.value}
+              </div>
+              <div className="text-[11px] font-medium text-white/50 tracking-wide group-hover:text-white/70 transition-colors uppercase">
+                {stat.label}
+              </div>
+            </div>
           </div>
         ))}
       </div>

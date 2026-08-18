@@ -51,22 +51,22 @@ export default function Navbar() {
       <div className="w-full max-w-[1560px] mx-auto px-[20px] md:px-[42px]">
         
         {/* Desktop Layout (104px) / Mobile Layout (72px) */}
-        <div className="hidden 2xl:grid items-center h-[104px]" style={{ gridTemplateColumns: '250px minmax(0, 1fr) auto', columnGap: '32px' }}>
+        <div className="hidden xl:grid items-center h-[104px] grid-cols-[180px_1fr_auto] 2xl:grid-cols-[250px_1fr_auto] gap-4 2xl:gap-8">
           
           {/* COLUMN 1: Brand */}
-          <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[250px] min-w-[250px] h-[82px]">
+          <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[180px] min-w-[180px] 2xl:w-[250px] 2xl:min-w-[250px] h-[82px]">
             <img src="/branding/chandhan-navbar-logo.png" alt="Chandhan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
 
           {/* COLUMN 2: Navigation Links */}
-          <div className="flex items-center justify-center gap-[25px] w-full px-4 overflow-hidden">
+          <div className="flex items-center justify-center gap-[12px] 2xl:gap-[25px] w-full px-2 2xl:px-4 overflow-hidden">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target={link.target || undefined}
                 rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                className="group relative flex items-center text-[#203029] font-sans font-semibold text-[12px] tracking-[0.035em] whitespace-nowrap py-2 transition-colors duration-250 hover:text-[#A97835]"
+                className="group relative flex items-center text-[#203029] font-sans font-semibold text-[11px] 2xl:text-[12px] tracking-[0.02em] 2xl:tracking-[0.035em] whitespace-nowrap py-2 transition-colors duration-250 hover:text-[#A97835]"
               >
                 {link.icon}
                 {link.label}
@@ -76,18 +76,17 @@ export default function Navbar() {
           </div>
 
           {/* COLUMN 3: CTAs */}
-          <div className="flex items-center gap-[14px]">
+          <div className="flex items-center gap-[8px] 2xl:gap-[14px]">
             <Link 
               href="/login" 
-              className="flex items-center justify-center bg-transparent border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[12px] tracking-[0.06em] h-[46px] px-[24px] rounded-full transition-all duration-300 hover:bg-[#12372A] hover:text-[#FFFFFF] hover:border-[#12372A] hover:-translate-y-[2px]"
+              className="flex items-center justify-center bg-transparent border border-[#C49A5A] text-[#12372A] font-sans font-bold text-[11px] 2xl:text-[12px] tracking-[0.06em] h-[40px] 2xl:h-[46px] px-[16px] 2xl:px-[24px] rounded-full transition-all duration-300 hover:bg-[#12372A] hover:text-[#FFFFFF] hover:border-[#12372A] hover:-translate-y-[2px]"
             >
               LOGIN
             </Link>
             <a href="#investor-inquiry">
               <button 
                 suppressHydrationWarning 
-                className="flex items-center justify-center bg-gradient-to-br from-[#C49A5A] to-[#D9B36D] text-white font-sans font-bold text-[12px] tracking-[0.03em] h-[48px] px-[26px] rounded-full whitespace-nowrap transition-all duration-300 shadow-[0_8px_22px_rgba(196,154,90,0.28)] hover:-translate-y-[2px] hover:shadow-[0_12px_28px_rgba(196,154,90,0.4)]"
-                style={{ minWidth: '162px' }}
+                className="flex items-center justify-center bg-gradient-to-br from-[#C49A5A] to-[#D9B36D] text-white font-sans font-bold text-[11px] 2xl:text-[12px] tracking-[0.03em] h-[42px] 2xl:h-[48px] px-[18px] 2xl:px-[26px] rounded-full whitespace-nowrap transition-all duration-300 shadow-[0_8px_22px_rgba(196,154,90,0.28)] hover:-translate-y-[2px] hover:shadow-[0_12px_28px_rgba(196,154,90,0.4)] min-w-[130px] 2xl:min-w-[162px]"
               >
                 INVESTOR INQUIRY
               </button>
@@ -95,7 +94,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="2xl:hidden flex justify-between items-center h-[72px] md:h-[82px]">
+        <div className="xl:hidden flex justify-between items-center h-[72px] md:h-[82px]">
           <Link href="/home" className="flex items-center justify-start shrink-0 overflow-visible w-[160px] md:w-[180px] h-[55px]" onClick={() => setMobileOpen(false)}>
             <img src="/branding/chandhan-navbar-logo.png" alt="Chandhan Nilayam Logo" className="w-full h-full object-contain object-left block m-0 p-0 transform-none" />
           </Link>
@@ -114,13 +113,13 @@ export default function Navbar() {
 
       {/* Mobile Slide-Down Menu Overlay */}
       <div 
-        className={`2xl:hidden fixed inset-0 top-[72px] md:top-[82px] bg-[#0A120E]/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        className={`xl:hidden fixed inset-0 top-[72px] md:top-[82px] bg-[#0A120E]/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         onClick={() => setMobileOpen(false)}
       />
 
       {/* Mobile Menu Panel */}
       <div 
-        className={`2xl:hidden fixed top-[72px] md:top-[82px] left-0 right-0 bg-white border-t border-[#12372A]/10 shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-50 overflow-hidden ${mobileOpen ? 'max-h-[calc(100vh-72px)] opacity-100' : 'max-h-0 opacity-0'}`}
+        className={`xl:hidden fixed top-[72px] md:top-[82px] left-0 right-0 bg-white border-t border-[#12372A]/10 shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-50 overflow-hidden ${mobileOpen ? 'max-h-[calc(100vh-72px)] opacity-100' : 'max-h-0 opacity-0'}`}
       >
         <div className="flex flex-col px-[28px] py-[36px] gap-[24px] max-h-[calc(100vh-72px)] overflow-y-auto pb-32">
           {/* Links */}

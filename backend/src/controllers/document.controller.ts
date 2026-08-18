@@ -96,16 +96,23 @@ export const createDocument = async (req: Request, res: Response, next: NextFunc
       },
     });
 
-    // Alert Investor if portal access exists
-    if (investor.user_id) {
+    // Alert Investor via Email and Notification System
+    if (investor) {
+      const email = investor.email || (investor.user ? investor.user.email : null);
+      if (email) {
+        const { sendDocumentAlert } = require('../services/email.service');
+        await sendDocumentAlert(email, investor.full_name, doc.title).catch((err: any) =>
+          console.error('⚠️ Document alert email failed:', err.message || err)
+        );
+      }
       await createNotification({
-        recipientId: investor.user_id,
+        recipientId: investor.user_id || undefined,
         investorId: investor.id,
         title: 'New Document Shared',
         message: `An official document "${title}" has been uploaded to your investor portal.`,
         type: 'ALERT',
         link: '/portal/documents',
-        sendEmailAlert: true,
+        sendEmailAlert: false, // already dispatched above directly to avoid duplicates
       });
     }
 

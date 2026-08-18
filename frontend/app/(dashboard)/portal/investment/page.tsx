@@ -7,6 +7,19 @@ import Link from 'next/link';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
+const formatCurrencyShort = (num: number) => {
+  if (num >= 10000000) {
+    return `₹${(num / 10000000).toFixed(1).replace(/\.0$/, '')}Cr`;
+  }
+  if (num >= 100000) {
+    return `₹${(num / 100000).toFixed(1).replace(/\.0$/, '')}L`;
+  }
+  if (num >= 1000) {
+    return `₹${(num / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return `₹${num}`;
+};
+
 export default function PortalInvestmentPage() {
   const [loading, setLoading] = useState(true);
   const [investments, setInvestments] = useState<any[]>([]);
@@ -97,22 +110,44 @@ export default function PortalInvestmentPage() {
             </div>
             
             {[
-              { year: 'Y1', height: '10%' },
-              { year: 'Y3', height: '15%' },
-              { year: 'Y6', height: '25%' },
-              { year: 'Y9', height: '40%' },
-              { year: 'Y11', height: '60%' },
-              { year: 'Y12', height: '95%' },
+              { year: 'Y1', multiplier: 1.0, height: '16%' },
+              { year: 'Y3', multiplier: 1.5, height: '25%' },
+              { year: 'Y6', multiplier: 2.5, height: '41%' },
+              { year: 'Y9', multiplier: 4.0, height: '66%' },
+              { year: 'Y11', multiplier: 5.5, height: '91%' },
+              { year: 'Y12', multiplier: 6.0, height: '100%' },
             ].map((bar, i) => (
-              <div key={i} className="flex flex-col items-center w-full gap-2 z-10">
-                <div className="w-full max-w-[40px] bg-gradient-to-t from-[#12372A] to-[#C49A5A] rounded-t-sm transition-all duration-1000" style={{ height: bar.height }}></div>
-                <span className="text-[#B8B8A8] text-[10px]">{bar.year}</span>
+              <div key={i} className="flex flex-col items-center w-full gap-1 z-10 h-[190px] justify-end group relative">
+                {/* Interactive Tooltip on Hover */}
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -top-8 bg-[#C49A5A] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg border border-[#D9B36D]/30 shadow-lg pointer-events-none z-30 whitespace-nowrap">
+                  {(totalInvested > 0 ? totalInvested : 10000) * bar.multiplier >= 100000
+                    ? `₹${((totalInvested > 0 ? totalInvested : 10000) * bar.multiplier / 100000).toFixed(2)} Lakhs`
+                    : `₹${((totalInvested > 0 ? totalInvested : 10000) * bar.multiplier).toLocaleString('en-IN')}`}
+                </span>
+                
+                {/* Static short rupee text above each bar */}
+                <span className="text-[#C49A5A] text-[9px] font-bold mb-1 select-none">
+                  {formatCurrencyShort(totalInvested > 0 ? totalInvested * bar.multiplier : 10000 * bar.multiplier)}
+                </span>
+
+                <div 
+                  className="w-full max-w-[32px] sm:max-w-[40px] bg-gradient-to-t from-[#12372A] to-[#C49A5A] rounded-t-md transition-all duration-1000 hover:brightness-110 shadow-[0_0_15px_rgba(196,154,90,0.15)]" 
+                  style={{ height: bar.height }}
+                ></div>
+                <span className="text-[#B8B8A8] text-[10px] font-medium mt-1 shrink-0">{bar.year}</span>
               </div>
             ))}
           </div>
-          <div className="mt-4 flex gap-4 text-xs text-[#B8B8A8]">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#12372A]"></div> Base Value</div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#C49A5A]"></div> Projected Appreciation</div>
+          <div className="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-[#B8B8A8]">
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#12372A]"></div> Base Value</div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-[#C49A5A]"></div> Projected Appreciation</div>
+            </div>
+            <span className="text-[10px] italic text-[#C49A5A]/80">
+              {totalInvested > 0 
+                ? `* Dynamic projection based on your active ₹${totalInvested.toLocaleString('en-IN')} investment.`
+                : '* Illustration based on sample ₹10,000 investment. Add investments to customize.'}
+            </span>
           </div>
         </div>
 

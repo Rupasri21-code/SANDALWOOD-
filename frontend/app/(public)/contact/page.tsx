@@ -254,20 +254,28 @@ export default function ContactPage() {
       </section>
 
       {/* 3. MAP SECTION */}
-      <section className="h-[400px] w-full bg-[#E6D3B3]/40 border-y border-[#C49A5A]/30 relative flex items-center justify-center">
-        {/* Placeholder Map Visual */}
-        <div className="absolute inset-0 bg-cover bg-center filter grayscale opacity-45" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1920")' }} />
-        <div className="relative z-10 bg-[#F3E8D2] border border-[#C49A5A]/45 rounded-3xl p-8 max-w-sm text-center shadow-lg mx-6">
+      <section className="h-[400px] w-full bg-[#E6D3B3]/40 border-y border-[#C49A5A]/30 relative flex items-center justify-center overflow-hidden">
+        <iframe
+          title="Chandhan Nilayam Location"
+          width="100%"
+          height="100%"
+          className="absolute inset-0 border-0 filter grayscale opacity-80"
+          loading="lazy"
+          allowFullScreen
+          src="https://maps.google.com/maps?q=15.928056,79.041833&z=15&output=embed"
+        />
+        <div className="relative z-10 bg-[#F3E8D2] border border-[#C49A5A]/45 rounded-3xl p-8 max-w-sm text-center shadow-lg mx-6 backdrop-blur-sm">
           <MapPin className="w-10 h-10 text-[#8B5E3C] mx-auto mb-4" />
-          <h4 className="font-serif text-lg font-bold text-[#12372A] mb-1.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Dornala Plantation Site</h4>
-          <p className="text-[#2F3E2F] text-xs leading-relaxed">
-            Dornala Mandal, Prakasam District, Andhra Pradesh, India.
+          <h4 className="font-serif text-lg font-bold text-[#12372A] mb-1.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Chandhan Nilayam Site</h4>
+          <p className="text-[#2F3E2F] text-xs leading-relaxed font-sans font-medium">
+            15°55'41.0"N 79°02'30.6"E<br />
+            Dornala Mandal, Prakasam District, Andhra Pradesh, India
           </p>
           <a 
-            href="https://maps.google.com/?q=Dornala,+Andhra+Pradesh,+India" 
+            href="https://maps.google.com/?q=15.928056,79.041833" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="mt-4 inline-block bg-[#0B2F24] text-white text-[10px] font-bold uppercase tracking-wider px-5 py-2.5 rounded-full hover:bg-[#12372A] transition-colors"
+            className="mt-4 inline-block bg-[#0B2F24] text-white text-[10px] font-bold uppercase tracking-wider px-5 py-2.5 rounded-full hover:bg-[#12372A] transition-colors shadow-md"
           >
             Get Directions
           </a>

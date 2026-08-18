@@ -115,17 +115,15 @@ export const createLandPlot = async (req: Request, res: Response, next: NextFunc
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: plot.investor_id } });
         if (investor) {
-          if (investor.user_id) {
-            await createNotification({
-              recipientId: investor.user_id,
-              investorId: investor.id,
-              title: 'New Plot Assigned',
-              message: `Plot ${plot.title || ''} located at ${plot.location} has been assigned to you.`,
-              type: 'INFO',
-              link: '/portal/plantation',
-              sendEmailAlert: true,
-            });
-          }
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: 'New Plot Assigned',
+            message: `Plot ${plot.title || ''} located at ${plot.location} has been assigned to you.`,
+            type: 'INFO',
+            link: '/portal/plantation',
+            sendEmailAlert: true,
+          });
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPlotAssigned(
@@ -189,23 +187,28 @@ export const updateLandPlot = async (req: Request, res: Response, next: NextFunc
       },
     });
 
-    if (updated.investor_id && updated.investor_id !== existing.investor_id) {
+    if (updated.investor_id) {
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: updated.investor_id } });
         if (investor) {
-          if (investor.user_id) {
-            await createNotification({
-              recipientId: investor.user_id,
-              investorId: investor.id,
-              title: 'Plot Assignment Updated',
-              message: `Plot ${updated.title || ''} located at ${updated.location} has been assigned to you.`,
-              type: 'INFO',
-              link: '/portal/plantation',
-              sendEmailAlert: true,
-            });
-          }
+          const isReassigned = updated.investor_id !== existing.investor_id;
+          const notificationTitle = isReassigned ? 'Plot Assignment Updated' : 'Land Plot Details Updated';
+          const notificationMsg = isReassigned
+            ? `Plot ${updated.title || ''} located at ${updated.location} has been assigned to you.`
+            : `Plot details for "${updated.title || 'your land plot'}" (${updated.location}) have been updated by admin. Status: ${updated.status}, Current Value: ₹${updated.current_value.toLocaleString('en-IN')}.`;
+
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: notificationTitle,
+            message: notificationMsg,
+            type: 'INFO',
+            link: '/portal/plantation',
+            sendEmailAlert: true,
+          });
+
           const waPhone = getInvestorWhatsAppNumber(investor);
-          if (waPhone) {
+          if (waPhone && isReassigned) {
             await sendWhatsAppPlotAssigned(
               waPhone,
               updated.title || `Plot ${updated.passbook_number || ''}`,
@@ -215,7 +218,7 @@ export const updateLandPlot = async (req: Request, res: Response, next: NextFunc
           }
         }
       } catch (waErr: any) {
-        console.error('⚠️ Failed to send WhatsApp plot assigned notification:', waErr.message || waErr);
+        console.error('⚠️ Failed to send plot update notification email/WhatsApp:', waErr.message || waErr);
       }
     }
 
@@ -276,17 +279,15 @@ export const assignPlot = async (req: Request, res: Response, next: NextFunction
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: investorId } });
         if (investor) {
-          if (investor.user_id) {
-            await createNotification({
-              recipientId: investor.user_id,
-              investorId: investor.id,
-              title: 'Plot Assigned',
-              message: `Plot ${updated.title || ''} located at ${updated.location} has been assigned to you.`,
-              type: 'INFO',
-              link: '/portal/plantation',
-              sendEmailAlert: true,
-            });
-          }
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: 'Plot Assigned',
+            message: `Plot ${updated.title || ''} located at ${updated.location} has been assigned to you.`,
+            type: 'INFO',
+            link: '/portal/plantation',
+            sendEmailAlert: true,
+          });
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppPlotAssigned(

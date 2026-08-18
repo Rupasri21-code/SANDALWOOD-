@@ -8,7 +8,8 @@ import { MapPin, User, Phone, Calendar, Clock, Users, Navigation, Map } from 'lu
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 
-const SITE_ADDRESS = "Dornala, Andhra Pradesh, India";
+const SITE_ADDRESS = "15°55'41.0\"N 79°02'30.6\"E (Dornala, Andhra Pradesh, India)";
+const SITE_COORDINATES = { lat: 15.928056, lng: 79.041833 };
 
 const siteVisitSchema = z.object({
   fullName: z.string()
@@ -44,8 +45,7 @@ export default function SiteVisitSection() {
     if (isValid) {
       const { location } = getValues();
       const encodedUserAddress = encodeURIComponent(location);
-      const encodedSiteAddress = encodeURIComponent(SITE_ADDRESS);
-      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodedUserAddress}&destination=${encodedSiteAddress}`;
+      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodedUserAddress}&destination=${SITE_COORDINATES.lat},${SITE_COORDINATES.lng}`;
       window.open(googleMapsUrl, '_blank');
     }
   };

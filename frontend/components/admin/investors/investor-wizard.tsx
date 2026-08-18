@@ -45,7 +45,7 @@ const getCities = (countryName: string, stateName: string) => {
 };
 
 // Reusable Document Upload Component
-const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "image/jpeg,image/png,image/webp,application/pdf", maxSizeMB = 10, setPreviewData }: any) => {
+const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "image/jpeg,image/png,image/webp,application/pdf", maxSizeMB = 10, setPreviewData, required = false }: any) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const file = formData[fieldName];
   const url = formData[`${fieldName}Url`];
@@ -57,6 +57,37 @@ const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "i
         toast.error(`File must be smaller than ${maxSizeMB}MB`);
         return;
       }
+      
+      const fileType = selectedFile.type;
+      const fileExtension = '.' + selectedFile.name.split('.').pop()?.toLowerCase();
+
+      // Explicitly reject videos
+      if (fileType.startsWith('video/') || ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(fileExtension)) {
+        toast.error("Video files are not allowed.");
+        return;
+      }
+      
+      // Validate file type based on 'accept' prop
+      const allowedTypes = accept.split(',');
+      
+      const isAllowed = allowedTypes.some((type: string) => {
+        const cleanType = type.trim();
+        if (cleanType.startsWith('.')) {
+          return fileExtension === cleanType;
+        } else if (cleanType.endsWith('/*')) {
+          return fileType.startsWith(cleanType.slice(0, -2));
+        } else if (cleanType.startsWith('image/')) {
+          return fileType.startsWith('image/');
+        } else {
+          return fileType === cleanType;
+        }
+      });
+
+      if (!isAllowed) {
+        toast.error("Invalid file format. Only supported images/documents are allowed.");
+        return;
+      }
+
       const objectUrl = URL.createObjectURL(selectedFile);
       setFormData((prev: any) => ({
         ...prev,
@@ -87,7 +118,9 @@ const DocumentUploader = ({ title, fieldName, formData, setFormData, accept = "i
   return (
     <div className="p-5 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-white text-sm font-medium">{title}</Label>
+        <Label className="text-white text-sm font-medium">
+          {title} {required && <span className="text-red-500 ml-0.5">*</span>}
+        </Label>
       </div>
 
       {url ? (() => {
@@ -399,6 +432,17 @@ export function InvestorWizard({
   const handleProfilePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      const fileType = file.type;
+      const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+      
+      if (fileType.startsWith('video/') || ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(fileExtension)) {
+        toast.error("Video files are not allowed.");
+        return;
+      }
+      if (!fileType.startsWith('image/')) {
+        toast.error("Only image files (JPG, PNG, WEBP) are allowed.");
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Profile photo must be less than 5MB");
         return;
@@ -414,6 +458,20 @@ export function InvestorWizard({
   const handlePlotPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files);
+      
+      // Validate image format and reject videos
+      const hasVideos = files.some(f => f.type.startsWith('video/') || ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes('.' + f.name.split('.').pop()?.toLowerCase()));
+      if (hasVideos) {
+        toast.error("Video files are not allowed.");
+        return;
+      }
+
+      const invalidFiles = files.filter(f => !f.type.startsWith('image/'));
+      if (invalidFiles.length > 0) {
+        toast.error("Only image files (JPG, PNG, WEBP) are allowed for plot photos.");
+        return;
+      }
+
       const currentCount = formData.plotPhotosUrls?.length || 0;
       if (currentCount + files.length > 4) {
         toast.error("Only 4 plot photos are allowed.");
@@ -540,7 +598,7 @@ export function InvestorWizard({
     if (formData.maritalStatus === 'Single') {
       return (
         <div className="space-y-1.5 md:col-span-2">
-          <Label className="text-white/70 text-xs">Father Name *</Label>
+          <Label className="text-white/70 text-xs">Father Name <span className="text-red-500 ml-0.5">*</span></Label>
           <Input value={formData.fatherName || ''} onChange={(e) => handleChange('fatherName', e.target.value)}
             className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
         </div>
@@ -548,7 +606,7 @@ export function InvestorWizard({
     } else if (formData.maritalStatus === 'Married') {
       return (
         <div className="space-y-1.5 md:col-span-2">
-          <Label className="text-white/70 text-xs">Husband / Wife Name *</Label>
+          <Label className="text-white/70 text-xs">Husband / Wife Name <span className="text-red-500 ml-0.5">*</span></Label>
           <Input value={formData.spouseName || ''} onChange={(e) => handleChange('spouseName', e.target.value)}
             className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
         </div>
@@ -665,7 +723,7 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">First Name *</Label>
+                      <Label className="text-white/70 text-xs">First Name <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.firstName || ''} onChange={(e) => handleChange('firstName', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -675,7 +733,7 @@ export function InvestorWizard({
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Last Name *</Label>
+                      <Label className="text-white/70 text-xs">Last Name <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.lastName || ''} onChange={(e) => handleChange('lastName', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -742,7 +800,7 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Email Address *</Label>
+                      <Label className="text-white/70 text-xs">Email Address <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input type="email" value={formData.email || ''} onChange={(e) => handleChange('email', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -752,7 +810,7 @@ export function InvestorWizard({
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Primary Mobile *</Label>
+                      <Label className="text-white/70 text-xs">Primary Mobile <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.phone || ''} onChange={(e) => handleChange('phone', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -794,7 +852,7 @@ export function InvestorWizard({
                     <h4 className="font-medium text-white text-sm">Permanent Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">Country</Label>
+                        <Label className="text-white/70 text-xs">Country <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.permanentCountry || ''} onChange={(e) => {
                              handleChange('permanentCountry', e.target.value);
                              handleChange('permanentState', '');
@@ -807,7 +865,7 @@ export function InvestorWizard({
                       </div>
                       
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">State / Province</Label>
+                        <Label className="text-white/70 text-xs">State / Province <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.permanentState || ''} onChange={(e) => {
                             handleChange('permanentState', e.target.value);
                             handleChange('permanentDistrict', '');
@@ -820,7 +878,7 @@ export function InvestorWizard({
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">District / City</Label>
+                        <Label className="text-white/70 text-xs">District / City <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.permanentDistrict || ''} onChange={(e) => handleChange('permanentDistrict', e.target.value)}
                           disabled={!formData.permanentState}
                           className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e] disabled:opacity-50">
@@ -836,7 +894,7 @@ export function InvestorWizard({
                       </div>
 
                       <div className="space-y-1.5 md:col-span-2">
-                        <Label className="text-white/70 text-xs">Address Line 1</Label>
+                        <Label className="text-white/70 text-xs">Address Line 1 <span className="text-red-500 ml-0.5">*</span></Label>
                         <Input value={formData.permanentAddressLine1 || ''} onChange={(e) => handleChange('permanentAddressLine1', e.target.value)}
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
@@ -868,7 +926,7 @@ export function InvestorWizard({
                     <h4 className="font-medium text-white text-sm">Current Address</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">Country</Label>
+                        <Label className="text-white/70 text-xs">Country <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.currentCountry || ''} onChange={(e) => {
                              handleChange('currentCountry', e.target.value);
                              handleChange('currentState', '');
@@ -881,7 +939,7 @@ export function InvestorWizard({
                       </div>
                       
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">State / Province</Label>
+                        <Label className="text-white/70 text-xs">State / Province <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.currentState || ''} onChange={(e) => {
                             handleChange('currentState', e.target.value);
                             handleChange('currentDistrict', '');
@@ -894,7 +952,7 @@ export function InvestorWizard({
                       </div>
 
                       <div className="space-y-1.5">
-                        <Label className="text-white/70 text-xs">District / City</Label>
+                        <Label className="text-white/70 text-xs">District / City <span className="text-red-500 ml-0.5">*</span></Label>
                         <select value={formData.currentDistrict || ''} onChange={(e) => handleChange('currentDistrict', e.target.value)}
                           disabled={!formData.currentState}
                           className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e] disabled:opacity-50">
@@ -910,7 +968,7 @@ export function InvestorWizard({
                       </div>
 
                       <div className="space-y-1.5 md:col-span-2">
-                        <Label className="text-white/70 text-xs">Address Line 1</Label>
+                        <Label className="text-white/70 text-xs">Address Line 1 <span className="text-red-500 ml-0.5">*</span></Label>
                         <Input value={formData.currentAddressLine1 || ''} onChange={(e) => handleChange('currentAddressLine1', e.target.value)}
                           className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                       </div>
@@ -1002,13 +1060,13 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Investment Interest</Label>
+                      <Label className="text-white/70 text-xs">Investment Interest <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.investmentInterest || ''} onChange={(e) => handleChange('investmentInterest', e.target.value)}
                         placeholder="e.g. Sandalwood, Timber, Farmland"
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Budget Range</Label>
+                      <Label className="text-white/70 text-xs">Budget Range <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.budgetRange || ''} onChange={(e) => handleChange('budgetRange', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Budget</option>
@@ -1065,12 +1123,12 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Passbook Number</Label>
+                      <Label className="text-white/70 text-xs">Passbook Number <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.passbookNumber || ''} onChange={(e) => handleChange('passbookNumber', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Plot Configuration</Label>
+                      <Label className="text-white/70 text-xs">Plot Configuration <span className="text-red-500 ml-0.5">*</span></Label>
                       <select value={formData.plotConfiguration || ''} onChange={(e) => handleChange('plotConfiguration', e.target.value)}
                         className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:ring-[#c8851e]">
                         <option value="" className="bg-[#141410]">Select Acreage</option>
@@ -1085,7 +1143,7 @@ export function InvestorWizard({
                     </div>
 
                     <div className="md:col-span-2 space-y-4">
-                      <Label className="text-white/70 text-xs block">Plot Photos (Exactly 4 Required)</Label>
+                      <Label className="text-white/70 text-xs block">Plot Photos (Exactly 4 Required) <span className="text-red-500 ml-0.5">*</span></Label>
                       
                       {(formData.plotPhotosUrls?.length || 0) < 4 && (
                         <div className="flex flex-col md:flex-row gap-3">
@@ -1119,6 +1177,10 @@ export function InvestorWizard({
                                   <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
                                     if(e.target.files && e.target.files[0]) {
                                       const file = e.target.files[0];
+                                      if (!file.type.startsWith('image/')) {
+                                        toast.error("Only image files (JPG, PNG, WEBP) are allowed.");
+                                        return;
+                                      }
                                       const newUrl = URL.createObjectURL(file);
                                       setFormData((prev:any) => {
                                         const newFiles = [...(prev.plotPhotosFiles||[])];
@@ -1155,12 +1217,12 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Total Investment Amount (₹)</Label>
+                      <Label className="text-white/70 text-xs">Total Investment Amount (₹) <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input type="number" value={formData.totalInvestment || ''} onChange={(e) => handleChange('totalInvestment', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Paid Amount (₹)</Label>
+                      <Label className="text-white/70 text-xs">Paid Amount (₹) <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input type="number" value={formData.paidAmount || ''} onChange={(e) => handleChange('paidAmount', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -1211,13 +1273,13 @@ export function InvestorWizard({
                        </div>
                     </div>
 
-                    <DocumentUploader title="Aadhaar Upload" fieldName="aadhaar" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
-                    <DocumentUploader title="PAN Upload" fieldName="pan" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
+                    <DocumentUploader title="Aadhaar Upload" fieldName="aadhaar" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} required={true} />
+                    <DocumentUploader title="PAN Upload" fieldName="pan" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} required={true} />
                     
                     <div className="col-span-1 md:col-span-2 bg-white/5 p-5 rounded-xl border border-white/10 space-y-5">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                          <h4 className="text-white font-medium">Passbook Upload</h4>
+                          <h4 className="text-white font-medium">Passbook Upload <span className="text-red-500 ml-0.5">*</span></h4>
                           <p className="text-white/50 text-xs mt-1">Upload the front page of the passbook</p>
                         </div>
                         <div className="w-full md:w-48">
@@ -1230,11 +1292,11 @@ export function InvestorWizard({
                           </select>
                         </div>
                       </div>
-                      <DocumentUploader title="Passbook Front Page" fieldName="passbookPhoto" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
+                      <DocumentUploader title="Passbook Front Page" fieldName="passbookPhoto" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} required={true} />
                     </div>
 
                     <DocumentUploader title="Agreement Upload" fieldName="agreement" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
-                    <DocumentUploader title="Land Document Upload" fieldName="landDocument" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
+                    <DocumentUploader title="Land Document Upload" fieldName="landDocument" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} required={true} />
                   </div>
                 </div>
               )}
@@ -1251,17 +1313,17 @@ export function InvestorWizard({
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Nominee Name</Label>
+                      <Label className="text-white/70 text-xs">Nominee Name <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.nomineeName || ''} onChange={(e) => handleChange('nomineeName', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Relationship</Label>
+                      <Label className="text-white/70 text-xs">Relationship <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.nomineeRelation || ''} onChange={(e) => handleChange('nomineeRelation', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-white/70 text-xs">Mobile Number</Label>
+                      <Label className="text-white/70 text-xs">Mobile Number <span className="text-red-500 ml-0.5">*</span></Label>
                       <Input value={formData.nomineePhone || ''} onChange={(e) => handleChange('nomineePhone', e.target.value)}
                         className="bg-white/5 border-white/10 text-white focus-visible:ring-[#c8851e]" />
                     </div>
@@ -1272,7 +1334,7 @@ export function InvestorWizard({
                     </div>
                     
                     <div className="md:col-span-2 mt-4">
-                      <DocumentUploader title="Government ID Proof *" fieldName="nomineeDocument" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
+                      <DocumentUploader title="Government ID Proof" fieldName="nomineeDocument" formData={formData} setFormData={setFormData} setPreviewData={setPreviewData} />
                     </div>
                   </div>
                 </div>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -31,6 +32,7 @@ const defaultForm = {
 };
 
 export default function PaymentsPage() {
+  const { profile } = useAuth();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
@@ -91,7 +93,11 @@ export default function PaymentsPage() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    if (profile?.role === 'admin') {
+      fetchData();
+    }
+  }, [profile]);
 
   const totalReceived = payments.filter((p) => p.status === 'completed').reduce((s, p) => s + p.amount, 0);
   const pending = payments.filter((p) => p.status === 'pending').length;

@@ -200,7 +200,7 @@ export default function GalleryPage() {
       </section>
 
       {/* 3. FILTERS BAR */}
-      <section className="bg-[#F3E8D2] sticky top-16 z-40 border-y border-[#C49A5A]/20">
+      <section className="bg-[#F3E8D2] sticky top-[72px] md:top-[82px] xl:top-[104px] z-40 border-y border-[#C49A5A]/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex gap-2.5 overflow-x-auto scrollbar-none">
           {categories.map((cat) => (
             <button

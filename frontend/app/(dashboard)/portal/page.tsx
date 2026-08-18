@@ -74,7 +74,7 @@ export default function PortalDashboard() {
           setInvestor(stats.investor);
           
           const totalInv = stats.summary.totalInvested || 0;
-          const estVal = totalInv > 0 ? totalInv * 1.2 : 0;
+          const estVal = totalInv > 0 ? totalInv * 6 : 0;
           
           setSummary({
             lands: stats.summary.totalPlots || 0,

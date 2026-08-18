@@ -31,8 +31,17 @@ export default function PortalNotificationsPage() {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
+    const interval = setInterval(fetchNotifications, 5000); // Check every 5 seconds for real-time responsiveness
+
+    const handleUpdate = () => {
+      fetchNotifications();
+    };
+    window.addEventListener('notifications-updated', handleUpdate);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('notifications-updated', handleUpdate);
+    };
   }, []);
 
   if (loading) {
@@ -50,6 +59,7 @@ export default function PortalNotificationsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.map(n => ({ ...n, is_read: true })));
+      window.dispatchEvent(new Event('notifications-updated'));
       toast.success('All marked as read');
     } catch (err) {
       console.error(err);
@@ -65,6 +75,7 @@ export default function PortalNotificationsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n));
+      window.dispatchEvent(new Event('notifications-updated'));
     } catch (err) {
       console.error(err);
     }

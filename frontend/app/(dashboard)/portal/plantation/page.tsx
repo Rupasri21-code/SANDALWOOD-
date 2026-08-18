@@ -11,6 +11,7 @@ export default function PortalPlantationPage() {
   const [loading, setLoading] = useState(true);
   const [crops, setCrops] = useState<any[]>([]);
   const [updates, setUpdates] = useState<any[]>([]);
+  const [mediaDocs, setMediaDocs] = useState<any[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -28,6 +29,12 @@ export default function PortalPlantationPage() {
         });
         const data2 = await res2.json();
         if (data2.success) setUpdates(data2.data);
+
+        const res3 = await fetch(`${API_URL}/documents/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data3 = await res3.json();
+        if (data3.success) setMediaDocs(data3.data);
 
       } catch (err) {
         console.error('Failed to load plantation data:', err);
@@ -71,7 +78,64 @@ export default function PortalPlantationPage() {
     return 'pending';
   };
 
-  const images = updates.filter(u => u.media_url).slice(0, 4);
+  // Extract images from updates (parse the comma-separated u.images string)
+  const updateImages = updates
+    .filter((u: any) => u.images)
+    .flatMap((u: any) => u.images.split(',').map((url: string) => ({
+      id: `update-${u.id}-${url}`,
+      media_url: url.trim(),
+      update_date: u.update_date || u.created_at,
+      title: u.title
+    })));
+
+  // Extract images from mediaDocs (filtering for images and plantation category)
+  const mediaImages = mediaDocs
+    .filter((item: any) => {
+      const ext = item.file_url?.split('.').pop()?.toLowerCase();
+      const isImg = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '');
+      const isPlantationCategory = ['Plantation Photos', 'Plot Images', 'General'].includes(item.category);
+      return isImg && isPlantationCategory;
+    })
+    .map((item: any) => ({
+      id: `media-${item.id}`,
+      media_url: item.file_url,
+      update_date: item.created_at || item.date,
+      title: item.title
+    }));
+
+  // Combine and sort by date descending
+  const images = [...updateImages, ...mediaImages]
+    .sort((a, b) => new Date(b.update_date).getTime() - new Date(a.update_date).getTime())
+    .slice(0, 4);
+
+  // Extract latest report PDF/Doc from mediaDocs
+  const latestReportDoc = mediaDocs.find(
+    (item: any) => item.category === 'Plantation Reports'
+  );
+
+  const hasReport = !!latestUpdate || !!latestReportDoc;
+
+  const reportDate = latestUpdate 
+    ? new Date(latestUpdate.update_date).toLocaleDateString()
+    : latestReportDoc 
+      ? new Date(latestReportDoc.created_at).toLocaleDateString()
+      : 'N/A';
+
+  const reportType = latestUpdate
+    ? latestUpdate.update_type?.replace('_', ' ')
+    : latestReportDoc
+      ? latestReportDoc.category
+      : 'N/A';
+
+  const reportDescription = latestUpdate
+    ? latestUpdate.description
+    : latestReportDoc
+      ? latestReportDoc.description || latestReportDoc.title
+      : 'No remarks available.';
+
+  // Check for PDF in update images string or media file
+  const reportPdfUrl = (latestUpdate?.images && latestUpdate.images.split(',').find((url: string) => url.trim().toLowerCase().endsWith('.pdf')))
+    || (latestReportDoc?.file_url?.toLowerCase().endsWith('.pdf') ? latestReportDoc.file_url : null);
 
   return (
     <div className="space-y-8">
@@ -159,23 +223,25 @@ export default function PortalPlantationPage() {
         <div className="bg-[rgba(18,55,42,0.35)] border border-[rgba(196,154,90,0.25)] rounded-[20px] p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-[#F7F0E4] font-semibold text-base">Latest Inspection Report</h2>
-            {latestUpdate?.media_url && latestUpdate.media_url.endsWith('.pdf') && (
-              <a href={latestUpdate.media_url} target="_blank" rel="noreferrer" className="text-[#C49A5A] text-xs hover:underline flex items-center gap-1"><Download className="w-3 h-3"/> Download PDF</a>
+            {reportPdfUrl && (
+              <a href={reportPdfUrl} target="_blank" rel="noreferrer" className="text-[#C49A5A] text-xs hover:underline flex items-center gap-1">
+                <Download className="w-3 h-3"/> Download PDF
+              </a>
             )}
           </div>
-          {latestUpdate ? (
+          {hasReport ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-white/5 pb-3">
                 <span className="text-[#B8B8A8] text-sm">Date</span>
-                <span className="text-[#F7F0E4] text-sm font-medium">{new Date(latestUpdate.update_date).toLocaleDateString()}</span>
+                <span className="text-[#F7F0E4] text-sm font-medium">{reportDate}</span>
               </div>
               <div className="flex items-center justify-between border-b border-white/5 pb-3">
                 <span className="text-[#B8B8A8] text-sm">Type</span>
-                <span className="text-[#F7F0E4] text-sm font-medium capitalize">{latestUpdate.update_type?.replace('_', ' ')}</span>
+                <span className="text-[#F7F0E4] text-sm font-medium capitalize">{reportType}</span>
               </div>
               <div className="pt-2">
                 <span className="text-[#B8B8A8] text-xs block mb-1">Remarks</span>
-                <p className="text-[#F7F0E4] text-sm leading-relaxed">{latestUpdate.description}</p>
+                <p className="text-[#F7F0E4] text-sm leading-relaxed">{reportDescription}</p>
               </div>
             </div>
           ) : (

@@ -1,28 +1,106 @@
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { env } from '../config/env';
 
-const resend = new Resend(env.RESEND_API_KEY || 're_U3QkF8Rf_2wCxidHPA4vqhyoXNMUGQchR');
+const getResendClient = () => {
+  const envKey = process.env.RESEND_API_KEY || env.RESEND_API_KEY;
+  if (!envKey) {
+    console.warn('⚠️ No RESEND_API_KEY configured in environment.');
+    return null;
+  }
+  return new Resend(envKey);
+};
+
+let cachedFallbackTransporter: nodemailer.Transporter | null = null;
+
+const getTransporter = async (): Promise<nodemailer.Transporter | null> => {
+  if (env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS) {
+    return nodemailer.createTransport({
+      host: env.SMTP_HOST,
+      port: Number(env.SMTP_PORT) || 587,
+      secure: Number(env.SMTP_PORT) === 465,
+      auth: {
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS,
+      },
+    });
+  }
+
+  if (!cachedFallbackTransporter) {
+    try {
+      const testAccount = await nodemailer.createTestAccount();
+      cachedFallbackTransporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      console.log(`💡 Dynamic Ethereal SMTP test account initialized: ${testAccount.user}`);
+    } catch (e: any) {
+      console.warn('⚠️ Could not initialize Ethereal test SMTP account:', e.message || e);
+    }
+  }
+
+  return cachedFallbackTransporter;
+};
 
 export const sendEmail = async (to: string, subject: string, html: string, text?: string) => {
   try {
-    const { data, error } = await resend.emails.send({
-      from: process.env.SMTP_FROM || env.SMTP_FROM || 'onboarding@resend.dev',
-      to: [to],
-      subject,
-      html,
-      text,
-    });
+    const defaultFrom = 'Chandhan Nilayam Investments <noreply@chandhannilayam.com>';
+    const fromAddress = (env.SMTP_FROM && !env.SMTP_FROM.includes('onboarding@resend.dev') && env.SMTP_FROM.includes('chandhannilayam.com')) ? env.SMTP_FROM : defaultFrom;
+    
+    // 1. Attempt sending via Resend using key from .env
+    const resend = getResendClient();
+    if (resend) {
+      try {
+        const { data, error } = await resend.emails.send({
+          from: fromAddress,
+          to: [to],
+          subject,
+          html,
+          text,
+        });
 
-    if (error) {
-      console.error('❌ Resend API Error:', error);
-      return { success: false, error };
+        if (!error && data?.id) {
+          console.log(`📧 Resend Email sent successfully to ${to}! Message ID: ${data.id}`);
+          return { success: true, data };
+        }
+        if (error) {
+          console.warn('⚠️ Resend API returned error:', error.message || error);
+        }
+      } catch (resendErr: any) {
+        console.warn('⚠️ Resend send failed:', resendErr.message || resendErr);
+      }
     }
 
-    console.log(`📧 Email sent successfully! Message ID: ${data?.id}`);
-    return { success: true, data };
+    // 2. Fallback to Nodemailer Transporter (custom SMTP or dynamic Ethereal test server)
+    const transporter = await getTransporter();
+    if (transporter) {
+      const info = await transporter.sendMail({
+        from: fromAddress,
+        to,
+        subject,
+        html,
+        text,
+      });
+
+      const previewUrl = nodemailer.getTestMessageUrl(info);
+      if (previewUrl) {
+        console.log(`📧 Email delivered to ${to}! Preview URL: ${previewUrl}`);
+      } else {
+        console.log(`📧 Nodemailer Email sent successfully to ${to}! Message ID: ${info.messageId}`);
+      }
+
+      return { success: true, data: info, previewUrl };
+    }
+
+    console.error('❌ Failed to send email: No valid email transporter available.');
+    return { success: false, error: 'Email delivery failed' };
   } catch (error) {
-    // Catch block ensures failure does not crash the calling function
-    console.error('❌ Failed to send email via Resend:', error);
+    console.error('❌ Failed to send email:', error);
     return { success: false, error };
   }
 };
@@ -102,7 +180,8 @@ export const sendAdminInquiryNotification = async (inquiryData: { full_name: str
       <p style="margin-top: 20px;">Log in to the <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin-login" style="color: #9A6A2F;">Admin Dashboard</a> to manage this inquiry.</p>
     </div>
   `;
-  const adminEmail = process.env.ADMIN_EMAIL || 'chandhannilayam@gmail.com';
+  const adminEmail = process.env.ADMIN_EMAIL || env.SMTP_USER || 'chandhannilayam@gmail.com';
+  console.log(`📧 Sending Admin Inquiry Notification to: ${adminEmail}`);
   return sendEmail(adminEmail, subject, html);
 };
 

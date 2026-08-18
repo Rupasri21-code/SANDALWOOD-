@@ -117,9 +117,9 @@ export const createInvestment = async (req: Request, res: Response, next: NextFu
       },
     });
 
-    if (investor.user_id) {
+    if (investor) {
       await createNotification({
-        recipientId: investor.user_id,
+        recipientId: investor.user_id || undefined,
         investorId: investor.id,
         title: 'New Investment Recorded',
         message: `A new investment of ${investment.currency} ${investment.amount} has been recorded for your account.`,
@@ -181,22 +181,21 @@ export const updateInvestment = async (req: Request, res: Response, next: NextFu
       },
     });
 
-    // WhatsApp: notify investor only when the status has changed
+    // WhatsApp & Email: notify investor only when the status has changed
     if (validated.status && validated.status !== existing.status) {
       try {
         const investor = await db.investorProfile.findUnique({ where: { id: existing.investor_id } });
         if (investor) {
-          if (investor.user_id) {
-            await createNotification({
-              recipientId: investor.user_id,
-              investorId: investor.id,
-              title: 'Investment Status Updated',
-              message: `Your investment status has been updated to ${updated.status}.`,
-              type: 'UPDATE',
-              link: '/portal/investments',
-              sendEmailAlert: true,
-            });
-          }
+          await createNotification({
+            recipientId: investor.user_id || undefined,
+            investorId: investor.id,
+            title: 'Investment Status Updated',
+            message: `Your investment status has been updated to ${updated.status}.`,
+            type: 'UPDATE',
+            link: '/portal/investments',
+            sendEmailAlert: true,
+          });
+
           const waPhone = getInvestorWhatsAppNumber(investor);
           if (waPhone) {
             await sendWhatsAppInvestmentStatusUpdated(
@@ -209,7 +208,7 @@ export const updateInvestment = async (req: Request, res: Response, next: NextFu
           }
         }
       } catch (waErr: any) {
-        console.error('⚠️ Failed to send WhatsApp investment status update notification:', waErr.message || waErr);
+        console.error('⚠️ Failed to send WhatsApp/Email investment status update notification:', waErr.message || waErr);
       }
     }
 

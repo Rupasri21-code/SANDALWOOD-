@@ -309,7 +309,7 @@ const faqData = [
 ];
 
 export default function HomePage() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [fadeSplash, setFadeSplash] = useState(false);
 
   useEffect(() => {
@@ -360,12 +360,13 @@ export default function HomePage() {
   useEffect(() => {
     const fetchDynamicData = async () => {
       try {
+        const fetchOpts = { timeout: 3000 };
         const [testimonialsRes, homeRes, galleryRes, faqsRes, publicRes] = await Promise.all([
-          api.get('/testimonials').catch(() => null),
-          api.get('/content/home').catch(() => null),
-          api.get('/gallery').catch(() => null),
-          api.get('/faqs').catch(() => null),
-          api.get('/content/public').catch(() => null)
+          api.get('/testimonials', fetchOpts).catch(() => null),
+          api.get('/content/home', fetchOpts).catch(() => null),
+          api.get('/gallery', fetchOpts).catch(() => null),
+          api.get('/faqs', fetchOpts).catch(() => null),
+          api.get('/content/public', fetchOpts).catch(() => null)
         ]);
         
         if (testimonialsRes?.data?.data && testimonialsRes.data.data.length > 0) {
@@ -593,16 +594,16 @@ export default function HomePage() {
 
       {/* 2. Premium Hero Full-Screen Background Image Slider */}
       <section 
-        className="relative flex items-center justify-center overflow-hidden w-full h-[calc(100vh-80px)] min-h-[750px] max-md:h-[650px] max-md:min-h-[600px]"
+        className="relative flex items-center justify-center overflow-hidden w-full h-[70vh] md:h-[calc(100vh-80px)] min-h-[520px] md:min-h-[750px]"
       >
         {/* Background Image Carousel */}
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
           {heroSequence.map((src, idx) => {
             let positionClass = '';
             if (idx === currentHeroImage) {
-              positionClass = 'opacity-100 z-10 transition-all duration-[2000ms] ease-in-out scale-105';
+              positionClass = 'opacity-100 z-10 transition-all duration-[2000ms] ease-in-out md:scale-105 scale-100';
             } else if (idx === prevHeroImage) {
-              positionClass = 'opacity-0 z-0 transition-all duration-[2000ms] ease-in-out scale-105';
+              positionClass = 'opacity-0 z-0 transition-all duration-[2000ms] ease-in-out md:scale-105 scale-100';
             } else {
               positionClass = 'opacity-0 z-0 transition-none scale-100';
             }
@@ -616,7 +617,7 @@ export default function HomePage() {
                   src={src}
                   alt={`Sandalwood Slide ${idx + 1}`}
                   className="w-full h-full object-cover border-0 outline-none rounded-none shadow-none"
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
                 />
               </div>
             );
@@ -632,7 +633,7 @@ export default function HomePage() {
         />
 
         {/* Fixed Hero Content on Top */}
-        <div className="relative z-30 max-w-5xl mx-auto px-6 w-full text-center flex flex-col items-center justify-center pb-12 pt-24 sm:pt-0">
+        <div className="relative z-30 max-w-5xl mx-auto px-6 w-full text-center flex flex-col items-center justify-center pb-8 pt-16 md:pb-12 md:pt-0">
           {/* Badge */}
           <div 
             className="inline-flex flex-col sm:flex-row items-center justify-center text-center gap-1 sm:gap-2 rounded-[18px] sm:rounded-full px-4 sm:px-5 py-2 sm:py-2 mb-4 sm:mb-6 border bg-black/35 backdrop-blur-md max-w-[90vw]"
@@ -656,7 +657,7 @@ export default function HomePage() {
 
           {/* Heading */}
           <h1 
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6 whitespace-nowrap"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] font-bold tracking-tight leading-[1.15] mb-4 sm:mb-6 whitespace-normal md:whitespace-nowrap"
             style={{ 
               color: '#F7F2E8',
               fontFamily: "'Cormorant Garamond', serif", 
@@ -677,7 +678,7 @@ export default function HomePage() {
 
           {/* Subheading */}
           <p 
-            className="text-[15px] md:text-[18px] max-w-2xl leading-relaxed mb-10" 
+            className="text-[15px] md:text-[18px] max-w-2xl leading-relaxed mb-6 md:mb-10" 
             style={{ 
               color: '#FFFFFF',
               fontFamily: "'Lora', serif", 

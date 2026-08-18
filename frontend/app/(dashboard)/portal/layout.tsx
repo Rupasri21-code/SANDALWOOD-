@@ -33,7 +33,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [unread, setUnread] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
   const [showSignoutConfirm, setShowSignoutConfirm] = useState(false);
 
   useEffect(() => {
@@ -42,24 +42,71 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     }
   }, [profile, loading, router]);
 
+  // Fetch & Poll Unread Notifications
   useEffect(() => {
     if (profile) {
       const token = localStorage.getItem('token');
       if (token) {
-        fetch(`${API_URL}/notifications`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success && data.data) {
-              const unreadCount = data.data.filter((n: any) => !n.is_read).length;
-              setUnread(unreadCount);
-            }
+        const fetchUnread = () => {
+          fetch(`${API_URL}/notifications`, {
+            headers: { Authorization: `Bearer ${token}` }
           })
-          .catch(err => console.error('Failed to fetch unread notifications', err));
+            .then(res => res.json())
+            .then(data => {
+              if (data.success && data.data) {
+                const unreadList = data.data.filter((n: any) => !n.is_read);
+                setUnreadNotifications(unreadList);
+              }
+            })
+            .catch(err => console.error('Failed to fetch unread notifications', err));
+        };
+
+        fetchUnread();
+        const interval = setInterval(fetchUnread, 5000); // Poll every 5 seconds for real-time responsiveness
+
+        // Re-fetch instantly when a notification update event is dispatched anywhere in the app
+        const handleUpdate = () => {
+          fetchUnread();
+        };
+        window.addEventListener('notifications-updated', handleUpdate);
+
+        return () => {
+          clearInterval(interval);
+          window.removeEventListener('notifications-updated', handleUpdate);
+        };
       }
     }
   }, [profile]);
+
+  // Auto-mark notifications as read when navigating to a section matching the link
+  useEffect(() => {
+    if (unreadNotifications.length > 0) {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const matchingNotifs = unreadNotifications.filter(
+        (n: any) => n.link === pathname && !n.is_read
+      );
+
+      if (matchingNotifs.length > 0) {
+        Promise.all(
+          matchingNotifs.map((n: any) =>
+            fetch(`${API_URL}/notifications/${n.id}/read`, {
+              method: 'PATCH',
+              headers: { Authorization: `Bearer ${token}` }
+            }).catch(err => console.error('Failed to mark read:', err))
+          )
+        ).then(() => {
+          // Immediately update local state
+          setUnreadNotifications(prev => 
+            prev.filter(n => !(n.link === pathname && matchingNotifs.some(mn => mn.id === n.id)))
+          );
+          // Notify other components (like the Notifications Page) of the change
+          window.dispatchEvent(new Event('notifications-updated'));
+        });
+      }
+    }
+  }, [pathname, unreadNotifications]);
 
   if (loading) {
     return (
@@ -107,6 +154,10 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           {navItems.map((item) => {
             const active = isActive(item);
             const isNotif = item.href === '/portal/notifications';
+            const sectionUnreadCount = unreadNotifications.filter(
+              (n: any) => n.link === item.href
+            ).length;
+
             return (
               <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all group relative overflow-hidden ${
@@ -117,9 +168,21 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               >
                 <item.icon className={`w-5 h-5 shrink-0 transition-colors ${active ? 'text-[#C49A5A]' : 'text-[#A8B5AA] group-hover:text-[#F8F5EE]'}`} strokeWidth={active ? 2 : 1.5} />
                 <span className={`flex-1 ${active ? 'font-medium' : ''}`}>{item.label}</span>
-                {isNotif && unread > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-[#C49A5A] text-[#032B1F] text-[10px] flex items-center justify-center font-bold shadow-[0_0_8px_rgba(196,154,90,0.5)]">{unread}</span>
+                
+                {/* Total notifications count badge */}
+                {isNotif && unreadNotifications.length > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-[#C49A5A] text-[#032B1F] text-[10px] flex items-center justify-center font-bold shadow-[0_0_8px_rgba(196,154,90,0.5)]">
+                    {unreadNotifications.length}
+                  </span>
                 )}
+                
+                {/* Individual section unread update badge */}
+                {!isNotif && sectionUnreadCount > 0 && (
+                  <span className="w-4 h-4 rounded-full bg-[#C49A5A] text-[#032B1F] text-[9px] flex items-center justify-center font-bold shadow-[0_0_6px_rgba(196,154,90,0.5)] animate-pulse">
+                    {sectionUnreadCount}
+                  </span>
+                )}
+
                 {active && <ChevronRight className="w-4 h-4 text-[#C49A5A] opacity-70" />}
               </Link>
             );
@@ -163,7 +226,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
             </div>
             <Link href="/portal/notifications" className="relative p-2.5 rounded-full bg-[#101A13] hover:bg-[#121F17] border border-[#C49A5A]/35 transition-all hover:shadow-[0_0_12px_rgba(196,154,90,0.2)] group hover:scale-105">
               <Bell className="w-5 h-5 text-[#F8F5EE] group-hover:text-[#C49A5A] transition-colors" />
-              {unread > 0 && (
+              {unreadNotifications.length > 0 && (
                 <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-[#C49A5A] border-[2px] border-[#101A13]" />
               )}
             </Link>

@@ -18,7 +18,7 @@ const envSchema = z.object({
   SMTP_PORT: z.string().transform((val) => parseInt(val, 10)).default('587'),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
-  SMTP_FROM: z.string().default('Chandhan Nilayam Investments <noreply@chandannilayam.com>'),
+  SMTP_FROM: z.string().default('Chandhan Nilayam Investments <noreply@chandhannilayam.com>'),
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
   TWILIO_ACCOUNT_SID: z.string().optional(),
   TWILIO_AUTH_TOKEN: z.string().optional(),
@@ -26,7 +26,7 @@ const envSchema = z.object({
   TWILIO_TESTING_NUMBER: z.string().optional(),
   JWT_ACCESS_SECRET: z.string().optional(),
   JWT_REFRESH_SECRET: z.string().optional(),
-  ACCESS_TOKEN_EXPIRES_IN: z.string().default('15m'),
+  ACCESS_TOKEN_EXPIRES_IN: z.string().default('7d'),
   REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
 });
 

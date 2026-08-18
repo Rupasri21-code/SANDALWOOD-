@@ -25,8 +25,8 @@ export default function Footer() {
     },
     {
       city: 'GUNTUR',
-      phone: '8688660644',
-      phoneFormatted: '+91 86886 60644',
+      phone: '6300016733',
+      phoneFormatted: '+91 63000 16733',
       email: 'info@chandhannilayam.com',
       website: 'www.chandhannilayam.com',
       address: 'Sri Saravana Bhava Nilayam, Lakshmipuram Main Rd, Guntur, Andhra Pradesh 522002',
