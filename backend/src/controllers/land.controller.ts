@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthRequest } from '../middleware/auth.middleware';
 import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
@@ -68,6 +69,12 @@ export const getLandPlot = async (req: Request, res: Response, next: NextFunctio
 
     if (!plot) {
       throw new ApiError(404, 'Land plot not found');
+    }
+
+    // Verify ownership or admin privileges
+    const userReq = req as AuthRequest;
+    if (!userReq.user || (userReq.user.role !== 'ADMIN' && plot.investor?.user_id !== userReq.user.id)) {
+      throw new ApiError(403, 'You are not authorized to view this land plot');
     }
 
     res.status(200).json(

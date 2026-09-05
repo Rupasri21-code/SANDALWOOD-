@@ -26,7 +26,7 @@ const envSchema = z.object({
   TWILIO_TESTING_NUMBER: z.string().optional(),
   JWT_ACCESS_SECRET: z.string().optional(),
   JWT_REFRESH_SECRET: z.string().optional(),
-  ACCESS_TOKEN_EXPIRES_IN: z.string().default('7d'),
+  ACCESS_TOKEN_EXPIRES_IN: z.string().default('15m'),
   REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
 });
 

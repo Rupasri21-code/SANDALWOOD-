@@ -110,7 +110,7 @@ export default function InvestmentsPage() {
   }, [profile]);
 
   const totalAUM = investments.reduce((s, i) => s + i.amount, 0);
-  const activeCount = investments.filter((i) => i.status === 'active').length;
+  const activeCount = investments.filter((i) => i.status?.toUpperCase() === 'ACTIVE').length;
 
   const handleSave = async () => {
     // Validations

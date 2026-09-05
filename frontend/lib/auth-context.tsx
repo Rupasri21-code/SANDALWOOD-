@@ -87,16 +87,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Clear previous session state before new attempt
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: email, password }),
+        body: JSON.stringify({ identifier: email.trim(), password }),
       });
       
       const data = await res.json();
       
       if (!res.ok || !data.success) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || 'Invalid email/username or password');
       }
       
       const accessToken = data.data.accessToken;
@@ -118,6 +125,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       return { error: null, role: data.data.user.role.toLowerCase() };
     } catch (err: any) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
+      setSession(null);
+      setProfile(null);
       return { error: err };
     }
   };

@@ -9,7 +9,7 @@ const router = Router();
 router.use(protect);
 
 router.route('/')
-  .get(listMedia)
+  .get(authorize('ADMIN'), listMedia)
   .post(authorize('ADMIN'), upload.single('file'), createMedia);
 
 router.route('/:id')

@@ -103,8 +103,8 @@ export default function PaymentsPage() {
     }
   }, [profile]);
 
-  const totalReceived = payments.filter((p) => p.status === 'completed').reduce((s, p) => s + p.amount, 0);
-  const pending = payments.filter((p) => p.status === 'pending').length;
+  const totalReceived = payments.filter((p) => p.status?.toUpperCase() === 'COMPLETED').reduce((s, p) => s + p.amount, 0);
+  const pending = payments.filter((p) => p.status?.toUpperCase() === 'PENDING').length;
 
   const handleSave = async () => {
     // Validations

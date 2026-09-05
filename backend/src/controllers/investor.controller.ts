@@ -22,7 +22,15 @@ export const listInvestors = async (req: Request, res: Response, next: NextFunct
       include: {
         landPlots: true,
         investments: true,
-        user: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            username: true,
+            role: true,
+            created_at: true,
+          }
+        },
       },
     });
 

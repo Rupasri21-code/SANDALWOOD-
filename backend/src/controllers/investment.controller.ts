@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthRequest } from '../middleware/auth.middleware';
 import { db } from '../config/database';
 import { ApiError } from '../utils/ApiError';
 import { ApiResponse } from '../utils/ApiResponse';
@@ -81,6 +82,12 @@ export const getInvestment = async (req: Request, res: Response, next: NextFunct
 
     if (!investment) {
       throw new ApiError(404, 'Investment not found');
+    }
+
+    // Verify ownership or admin privileges
+    const userReq = req as AuthRequest;
+    if (!userReq.user || (userReq.user.role !== 'ADMIN' && investment.investor?.user_id !== userReq.user.id)) {
+      throw new ApiError(403, 'You are not authorized to view this investment record');
     }
 
     res.status(200).json(

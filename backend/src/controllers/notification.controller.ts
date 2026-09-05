@@ -44,6 +44,11 @@ export const markAsRead = async (req: AuthRequest, res: Response, next: NextFunc
       throw new ApiError(404, 'Notification not found');
     }
 
+    // Verify ownership or admin privileges
+    if (!req.user || (req.user.role !== 'ADMIN' && notif.recipient_id !== req.user.id)) {
+      throw new ApiError(403, 'You are not authorized to access this notification');
+    }
+
     const updated = await db.notification.update({
       where: { id },
       data: { is_read: true },

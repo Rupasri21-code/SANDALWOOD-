@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError';
+import { env } from '../config/env';
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   let error = { ...err };
@@ -28,12 +29,16 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
   }
 
   const statusCode = error.statusCode || 500;
-  const message = error.message || 'Internal Server Error';
+  let message = error.message || 'Internal Server Error';
+
+  if (statusCode === 500 && env.NODE_ENV === 'production') {
+    message = 'Internal Server Error';
+  }
 
   res.status(statusCode).json({
     success: false,
     message,
     errors: error.errors || [],
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    stack: env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 };

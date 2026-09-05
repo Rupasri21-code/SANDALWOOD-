@@ -27,6 +27,7 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
     });
 
     // 2. Fallback: Search by InvestorProfile email, phone or whatsapp if user not found directly
+    // This allows investors to log in using their phone/whatsapp number, but only if they have an active user account
     if (!user) {
       const profile = await db.investorProfile.findFirst({
         where: {
@@ -37,114 +38,23 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
             { alt_phone: { equals: identifier } }
           ]
         },
-        include: { user: true }
+        include: { user: { include: { profile: true } } }
       });
 
-      if (profile) {
-        if (profile.user_id) {
-          user = await db.user.findUnique({
-            where: { id: profile.user_id },
-            include: { profile: true }
-          });
-        } else {
-          // Auto-create user for existing profile if user record missing, using entered password
-          const initialPassword = await bcrypt.hash(validated.password || 'Investor@123', 10);
-          const username = profile.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g, '');
-          const newUser = await db.user.create({
-            data: {
-              email: profile.email.toLowerCase(),
-              username,
-              password: initialPassword,
-              role: 'INVESTOR'
-            }
-          });
-          await db.investorProfile.update({
-            where: { id: profile.id },
-            data: { user_id: newUser.id }
-          });
-          user = await db.user.findUnique({
-            where: { id: newUser.id },
-            include: { profile: true }
-          });
-        }
+      if (profile && profile.user) {
+        user = profile.user as any;
       }
-    }
-
-    if (!user && validated.password && validated.password.length >= 4) {
-      // Auto-provision investor account for valid credentials if not already seeded
-      const cleanUsername = identifier.split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g, '');
-      const defaultEmail = identifier.includes('@') ? identifier.toLowerCase() : `${cleanUsername}@gmail.com`;
-      const displayName = cleanUsername.replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-      const hashedPassword = await bcrypt.hash(validated.password, 10);
-
-      const newUser = await db.user.create({
-        data: {
-          email: defaultEmail,
-          username: cleanUsername,
-          password: hashedPassword,
-          role: 'INVESTOR'
-        }
-      });
-
-      await db.investorProfile.create({
-        data: {
-          user_id: newUser.id,
-          first_name: displayName.split(' ')[0] || 'Investor',
-          last_name: displayName.split(' ')[1] || 'User',
-          full_name: displayName || 'Investor User',
-          email: defaultEmail,
-          phone: '+91 98765 43210',
-          address_line1: 'Chandhan Nilayam Estates',
-          state: 'Andhra Pradesh',
-          country: 'India',
-          status: 'ACTIVE'
-        }
-      });
-
-      user = await db.user.findUnique({
-        where: { id: newUser.id },
-        include: { profile: true }
-      });
     }
 
     if (!user) {
       throw new ApiError(401, 'Invalid email/username or password');
     }
 
-    // Verify password with smart pattern support for investors
-    let isPasswordMatch = await bcrypt.compare(validated.password, user.password);
-
-    if (!isPasswordMatch && (user.role === 'INVESTOR' || user.role === 'CUSTOMER')) {
-      const firstName = user.profile?.first_name || user.profile?.full_name?.split(' ')[0] || user.username.split('.')[0] || '';
-      const capitalizedFirst = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
-      const candidatePasses = [
-        'Investor@123',
-        `${capitalizedFirst}@123`,
-        `${firstName.toLowerCase()}@123`,
-        'Rupa@2784',
-        'Sanjana@123',
-        'Navya@123'
-      ];
-
-      let isMatch = candidatePasses.some(c => c && validated.password === c);
-      
-      // If user profile is active and logging in with a non-empty password, set password for investor
-      if (!isMatch && validated.password && validated.password.length >= 4 && user.profile) {
-        isMatch = true;
-      }
-
-      if (isMatch) {
-        const newHashed = await bcrypt.hash(validated.password, 10);
-        await db.user.update({
-          where: { id: user.id },
-          data: { password: newHashed }
-        });
-        isPasswordMatch = true;
-      }
-    }
+    // Verify password strictly using bcrypt
+    const isPasswordMatch = await bcrypt.compare(validated.password, user.password);
 
     if (!isPasswordMatch) {
-      throw new ApiError(401, 'Invalid email or password');
+      throw new ApiError(401, 'Invalid email/username or password');
     }
 
     // Generate Access & Refresh Tokens
