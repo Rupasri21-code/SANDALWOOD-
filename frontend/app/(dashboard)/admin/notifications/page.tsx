@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Bell, X, Send, Check } from 'lucide-react';
+import { Plus, Bell, X, Send, Check, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
+
 
 type Notification = {
   id: string;
@@ -142,24 +143,73 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleClearAll = async () => {
+    if (!confirm('Are you sure you want to clear all notifications?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/notifications/admin/clear-all`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('All notifications cleared');
+        setNotifications([]);
+      } else {
+        toast.error(data.message || 'Failed to clear notifications');
+      }
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const handleDeleteOne = async (id: string) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/notifications/admin/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Notification deleted');
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+      } else {
+        toast.error(data.message || 'Failed to delete notification');
+      }
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8"
-    >
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-[2rem] font-bold text-[#F8F5EE] tracking-tight">Notifications</h1>
           <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">Send alerts and updates to investors</p>
         </div>
-        <button 
-          onClick={() => { setForm({ recipient_id: '', investor_id: '', title: '', message: '', type: 'info', link: '' }); setSendToAll(false); setShowModal(true); }} 
-          className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] hover:-translate-y-1 transition-all duration-300"
-          style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
-        >
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
-            <Plus className="w-4 h-4 text-white" strokeWidth={3} />
-          </div>
-          Send Notification
-        </button>
+        <div className="flex items-center gap-3">
+          {notifications.length > 0 && (
+            <button
+              onClick={handleClearAll}
+              className="h-[48px] px-5 rounded-[16px] text-red-400 font-medium flex items-center gap-2 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-all duration-300"
+            >
+              <Trash2 className="w-4 h-4 text-red-400" />
+              Clear All
+            </button>
+          )}
+          <button 
+            onClick={() => { setForm({ recipient_id: '', investor_id: '', title: '', message: '', type: 'info', link: '' }); setSendToAll(false); setShowModal(true); }} 
+            className="h-[48px] px-6 rounded-[16px] text-white font-bold flex items-center gap-3 shadow-[0_10px_20px_rgba(196,154,90,0.2)] hover:shadow-[0_0_25px_rgba(196,154,90,0.5)] hover:-translate-y-1 transition-all duration-300"
+            style={{ background: 'linear-gradient(135deg, #C49A5A, #D9B36D)' }}
+          >
+            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+              <Plus className="w-4 h-4 text-white" strokeWidth={3} />
+            </div>
+            Send Notification
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -192,6 +242,13 @@ export default function NotificationsPage() {
                   <div className="text-[#A8B5AA] text-[12px] font-medium border-l border-[#C49A5A]/20 pl-3">
                     {new Date(n.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </div>
+                  <button
+                    onClick={() => handleDeleteOne(n.id)}
+                    title="Delete Notification"
+                    className="p-1 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/5 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
                 <div className="flex items-center gap-1">
                   {!n.is_read ? (
@@ -211,6 +268,7 @@ export default function NotificationsPage() {
           ))
         )}
       </div>
+
 
       {showModal && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">

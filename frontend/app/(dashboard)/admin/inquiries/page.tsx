@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageSquare, Search, Filter, ArrowUpRight, Mail, Phone, Calendar, User, Clock, CheckCircle, Eye, X } from 'lucide-react';
+import { MessageSquare, Search, Filter, ArrowUpRight, Mail, Phone, Calendar, User, Clock, CheckCircle, Eye, X, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
@@ -73,6 +73,45 @@ export default function InquiriesPage() {
     }
   };
 
+  const handleClearAll = async () => {
+    if (!confirm('Are you sure you want to clear all inquiries?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/inquiries/clear-all`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success('All inquiries cleared');
+        setInquiries([]);
+      } else {
+        toast.error(data.message || 'Failed to clear inquiries');
+      }
+    } catch (err) {
+      toast.error('Network error');
+    }
+  };
+
+  const handleDeleteOne = async (id: string) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/inquiries/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success('Inquiry deleted');
+        setInquiries(prev => prev.filter(inc => inc.id !== id));
+      } else {
+        toast.error(data.message || 'Failed to delete inquiry');
+      }
+    } catch (err) {
+      toast.error('Network error');
+    }
+  };
+
   const filteredInquiries = inquiries.filter(inc => 
     inc.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     inc.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -89,7 +128,17 @@ export default function InquiriesPage() {
           </h1>
           <p className="text-[#A8B5AA] text-[15px] mt-1.5 font-medium">Manage prospective investor inquiries and communications.</p>
         </div>
+        {inquiries.length > 0 && (
+          <button
+            onClick={handleClearAll}
+            className="h-[44px] px-5 rounded-[14px] text-red-400 font-medium flex items-center gap-2 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-all duration-300"
+          >
+            <Trash2 className="w-4 h-4 text-red-400" />
+            Clear All Inquiries
+          </button>
+        )}
       </div>
+
 
       <div className="bg-[#101A13] border border-[#C49A5A]/30 rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.2)] overflow-hidden">
         {/* Toolbar */}
@@ -190,10 +239,18 @@ export default function InquiriesPage() {
                       >
                         <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> View</span>
                       </button>
+                      <button
+                        onClick={() => handleDeleteOne(inc.id)}
+                        title="Delete Inquiry"
+                        className="text-xs font-semibold text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500 border border-red-500/30 p-1.5 rounded-lg transition-all ml-2"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
+
             </table>
           )}
         </div>

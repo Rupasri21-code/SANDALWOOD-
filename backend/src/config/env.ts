@@ -4,6 +4,11 @@ import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
+// Allow TLS connections through Supabase PgBouncer pooler SSL proxies
+if (!process.env.NODE_TLS_REJECT_UNAUTHORIZED) {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 const envSchema = z.object({
   PORT: z.string().default('5000'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),

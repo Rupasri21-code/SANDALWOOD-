@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Map, Sprout, TrendingUp, CreditCard, Bell, Activity, ArrowUpRight } from 'lucide-react';
+import { Users, Map, Sprout, TrendingUp, CreditCard, Bell, Activity } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
 
@@ -57,12 +57,12 @@ export default function AdminDashboard() {
   }, []);
 
   const statCards = [
-    { label: 'Total AUM', value: `₹${(stats.totalInvestmentValue / 1e7).toFixed(1)} Cr`, icon: Activity, change: '+18% this year', color: 'from-[#0F2745] to-[#1E5DB4]', glow: 'hover:shadow-[0_0_25px_rgba(30,93,180,0.4)]' },
-    { label: 'Active Investments', value: stats.activeInvestments, icon: TrendingUp, change: '+15% this month', color: 'from-[#0E2A1D] to-[#1F8A50]', glow: 'hover:shadow-[0_0_25px_rgba(31,138,80,0.4)]' },
-    { label: 'Total Investors', value: stats.investors, icon: Users, change: '+5 new', color: 'from-[#3A2804] to-[#D4A017]', glow: 'hover:shadow-[0_0_25px_rgba(212,160,23,0.4)]' },
-    { label: 'Land Records', value: stats.lands, icon: Map, change: 'Updated', color: 'from-[#24143D] to-[#7B3FE4]', glow: 'hover:shadow-[0_0_25px_rgba(123,63,228,0.4)]' },
-    { label: 'Crop Updates', value: stats.crops, icon: Sprout, change: 'Growing', color: 'from-[#3D1212] to-[#D73A3A]', glow: 'hover:shadow-[0_0_25px_rgba(215,58,58,0.4)]' },
-    { label: 'Payment Records', value: stats.payments, icon: CreditCard, change: '+22% this month', color: 'from-[#062E3E] to-[#19A7CE]', glow: 'hover:shadow-[0_0_25px_rgba(25,167,206,0.4)]' },
+    { label: 'Total AUM', value: `₹${(stats.totalInvestmentValue / 1e7).toFixed(1)} Cr`, icon: Activity, color: 'from-[#0F2745] to-[#1E5DB4]', glow: 'hover:shadow-[0_0_25px_rgba(30,93,180,0.4)]' },
+    { label: 'Active Investments', value: stats.activeInvestments, icon: TrendingUp, color: 'from-[#0E2A1D] to-[#1F8A50]', glow: 'hover:shadow-[0_0_25px_rgba(31,138,80,0.4)]' },
+    { label: 'Total Investors', value: stats.investors, icon: Users, color: 'from-[#3A2804] to-[#D4A017]', glow: 'hover:shadow-[0_0_25px_rgba(212,160,23,0.4)]' },
+    { label: 'Land Records', value: stats.lands, icon: Map, color: 'from-[#24143D] to-[#7B3FE4]', glow: 'hover:shadow-[0_0_25px_rgba(123,63,228,0.4)]' },
+    { label: 'Crop Updates', value: stats.crops, icon: Sprout, color: 'from-[#3D1212] to-[#D73A3A]', glow: 'hover:shadow-[0_0_25px_rgba(215,58,58,0.4)]' },
+    { label: 'Payment Records', value: stats.payments, icon: CreditCard, color: 'from-[#062E3E] to-[#19A7CE]', glow: 'hover:shadow-[0_0_25px_rgba(25,167,206,0.4)]' },
   ];
 
   return (
@@ -91,9 +91,6 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-end justify-between relative z-10 mt-auto pt-2">
               <div className="text-white/90 text-[15px] font-semibold tracking-wide drop-shadow-sm">{card.label}</div>
-              <span className="text-white/80 bg-black/20 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide flex items-center gap-1 backdrop-blur-sm border border-white/10">
-                {card.change} <ArrowUpRight className="w-3 h-3" />
-              </span>
             </div>
           </div>
         ))}

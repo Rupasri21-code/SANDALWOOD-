@@ -95,3 +95,23 @@ export const updateInquiryStatus = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+export const deleteInquiry = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    await db.inquiry.delete({ where: { id } });
+    res.status(200).json(new ApiResponse(200, null, 'Inquiry deleted successfully'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const clearAllInquiries = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const deleted = await db.inquiry.deleteMany({});
+    res.status(200).json(new ApiResponse(200, deleted, 'All inquiries cleared successfully'));
+  } catch (error) {
+    next(error);
+  }
+};
+
